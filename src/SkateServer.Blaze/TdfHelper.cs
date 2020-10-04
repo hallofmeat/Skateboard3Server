@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.IO;
-using System.IO.Pipelines;
 using System.Text.RegularExpressions;
 
 namespace SkateServer.Blaze
@@ -123,7 +122,7 @@ namespace SkateServer.Blaze
                 output.WriteByte(new byte());
         }
 
-        public static void WriteTypeAndLength(PipeWriter output, TdfType type, uint length)
+        public static void WriteTypeAndLength(Stream output, TdfType type, uint length)
         {
             //TODO
 

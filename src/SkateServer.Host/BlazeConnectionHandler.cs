@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Buffers;
-using System.IO;
-using System.IO.Pipelines;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using NLog;
@@ -26,7 +23,7 @@ namespace SkateServer.Host
         {
             //https://devblogs.microsoft.com/dotnet/system-io-pipelines-high-performance-io-in-net/
             //https://github.com/davidfowl/MultiProtocolAspNetCore
-            //https://docs.microsoft.com/en-us/dotnet/standard/io/pipelines#reading-multiple-messages
+            //https://docs.microsoft.com/en-us/dotnet/standard/io/pipelines
 
             var reader = connection.Transport.Input;
             var writer = connection.Transport.Output;
@@ -38,26 +35,30 @@ namespace SkateServer.Host
                     var result = await reader.ReadAsync();
                     var buffer = result.Buffer;
 
+                    SequencePosition examined = buffer.Start;
                     try
                     {
-                        while (_parser.TryParseRequest(ref buffer, out var request))
+                        if (_parser.TryParseRequest(ref buffer, out var request, out var processedLength))
                         {
+                            Logger.Debug($"Buffer length: {buffer.Length} Buffer processed: {processedLength.GetInteger()}");
+                            examined = processedLength;
+
                             //TODO: remove stream?
                             await _handler.ProcessRequest(request, writer.AsStream());
+                        }
+                        else
+                        {
+                            Logger.Error("Failed to parse message");
                         }
 
                         if (result.IsCompleted)
                         {
-                            if (buffer.Length > 0)
-                            {
-                                throw new InvalidDataException("Incomplete request");
-                            }
                             break;
                         }
                     }
                     finally
                     {
-                        reader.AdvanceTo(buffer.Start, buffer.End);
+                        reader.AdvanceTo(buffer.Start, examined);
                     }
                 }
             }

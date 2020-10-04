@@ -7,42 +7,51 @@ namespace SkateServer.Blaze
 {
     public interface IBlazeRequestParser
     {
-        bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out BlazeRequest request);
+        bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out BlazeRequest request, out SequencePosition endPosition);
     }
 
     public class BlazeRequestParser : IBlazeRequestParser
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out BlazeRequest request)
+        public bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out BlazeRequest request, out SequencePosition endPosition)
         {
             var reader = new SequenceReader<byte>(buffer);
 
             request = new BlazeRequest();
 
             //Parse header
-            if (!reader.TryReadBigEndian(out short messageLength)) {
+            if (!reader.TryReadBigEndian(out short messageLength))
+            {
+                endPosition = reader.Position;
                 return false;
             }
             request.Length = messageLength;
 
-            if (!reader.TryReadBigEndian(out short component)) {
+            if (!reader.TryReadBigEndian(out short component)) 
+            {
+                endPosition = reader.Position;
                 return false;
             }
             request.Component = (BlazeComponent) component;
 
-            if (!reader.TryReadBigEndian(out short command)) {
+            if (!reader.TryReadBigEndian(out short command)) 
+            {
+                endPosition = reader.Position;
                 return false;
             }
             request.Command = command;
 
-            if (!reader.TryReadBigEndian(out short errorCode)) {
+            if (!reader.TryReadBigEndian(out short errorCode)) 
+            {
+                endPosition = reader.Position;
                 return false;
             }
             request.ErrorCode = errorCode;
 
             if (!reader.TryReadBigEndian(out int message))
             {
+                endPosition = reader.Position;
                 return false;
             }
             request.MessageType = (BlazeMessageType) (message >> 28);
@@ -139,6 +148,7 @@ namespace SkateServer.Blaze
 
             }
 
+            endPosition = reader.Position;
             return true;
         }
     }
