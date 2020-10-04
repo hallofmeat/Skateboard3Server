@@ -11,7 +11,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\SkateServer.Blaze\SkateServer.Blaze.csproj" />
+    <ProjectReference Include="..\SkateServer3.Blaze\Skate3Server.Blaze.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,27 +6,31 @@ using SkateServer.Blaze;
 
 namespace SkateServer.Host
 {
-    public class BlazeConnectionHandler : ConnectionHandler
+    /// <summary>
+    /// Used for proxying to the real server and printing requests (for debug only)
+    /// </summary>
+    public class BlazeProxyHandler : ConnectionHandler
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IBlazeRequestParser _parser;
-        private readonly IBlazeRequestHandler _handler;
+        private readonly BlazeDebugParser _parser;
+        private readonly string _proxyHost;
+        private readonly int _proxyPort;
+        private readonly bool _proxySecure;
 
-        public BlazeConnectionHandler(IBlazeRequestParser parser, IBlazeRequestHandler handler)
+        public BlazeProxyHandler(BlazeDebugParser parser, string proxyHost, int proxyPort, bool proxySecure)
         {
             _parser = parser;
-            _handler = handler;
+            _proxyHost = proxyHost;
+            _proxyPort = proxyPort;
+            _proxySecure = proxySecure;
         }
 
         public override async Task OnConnectedAsync(ConnectionContext connection)
         {
-            //https://devblogs.microsoft.com/dotnet/system-io-pipelines-high-performance-io-in-net/
-            //https://github.com/davidfowl/MultiProtocolAspNetCore
-            //https://docs.microsoft.com/en-us/dotnet/standard/io/pipelines
+            //TODO: create connection to proxy server
 
             var reader = connection.Transport.Input;
-            var writer = connection.Transport.Output;
 
             try
             {
@@ -35,30 +39,33 @@ namespace SkateServer.Host
                     var result = await reader.ReadAsync();
                     var buffer = result.Buffer;
 
-                    SequencePosition examined = buffer.Start;
                     try
                     {
-                        if (_parser.TryParseRequest(ref buffer, out var request, out var processedLength))
+                        if (_parser.TryParse(ref buffer))
                         {
-                            Logger.Debug($"Buffer length: {buffer.Length} Buffer processed: {processedLength.GetInteger()}");
-                            examined = processedLength;
-
-                            //TODO: remove stream?
-                            await _handler.ProcessRequest(request, writer.AsStream());
+                            Logger.Debug($"Buffer length: {buffer.Length}");
                         }
                         else
                         {
                             Logger.Error("Failed to parse message");
                         }
 
+                        //TODO: send to proxy server
+                        //TODO: parse proxy server response
+
                         if (result.IsCompleted)
                         {
                             break;
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Logger.Error($"Failed to handle request: {e}");
+                        break;
+                    }
                     finally
                     {
-                        reader.AdvanceTo(buffer.Start, examined);
+                        reader.AdvanceTo(buffer.Start, buffer.End);
                     }
                 }
             }

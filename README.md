@@ -1,2 +1,2 @@
-# SkateServer
-Skate 2 and Skate 3 Server
+# Skate3Server
+Skate 3 Server

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
+using SkateServer.Blaze;
 
 namespace SkateServer.Host
 {
@@ -48,7 +49,12 @@ namespace SkateServer.Host
                         //eadpgs-blapp001 (Blaze)
                         serverOptions.ListenLocalhost(10744, options =>
                         {
-                            options.UseConnectionHandler<BlazeConnectionHandler>();
+                            //options.UseConnectionHandler<BlazeConnectionHandler>();
+
+                            //Debug Proxy setup
+                            var debugParser = new BlazeDebugParser();
+                            var handler = new BlazeProxyHandler(debugParser, "eadpgs-blapp001.ea.com", 10744, true);
+                            options.Run(connection => handler.OnConnectedAsync(connection));
                         });
                         //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
                         serverOptions.ListenLocalhost(17502);

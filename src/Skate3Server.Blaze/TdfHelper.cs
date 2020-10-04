@@ -23,7 +23,7 @@ namespace SkateServer.Blaze
             Array.Reverse(tagBytes);
             var tag = BitConverter.ToUInt32(tagBytes, 0) >> 8;
 
-            //Convert to string
+            //convert to string
             for (var i = 0; i < tagBytes.Length; ++i)
             {
                 var val = (tag >> ((3 - i) * 6)) & 0x3F;
@@ -124,8 +124,16 @@ namespace SkateServer.Blaze
 
         public static void WriteTypeAndLength(Stream output, TdfType type, uint length)
         {
-            //TODO
-
+            //length is 15 or more
+            if (length >= 0xF)
+            {
+                output.WriteByte((byte)(((uint)type << 4) | 0xF));
+                WriteLength(output, length);
+            }
+            else
+            {
+                output.WriteByte((byte)(((uint)type << 4) | length));
+            }
         }
 
     }
