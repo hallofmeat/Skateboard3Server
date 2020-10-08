@@ -1,35 +1,34 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using MediatR;
 using NLog;
-using SkateServer.Blaze.Components;
+using Skate3Server.Blaze.Serializer;
 
-namespace SkateServer.Blaze
+namespace Skate3Server.Blaze
 {
     public interface IBlazeRequestHandler
     {
-        Task ProcessRequest(BlazeRequest request, Stream output);
+        Task ProcessRequest(BlazeHeader header, object request, Stream output);
     }
 
     public class BlazeRequestHandler : IBlazeRequestHandler
     {
+        private readonly IMediator _mediator;
+        private readonly IBlazeSerializer _blazeSerializer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public Task ProcessRequest(BlazeRequest request, Stream output)
+        public BlazeRequestHandler(IMediator mediator, IBlazeSerializer blazeSerializer)
         {
-            //TODO: do better async
-            switch (request.Component)
-            {
-                //TODO: use DI
-                case BlazeComponent.Redirector:
-                    var redirector = new RedirectorComponent();
-                    redirector.HandleRequest(request, output);
-                    break;
-                default:
-                    Logger.Error($"Unknown Component {request.Component}");
-                    break;
-                    
-            }
-            return Task.CompletedTask;
+            _mediator = mediator;
+            _blazeSerializer = blazeSerializer;
+        }
+
+        public async Task ProcessRequest(BlazeHeader header, object request, Stream output)
+        {
+
+            var response = await _mediator.Send(request);
+            //TODO: refine signature
+            _blazeSerializer.Serialize(output, header, response);
         }
     }
 }

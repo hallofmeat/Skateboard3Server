@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using NLog;
-using SkateServer.Blaze;
+using Skate3Server.Blaze;
 
-namespace SkateServer.Host
+namespace Skate3Server.Host
 {
     public class BlazeConnectionHandler : ConnectionHandler
     {
@@ -38,14 +38,14 @@ namespace SkateServer.Host
                     SequencePosition examined = buffer.Start;
                     try
                     {
-                        if (_parser.TryParseRequest(ref buffer, out var request, out var processedLength))
+                        if (_parser.TryParseRequest(ref buffer, out var processedLength, out var header, out var request))
                         {
                             Logger.Debug(
                                 $"Buffer length: {buffer.Length} Buffer processed: {processedLength.GetInteger()}");
                             examined = processedLength;
 
                             //TODO: remove stream?
-                            await _handler.ProcessRequest(request, writer.AsStream());
+                            await _handler.ProcessRequest(header, request, writer.AsStream());
                         }
                         else
                         {

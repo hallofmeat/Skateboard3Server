@@ -1,7 +1,10 @@
 using Autofac;
-using SkateServer.Blaze;
+using MediatR;
+using Skate3Server.Blaze;
+using Skate3Server.Blaze.Handlers.Redirector;
+using Skate3Server.Blaze.Serializer;
 
-namespace SkateServer.Host
+namespace Skate3Server.Host
 {
     public class BlazeRegistry : Module
     {
@@ -9,6 +12,26 @@ namespace SkateServer.Host
         {
             builder.RegisterType<BlazeRequestHandler>().As<IBlazeRequestHandler>();
             builder.RegisterType<BlazeRequestParser>().As<IBlazeRequestParser>();
+            builder.RegisterType<BlazeSerializer>().As<IBlazeSerializer>();
+
+            //Mediator
+            builder
+                .RegisterType<Mediator>()
+                .As<IMediator>()
+                .InstancePerLifetimeScope();
+
+            builder.Register<ServiceFactory>(context =>
+            {
+                var c = context.Resolve<IComponentContext>();
+                return t => c.Resolve(t);
+            });
+
+            // finally register our custom code (individually, or via assembly scanning)
+            // - requests & handlers as transient, i.e. InstancePerDependency()
+            // - pre/post-processors as scoped/per-request, i.e. InstancePerLifetimeScope()
+            // - behaviors as transient, i.e. InstancePerDependency()
+            //builder.RegisterAssemblyTypes(typeof(MyType).GetTypeInfo().Assembly).AsImplementedInterfaces(); // via assembly scan
+            builder.RegisterType<ServerInfoRequestHandler>().AsImplementedInterfaces().InstancePerDependency();          // or individually
         }
     }
 }

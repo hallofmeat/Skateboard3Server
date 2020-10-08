@@ -1,7 +1,6 @@
-using System;
 using Xunit;
 
-namespace SkateServer.Blaze.Tests
+namespace Skate3Server.Blaze.Tests
 {
     public class UnitTest1
     {

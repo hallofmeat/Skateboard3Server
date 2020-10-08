@@ -3,7 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace SkateServer.Blaze
+namespace Skate3Server.Blaze.Serializer
 {
     public static class TdfHelper
     {

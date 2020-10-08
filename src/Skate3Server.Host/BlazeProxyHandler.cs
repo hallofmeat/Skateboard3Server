@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using NLog;
-using SkateServer.Blaze;
+using Skate3Server.Blaze;
 
-namespace SkateServer.Host
+namespace Skate3Server.Host
 {
     /// <summary>
     /// Used for proxying to the real server and printing requests (for debug only)

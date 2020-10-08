@@ -1,25 +1,41 @@
 ﻿using System;
 using System.Buffers;
-using System.Text;
+using System.Collections.Generic;
 using NLog;
+using Skate3Server.Blaze.Requests;
+using Skate3Server.Blaze.Serializer;
 
-namespace SkateServer.Blaze
+namespace Skate3Server.Blaze
 {
     public interface IBlazeRequestParser
     {
-        bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out BlazeRequest request, out SequencePosition endPosition);
+        bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition, out BlazeHeader header, out object request);
     }
 
     public class BlazeRequestParser : IBlazeRequestParser
     {
+        private readonly IBlazeSerializer _blazeSerializer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out BlazeRequest request,
-            out SequencePosition endPosition)
+        //TODO: pull from blaze request attribute
+        private static readonly Dictionary<(BlazeComponent, int), Type> RequestLookup =
+            new Dictionary<(BlazeComponent, int), Type>
+            {
+                { (BlazeComponent.Redirector, 0x1), typeof(RedirectorServerInfoRequest) },
+            };
+
+        public BlazeRequestParser(IBlazeSerializer blazeSerializer)
+        {
+            _blazeSerializer = blazeSerializer;
+        }
+
+        public bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition, out BlazeHeader header,
+            out object request)
         {
             var reader = new SequenceReader<byte>(buffer);
 
-            request = new BlazeRequest();
+            header = new BlazeHeader();
+            request = null;
 
             //Parse header
             if (!reader.TryReadBigEndian(out short messageLength))
@@ -28,7 +44,7 @@ namespace SkateServer.Blaze
                 return false;
             }
 
-            request.Length = messageLength;
+            header.Length = messageLength;
 
             if (!reader.TryReadBigEndian(out short component))
             {
@@ -36,7 +52,7 @@ namespace SkateServer.Blaze
                 return false;
             }
 
-            request.Component = (BlazeComponent) component;
+            header.Component = (BlazeComponent) component;
 
             if (!reader.TryReadBigEndian(out short command))
             {
@@ -44,7 +60,7 @@ namespace SkateServer.Blaze
                 return false;
             }
 
-            request.Command = command;
+            header.Command = command;
 
             if (!reader.TryReadBigEndian(out short errorCode))
             {
@@ -52,7 +68,7 @@ namespace SkateServer.Blaze
                 return false;
             }
 
-            request.ErrorCode = errorCode;
+            header.ErrorCode = errorCode;
 
             if (!reader.TryReadBigEndian(out int message))
             {
@@ -60,118 +76,28 @@ namespace SkateServer.Blaze
                 return false;
             }
 
-            request.MessageType = (BlazeMessageType) (message >> 28);
-            request.MessageId = message & 0xFFFFF;
+            header.MessageType = (BlazeMessageType) (message >> 28);
+            header.MessageId = message & 0xFFFFF;
 
             //Read body
-            request.Payload = reader.Sequence.Slice(reader.Position, request.Length);
-            reader.Advance(request.Length);
+            var payload = reader.Sequence.Slice(reader.Position, header.Length);
+            reader.Advance(header.Length);
+            endPosition = reader.Position;
 
             Logger.Debug(
-                $"Request; Component:{request.Component} Command:{request.Command} ErrorCode:{request.ErrorCode} MessageType:{request.MessageType} MessageId:{request.MessageId}");
+                $"Request; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
-            //Parse body TODO: move
-            var payloadHex = BitConverter.ToString(request.Payload.ToArray()).Replace("-", " ");
+            //For Debug
+            var payloadHex = BitConverter.ToString(payload.ToArray()).Replace("-", " ");
             Logger.Trace(payloadHex);
 
-            var payloadReader = new SequenceReader<byte>(request.Payload);
-
-            var payloadStringBuilder = new StringBuilder();
-
-            var inStruct = false;
-
-            while (!payloadReader.End)
+            if (RequestLookup.TryGetValue((header.Component, header.Command), out var requestType))
             {
-                var label = TdfHelper.ParseLabel(ref payloadReader);
-                var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
-                var type = typeData.Item1;
-                var length = typeData.Item2;
-
-                payloadStringBuilder.AppendLine($"{label} {type} {length}");
-
-                switch (type)
-                {
-                    case TdfType.Struct:
-                        payloadReader.Advance(length);
-                        payloadStringBuilder.AppendLine($"<start struct>");
-                        inStruct = true;
-                        break;
-                    case TdfType.String:
-                        var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
-                        payloadReader.Advance(length);
-                        //TODO: figure out if utf8
-                        var str = Encoding.UTF8.GetString(byteStr.ToArray());
-                        payloadStringBuilder.AppendLine($"{str}");
-                        break;
-                    case TdfType.Int8:
-                        payloadReader.TryRead(out byte int8);
-                        payloadStringBuilder.AppendLine($"{int8}");
-                        break;
-                    case TdfType.Uint8:
-                        payloadReader.TryRead(out byte uint8);
-                        payloadStringBuilder.AppendLine($"{uint8}");
-                        break;
-                    case TdfType.Int16:
-                        payloadReader.TryReadBigEndian(out short int16);
-                        payloadStringBuilder.AppendLine($"{int16}");
-                        break;
-                    case TdfType.Uint16:
-                        payloadReader.TryReadBigEndian(out short uint16);
-                        payloadStringBuilder.AppendLine($"{Convert.ToUInt16(uint16)}");
-                        break;
-                    case TdfType.Int32:
-                        payloadReader.TryReadBigEndian(out int int32);
-                        payloadStringBuilder.AppendLine($"{int32}");
-                        break;
-                    case TdfType.Uint32:
-                        payloadReader.TryReadBigEndian(out int uint32);
-                        payloadStringBuilder.AppendLine($"{Convert.ToUInt32(uint32)}");
-                        break;
-                    case TdfType.Int64:
-                        payloadReader.TryReadBigEndian(out long int64);
-                        payloadStringBuilder.AppendLine($"{int64}");
-                        break;
-                    case TdfType.Uint64:
-                        payloadReader.TryReadBigEndian(out long uint64);
-                        payloadStringBuilder.AppendLine($"{Convert.ToUInt64(uint64)}");
-                        break;
-                    case TdfType.Array:
-                        //TODO
-                        payloadReader.Advance(length);
-                        payloadStringBuilder.AppendLine($"<array>");
-                        break;
-                    case TdfType.Blob:
-                        payloadReader.Advance(length);
-                        payloadStringBuilder.AppendLine($"<blob>");
-                        break;
-                    case TdfType.Map:
-                        payloadReader.Advance(length);
-                        payloadStringBuilder.AppendLine($"<map>");
-                        break;
-                    case TdfType.Union:
-                        payloadReader.Advance(length);
-                        payloadReader.TryRead(out byte key);
-                        //TODO: handle VALU better
-                        payloadStringBuilder.AppendLine($"<union>");
-                        break;
-                    default:
-                        Logger.Debug($"Partial Decode:{Environment.NewLine}{payloadStringBuilder}");
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                //end of struct detection (not great and may break)
-                if (inStruct && payloadReader.TryPeek(out var nextByte) && nextByte == 0x0)
-                {
-                    payloadStringBuilder.AppendLine($"<end struct>");
-                    payloadReader.Advance(1);
-                    inStruct = false;
-                }
+                request = _blazeSerializer.Deserialize(ref payload, requestType);
+                return true;
             }
 
-            Logger.Debug($"Decoded:{Environment.NewLine}{payloadStringBuilder}");
-
-        endPosition = reader.Position;
-            return true;
+            throw new ArgumentOutOfRangeException($"Unknown component: {header.Component} and command: {header.Command}");
         }
     }
 }

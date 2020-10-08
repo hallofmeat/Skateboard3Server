@@ -1,69 +1,33 @@
 ﻿using System;
 using System.Buffers;
+using System.IO;
 using System.Text;
 using NLog;
-using Skate3Server.Blaze.Serializer;
 
-namespace Skate3Server.Blaze
+namespace Skate3Server.Blaze.Serializer
 {
-    /// <summary>
-    /// Just logs decoded data
-    /// </summary>
-    public class BlazeDebugParser
+    public interface IBlazeSerializer
+    {
+        object Deserialize(ref ReadOnlySequence<byte> payload, Type requestType);
+        void Serialize(Stream output, BlazeHeader header, object payload);
+    }
+
+    public class BlazeSerializer : IBlazeSerializer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public bool TryParse(ref ReadOnlySequence<byte> buffer)
+        public BlazeSerializer()
         {
-            var messageHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
-            Logger.Trace(messageHex);
+        }
 
-            var reader = new SequenceReader<byte>(buffer);
-
-            //Parse header
-            if (!reader.TryReadBigEndian(out short messageLength))
-            {
-                return false;
-            }
-
-            if (!reader.TryReadBigEndian(out short componentShort))
-            {
-                return false;
-            }
-
-            var component = (BlazeComponent)componentShort;
-
-            if (!reader.TryReadBigEndian(out short command))
-            {
-                return false;
-            }
-
-            if (!reader.TryReadBigEndian(out short errorCode))
-            {
-                return false;
-            }
-
-            if (!reader.TryReadBigEndian(out int message))
-            {
-                return false;
-            }
-
-            var messageType = (BlazeMessageType) (message >> 28);
-            var messageId = message & 0xFFFFF;
-
-            //Read body
-            var payload = reader.Sequence.Slice(reader.Position, messageLength);
-            reader.Advance(messageLength);
-
-            Logger.Debug(
-                $"Component:{component} Command:{command} ErrorCode:{errorCode} MessageType:{messageType} MessageId:{messageId}");
+        public object Deserialize(ref ReadOnlySequence<byte> payload, Type requestType)
+        {
+            var request = Activator.CreateInstance(requestType);
 
             var payloadReader = new SequenceReader<byte>(payload);
-
             var payloadStringBuilder = new StringBuilder();
 
             var inStruct = false;
-
             while (!payloadReader.End)
             {
                 var label = TdfHelper.ParseLabel(ref payloadReader);
@@ -83,7 +47,7 @@ namespace Skate3Server.Blaze
                     case TdfType.String:
                         var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
                         payloadReader.Advance(length);
-                        //TODO: figure out if utf8
+                        //TODO: figure out if utf8 is correct
                         var str = Encoding.UTF8.GetString(byteStr.ToArray());
                         payloadStringBuilder.AppendLine($"{str}");
                         break;
@@ -153,8 +117,12 @@ namespace Skate3Server.Blaze
             }
 
             Logger.Debug($"Decoded:{Environment.NewLine}{payloadStringBuilder}");
+            return request;
+        }
 
-            return true;
+        public void Serialize(Stream output, BlazeHeader header, object payload)
+        {
+            //throw new NotImplementedException();
         }
     }
 }

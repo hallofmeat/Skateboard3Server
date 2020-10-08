@@ -1,8 +1,13 @@
-﻿namespace SkateServer.Blaze
+﻿namespace Skate3Server.Blaze
 {
     public enum BlazeComponent
     {
-        Redirector = 5,
+        Redirector = 0x5,
+    }
+
+    public enum BlazeRedirectorCommand
+    {
+        ServerInfo = 0x1,
     }
 
     public enum BlazeMessageType
@@ -29,5 +34,11 @@
         Blob = 0xb,
         Map = 0xc,
         Union = 0xd,
+    }
+
+    public enum FirstPartyIdType : ushort
+    {
+        Ps3 = 0x0,
+        Xbox = 0x1
     }
 }

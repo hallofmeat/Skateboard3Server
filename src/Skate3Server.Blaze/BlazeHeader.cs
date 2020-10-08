@@ -1,8 +1,6 @@
-﻿using System.Buffers;
-
-namespace SkateServer.Blaze
+﻿namespace Skate3Server.Blaze
 {
-    public class BlazeRequest
+    public class BlazeHeader
     {
         public int Length { get; set; }
         
@@ -15,8 +13,5 @@ namespace SkateServer.Blaze
         public BlazeMessageType MessageType { get; set; }
 
         public int MessageId { get; set; }
-
-        public ReadOnlySequence<byte> Payload { get; set; }
-
     }
 }

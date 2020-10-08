@@ -1,4 +1,3 @@
-using System;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
@@ -6,9 +5,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
-using SkateServer.Blaze;
+using Skate3Server.Blaze;
 
-namespace SkateServer.Host
+namespace Skate3Server.Host
 {
     public class Program
     {
