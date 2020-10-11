@@ -2,7 +2,8 @@
 using System.Buffers;
 using System.Collections.Generic;
 using NLog;
-using Skate3Server.Blaze.Requests;
+using Skate3Server.Blaze.Handlers.Authentication.Messages;
+using Skate3Server.Blaze.Handlers.Redirector.Messages;
 using Skate3Server.Blaze.Serializer;
 
 namespace Skate3Server.Blaze
@@ -22,6 +23,7 @@ namespace Skate3Server.Blaze
             new Dictionary<(BlazeComponent, int), Type>
             {
                 { (BlazeComponent.Redirector, 0x1), typeof(RedirectorServerInfoRequest) },
+                { (BlazeComponent.Authentication, 0x7), typeof(PreAuthRequest) },
             };
 
         public BlazeRequestParser(IBlazeSerializer blazeSerializer)
@@ -44,7 +46,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Length = messageLength;
+            header.Length = Convert.ToUInt16(messageLength);
 
             if (!reader.TryReadBigEndian(out short component))
             {
@@ -52,7 +54,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Component = (BlazeComponent) component;
+            header.Component = (BlazeComponent)Convert.ToUInt16(component);
 
             if (!reader.TryReadBigEndian(out short command))
             {
@@ -60,7 +62,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Command = command;
+            header.Command = Convert.ToUInt16(command);
 
             if (!reader.TryReadBigEndian(out short errorCode))
             {
@@ -68,7 +70,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.ErrorCode = errorCode;
+            header.ErrorCode = Convert.ToUInt16(errorCode);
 
             if (!reader.TryReadBigEndian(out int message))
             {
@@ -97,7 +99,8 @@ namespace Skate3Server.Blaze
                 return true;
             }
 
-            throw new ArgumentOutOfRangeException($"Unknown component: {header.Component} and command: {header.Command}");
+            Logger.Error($"Unknown component: {header.Component} and command: {header.Command}");
+            return false;
         }
     }
 }

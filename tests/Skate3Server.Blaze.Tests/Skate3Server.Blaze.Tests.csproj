@@ -19,4 +19,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Skate3Server.Blaze\Skate3Server.Blaze.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -11,11 +11,13 @@ namespace Skate3Server.Host
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IBlazeRequestParser _parser;
+        private readonly BlazeDebugParser _debugParser;
         private readonly IBlazeRequestHandler _handler;
 
-        public BlazeConnectionHandler(IBlazeRequestParser parser, IBlazeRequestHandler handler)
+        public BlazeConnectionHandler(IBlazeRequestParser parser, BlazeDebugParser debugParser, IBlazeRequestHandler handler)
         {
             _parser = parser;
+            _debugParser = debugParser;
             _handler = handler;
         }
 
@@ -49,7 +51,8 @@ namespace Skate3Server.Host
                         }
                         else
                         {
-                            Logger.Error("Failed to parse message");
+                            Logger.Error("Failed to parse message, trying debug parser");
+                            _debugParser.TryParse(ref buffer);
                         }
 
                         if (result.IsCompleted)

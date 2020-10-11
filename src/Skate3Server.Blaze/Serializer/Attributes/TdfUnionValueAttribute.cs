@@ -3,14 +3,10 @@
 namespace Skate3Server.Blaze.Serializer.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class TdfFieldAttribute : Attribute
+    public class TdfUnionValueAttribute : TdfFieldAttribute
     {
-        public TdfFieldAttribute(string tag)
+        public TdfUnionValueAttribute() : base("VALU")
         {
-            Tag = tag;
         }
-
-        public string Tag { get; }
-
     }
 }
