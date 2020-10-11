@@ -19,6 +19,7 @@ namespace Skate3Server.Blaze
             Logger.Trace(messageHex);
 
             var reader = new SequenceReader<byte>(buffer);
+            var header = new BlazeHeader();
 
             //Parse header
             if (!reader.TryReadBigEndian(out short messageLength))
@@ -26,37 +27,45 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            if (!reader.TryReadBigEndian(out short componentShort))
+            header.Length = Convert.ToUInt16(messageLength);
+
+            Logger.Debug($"Blaze Header length {header.Length}");
+
+            if (!reader.TryReadBigEndian(out short component))
             {
                 return false;
             }
 
-            var component = (BlazeComponent)componentShort;
+            header.Component = (BlazeComponent)Convert.ToUInt16(component);
 
             if (!reader.TryReadBigEndian(out short command))
             {
                 return false;
             }
 
+            header.Command = Convert.ToUInt16(command);
+
             if (!reader.TryReadBigEndian(out short errorCode))
             {
                 return false;
             }
+
+            header.ErrorCode = Convert.ToUInt16(errorCode);
 
             if (!reader.TryReadBigEndian(out int message))
             {
                 return false;
             }
 
-            var messageType = (BlazeMessageType) (message >> 28);
-            var messageId = message & 0xFFFFF;
+            header.MessageType = (BlazeMessageType)(message >> 28);
+            header.MessageId = message & 0xFFFFF;
 
             //Read body
-            var payload = reader.Sequence.Slice(reader.Position, messageLength);
-            reader.Advance(messageLength);
+            var payload = reader.Sequence.Slice(reader.Position, header.Length);
+            reader.Advance(header.Length);
 
             Logger.Debug(
-                $"Component:{component} Command:{command} ErrorCode:{errorCode} MessageType:{messageType} MessageId:{messageId}");
+                $"Request; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
             var payloadReader = new SequenceReader<byte>(payload);
 

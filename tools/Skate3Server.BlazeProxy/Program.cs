@@ -7,7 +7,7 @@ using NLog;
 using NLog.Web;
 using Skate3Server.Blaze;
 
-namespace Skate3Server.Host
+namespace Skate3Server.BlazeProxy
 {
     public class Program
     {
@@ -15,6 +15,9 @@ namespace Skate3Server.Host
         {
             //Setup NLog
             LogManager.Setup().LoadConfigurationFromAppSettings();
+
+            //Handle arguments
+
 
             try
             {
@@ -29,8 +32,7 @@ namespace Skate3Server.Host
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
@@ -40,19 +42,15 @@ namespace Skate3Server.Host
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.ListenLocalhost(10744, options =>
                         {
-                            //gosredirector (Blaze)
-                            serverOptions.ListenLocalhost(42100,
-                                options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
-                            //eadpgs-blapp001 (Blaze)
-                            //serverOptions.ListenLocalhost(10744, options =>
-                            //{
-                            //    options.UseConnectionHandler<BlazeConnectionHandler>();
-                            //});
-                            //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
-                            //serverOptions.ListenLocalhost(17502);
-                        })
-                        .UseStartup<Startup>();
+                            //Debug Proxy setup
+                            var debugParser = new BlazeDebugParser();
+                            var handler = new BlazeProxyHandler(debugParser, "eadpgs-blapp001.ea.com", 10744, true);
+                            options.Run(connection => handler.OnConnectedAsync(connection));
+                        });
+                    }).UseStartup<Startup>(); 
                 });
         }
     }
