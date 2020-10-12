@@ -12,7 +12,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         public ClientInfo ClientInfo { get; set; }
 
         [TdfField("FCCR")]
-        public FccrData Fccr { get; set; } //TODO: figure out what this stands for
+        public ClientConfigData ClientConfig { get; set; }
 
     }
 
@@ -59,10 +59,10 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 
     }
 
-    public class FccrData
+    public class ClientConfigData
     {
         [TdfField("CFID")]
-        public string CfId { get; set; } //TODO: figure out what this stands for
+        public string ConfigId { get; set; }
     }
 
 }

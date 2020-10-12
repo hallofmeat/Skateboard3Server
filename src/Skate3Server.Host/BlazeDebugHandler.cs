@@ -7,29 +7,21 @@ using Skate3Server.Blaze;
 namespace Skate3Server.Host
 {
     /// <summary>
-    /// Used for proxying to the real server and printing requests (for debug only)
+    /// Used for using BlazeDebugParser
     /// </summary>
-    public class BlazeProxyHandler : ConnectionHandler
+    public class BlazeDebugHandler : ConnectionHandler
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly BlazeDebugParser _parser;
-        private readonly string _proxyHost;
-        private readonly int _proxyPort;
-        private readonly bool _proxySecure;
 
-        public BlazeProxyHandler(BlazeDebugParser parser, string proxyHost, int proxyPort, bool proxySecure)
+        public BlazeDebugHandler(BlazeDebugParser parser)
         {
             _parser = parser;
-            _proxyHost = proxyHost;
-            _proxyPort = proxyPort;
-            _proxySecure = proxySecure;
         }
 
         public override async Task OnConnectedAsync(ConnectionContext connection)
         {
-            //TODO: create connection to proxy server
-
             var reader = connection.Transport.Input;
 
             try
@@ -49,9 +41,6 @@ namespace Skate3Server.Host
                         {
                             Logger.Error("Failed to parse message");
                         }
-
-                        //TODO: send to proxy server
-                        //TODO: parse proxy server response
 
                         if (result.IsCompleted)
                         {

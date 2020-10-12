@@ -61,7 +61,7 @@ namespace Skate3Server.Blaze.Serializer
             return buffer;
         }
 
-        public static Tuple<TdfType, uint> ParseTypeAndLength(ref SequenceReader<byte> reader)
+        public static (TdfType Type, uint Length) ParseTypeAndLength(ref SequenceReader<byte> reader)
         {
             //First half of the byte is the type, second half is the length (if its 0xF then read the variable length)
 
@@ -71,7 +71,7 @@ namespace Skate3Server.Blaze.Serializer
             var lengthByte = (uint)typeData & 0x0F;
             
             var length = lengthByte == 0xF ? ParseLength(ref reader) : lengthByte;
-            return new Tuple<TdfType, uint>((TdfType)type, length);
+            return ((TdfType)type, length);
         }
 
         public static void WriteLabel(Stream output, string label)
