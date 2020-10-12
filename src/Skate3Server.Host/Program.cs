@@ -44,26 +44,19 @@ namespace Skate3Server.Host
                             //gosredirector (Blaze)
                             serverOptions.ListenLocalhost(42100,
                                 options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
-                            //Debug
-                            serverOptions.ListenLocalhost(5000, options =>
-                            {
-                                //Debug setup
-                                var debugParser = new BlazeDebugParser();
-                                var handler = new BlazeDebugHandler(debugParser);
-                                options.Run(connection => handler.OnConnectedAsync(connection));
-                            });
                             //eadpgs-blapp001 (Blaze)
-                            //serverOptions.ListenLocalhost(10744, options =>
-                            //{
-                            //    options.UseConnectionHandler<BlazeConnectionHandler>();
-
-                            //    //Debug Proxy setup
-                            //    //var debugParser = new BlazeDebugParser();
-                            //    //var handler = new BlazeProxyHandler(debugParser, "", 10744, true);
-                            //    //options.Run(connection => handler.OnConnectedAsync(connection));
-                            //});
+                            serverOptions.ListenLocalhost(10744, 
+                                options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
                             //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
-                            //serverOptions.ListenLocalhost(17502);
+                            serverOptions.ListenLocalhost(17502);
+                            //Debug
+                            //serverOptions.ListenLocalhost(5000, options =>
+                            //{
+                            //    //Debug setup
+                            //    var debugParser = new BlazeDebugParser();
+                            //    var handler = new BlazeDebugHandler(debugParser);
+                            //    options.Run(connection => handler.OnConnectedAsync(connection));
+                            //});
                         })
                         .UseStartup<Startup>();
                 });

@@ -1,9 +1,21 @@
 ﻿namespace Skate3Server.Blaze
 {
+    //0x01, 0x04, 0x07, 0x09, 0x0B, 0x0C, 0x0F, 0x19, 0x7800, 0x7802, 0x7803
+
     public enum BlazeComponent : ushort
     {
+        Authentication = 0x1, //Guess?
+        GameManager = 0x4, //Guess?
         Redirector = 0x5,
-        Authentication = 0x9,
+        Stats = 0x7, //Guess?
+        Util = 0x9, //Guess?
+        Unknown0B = 0xB,
+        Unknown0C = 0xC,
+        Unknown0F = 0xF,
+        Unknown19 = 0x19,
+        Unknown7800 = 0x7800,
+        Unknown7802 = 0x7802,
+        Unknown7803 = 0x7803,
     }
 
     public enum BlazeRedirectorCommand

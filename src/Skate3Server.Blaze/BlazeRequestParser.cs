@@ -22,8 +22,8 @@ namespace Skate3Server.Blaze
         private static readonly Dictionary<(BlazeComponent, int), Type> RequestLookup =
             new Dictionary<(BlazeComponent, int), Type>
             {
-                { (BlazeComponent.Redirector, 0x1), typeof(RedirectorServerInfoRequest) },
-                { (BlazeComponent.Authentication, 0x7), typeof(PreAuthRequest) },
+                { (BlazeComponent.Redirector, 0x1), typeof(RedirectorServerInfoRequest) }, //gosredirector
+                { (BlazeComponent.Util, 0x7), typeof(PreAuthRequest) }, //eadpgs-blapp001
             };
 
         public BlazeRequestParser(IBlazeSerializer blazeSerializer)
