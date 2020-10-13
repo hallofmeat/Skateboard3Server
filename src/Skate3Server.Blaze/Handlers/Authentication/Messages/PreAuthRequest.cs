@@ -22,7 +22,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         public uint Language { get; set; }
 
         [TdfField("TYPE")]
-        public uint Type { get; set; }
+        public int Type { get; set; }
     }
 
     public class ClientInfo

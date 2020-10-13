@@ -8,6 +8,7 @@
         GameManager = 0x4, //Guess?
         Redirector = 0x5,
         Stats = 0x7, //Guess?
+        Unknown08 = 0x8,
         Util = 0x9, //Guess?
         Unknown0B = 0xB,
         Unknown0C = 0xC,
@@ -47,7 +48,7 @@
         Array = 0xa,    //List<T>
         Blob = 0xb,     //byte[]
         Map = 0xc,      //Dictionary<T,T>
-        Union = 0xd,    //Custom TODO: make this more intuitive
+        Union = 0xd,    //ValueTuple<T,T>
     }
 
     public enum FirstPartyIdType : byte

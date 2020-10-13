@@ -45,7 +45,7 @@ namespace Skate3Server.Host
                             serverOptions.ListenLocalhost(42100,
                                 options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
                             //eadpgs-blapp001 (Blaze)
-                            serverOptions.ListenLocalhost(10744, 
+                            serverOptions.ListenLocalhost(10744,
                                 options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
                             //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
                             serverOptions.ListenLocalhost(17502);

@@ -15,13 +15,12 @@ namespace Skate3Server.Blaze.Tests
         {
             var response = new RedirectorServerInfoResponse
             {
-                Address = new NetworkAddress
+                Address = (NetworkAddressType.Client, new NetworkAddress
                 {
                     Host = "localhost",
                     Ip = Convert.ToUInt32(IPAddress.Parse("127.0.0.1").Address),
                     Port = 10744
-                },
-                AddressType = NetworkAddressType.Client,
+                }),
                 Secure = 0,
                 Xdns = 0
             };

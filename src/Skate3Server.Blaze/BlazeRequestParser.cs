@@ -95,8 +95,16 @@ namespace Skate3Server.Blaze
 
             if (RequestLookup.TryGetValue((header.Component, header.Command), out var requestType))
             {
-                request = _blazeSerializer.Deserialize(ref payload, requestType);
-                return true;
+                try
+                {
+                    request = _blazeSerializer.Deserialize(ref payload, requestType);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                    return false;
+                }
             }
 
             Logger.Error($"Unknown component: {header.Component} and command: {header.Command}");

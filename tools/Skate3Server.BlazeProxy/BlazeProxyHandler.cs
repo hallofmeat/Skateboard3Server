@@ -93,7 +93,7 @@ namespace Skate3Server.BlazeProxy
                     //send response to client
                     await writer.AsStream().WriteAsync(responseBytes);
                     await writer.FlushAsync();
-
+                    //TODO: handle connection hangup
                     //TODO: advance reader?
                 }
             }

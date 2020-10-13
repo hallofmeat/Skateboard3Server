@@ -28,11 +28,8 @@ namespace Skate3Server.Blaze.Handlers.Redirector.Messages
         [TdfField("ENV")]
         public string Environment { get; set; }
 
-        //Need to be in order
-        [TdfUnionKey("FPID", nameof(FirstPartyId))]
-        public FirstPartyIdType FirstPartyIdType { get; set; }
-        [TdfUnionValue]
-        public byte[] FirstPartyId { get; set; }
+        [TdfField("FPID")]
+        public ValueTuple<FirstPartyIdType, byte[]> FirstPartyId { get; set; }
 
         [TdfField("LOC")]
         public uint Locale { get; set; }

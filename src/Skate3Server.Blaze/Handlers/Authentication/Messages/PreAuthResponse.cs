@@ -29,7 +29,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         [TdfField("BWPS")]
         public QosAddress BandwidthServer { get; set; }
 
-        [TdfField("LPN")]
+        [TdfField("LNP")]
         public ushort PingNodeCount { get; set; }
 
         [TdfField("LTPS")]

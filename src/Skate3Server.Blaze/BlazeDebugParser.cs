@@ -6,10 +6,15 @@ using Skate3Server.Blaze.Serializer;
 
 namespace Skate3Server.Blaze
 {
+    public interface IBlazeDebugParser
+    {
+        bool TryParse(ref ReadOnlySequence<byte> buffer);
+    }
+
     /// <summary>
     /// Just logs decoded data
     /// </summary>
-    public class BlazeDebugParser
+    public class BlazeDebugParser : IBlazeDebugParser
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -89,9 +94,9 @@ namespace Skate3Server.Blaze
             return true;
         }
 
-        private void ParseObject(ref SequenceReader<byte> payloadReader, StringBuilder payloadStringBuilder, ParserState state)
+        public void ParseObject(ref SequenceReader<byte> payloadReader, StringBuilder payloadStringBuilder, ParserState state)
         {
-            var label = TdfHelper.ParseLabel(ref payloadReader);
+            var label = TdfHelper.ParseTag(ref payloadReader);
             var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
             var type = typeData.Type;
             var length = typeData.Length;
@@ -230,13 +235,5 @@ namespace Skate3Server.Blaze
 
             return false;
         }
-    }
-
-    public class ParserState
-    {
-        public int StructDepth { get; set; }
-
-        public int Depth { get; set; }
-
     }
 }

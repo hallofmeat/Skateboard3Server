@@ -13,12 +13,14 @@ namespace Skate3Server.Host
         private readonly IBlazeRequestParser _parser;
         //private readonly BlazeDebugParser _debugParser;
         private readonly IBlazeRequestHandler _handler;
+        private readonly IBlazeDebugParser _debugParser;
 
-        public BlazeConnectionHandler(IBlazeRequestParser parser, IBlazeRequestHandler handler)
+        public BlazeConnectionHandler(IBlazeRequestParser parser, IBlazeRequestHandler handler, IBlazeDebugParser debugParser)
         {
             _parser = parser;
            // _debugParser = debugParser;
             _handler = handler;
+            _debugParser = debugParser;
         }
 
         public override async Task OnConnectedAsync(ConnectionContext connection)
@@ -37,22 +39,29 @@ namespace Skate3Server.Host
                     var result = await reader.ReadAsync();
                     var buffer = result.Buffer;
 
-                    SequencePosition examined = buffer.Start;
+                    SequencePosition consumed = buffer.Start;
+                    SequencePosition examined = buffer.End;
+
                     try
                     {
                         if (_parser.TryParseRequest(ref buffer, out var processedLength, out var header, out var request))
                         {
                             Logger.Debug(
                                 $"Buffer length: {buffer.Length} Buffer processed: {processedLength.GetInteger()}");
-                            examined = processedLength;
+                            //examined = processedLength;
+
+                            consumed = buffer.Start;
+                            examined = consumed;
 
                             //TODO: remove stream?
                             await _handler.ProcessRequest(header, request, writer.AsStream());
+                            await writer.FlushAsync();
                         }
                         else
                         {
                             Logger.Error("Failed to parse message, trying debug parser");
-                            //_debugParser.TryParse(ref buffer);
+                            _debugParser.TryParse(ref buffer);
+                            break;
                         }
 
                         if (result.IsCompleted)
@@ -67,7 +76,7 @@ namespace Skate3Server.Host
                     }
                     finally
                     {
-                        reader.AdvanceTo(buffer.Start, examined);
+                        reader.AdvanceTo(consumed, examined);
                     }
                 }
             }

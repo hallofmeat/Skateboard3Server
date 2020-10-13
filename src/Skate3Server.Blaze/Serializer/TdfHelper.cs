@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -8,7 +10,7 @@ namespace Skate3Server.Blaze.Serializer
     public static class TdfHelper
     {
         //TODO: test
-        public static string ParseLabel(ref SequenceReader<byte> reader)
+        public static string ParseTag(ref SequenceReader<byte> reader)
         {
             //Storing a 4 character string in 3 bytes
 
@@ -134,6 +136,77 @@ namespace Skate3Server.Blaze.Serializer
             {
                 output.WriteByte((byte)(((uint)type << 4) | length));
             }
+        }
+
+        public static void WriteType(Stream output, TdfType type)
+        { 
+            output.WriteByte((byte)(((uint)type << 4) | 0xF));
+        }
+
+        public static (TdfType Type, uint Length) GetTdfTypeAndLength(Type type, object value)
+        {
+            if (type == typeof(string)) //string
+            {
+                var strValue = (string)value;
+                return (TdfType.String, Convert.ToUInt32(strValue.Length + 1));
+            }
+            if (type == typeof(sbyte)) //Int8
+            {
+                return (TdfType.Int8, 0x1);
+            }
+            if (type == typeof(byte)) //Uint8
+            {
+                return (TdfType.Uint8, 0x1);
+            }
+            if (type == typeof(short)) //Int16
+            {
+                return (TdfType.Int16, 0x2);
+            }
+            if (type == typeof(ushort)) //Uint16
+            {
+                return (TdfType.Uint16, 0x2);
+            }
+            if (type == typeof(int)) //Int32
+            {
+                return (TdfType.Int32, 0x4);
+            }
+            if (type == typeof(uint)) //Uint32
+            {
+                return (TdfType.Uint32, 0x4);
+            }
+            if (type == typeof(long)) //Int64
+            {
+                return (TdfType.Int64, 0x8);
+            }
+            if (type == typeof(ulong)) //Uint64
+            {
+                return (TdfType.Uint64, 0x8);
+            }
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) //Array
+            {
+                return (TdfType.Array, 0x1); //1 dimension, TODO: handle multidimensional
+            }
+            if (type == typeof(byte[])) //Blob
+            {
+                var blobValue = (byte[])value;
+                return (TdfType.Blob, Convert.ToUInt32(blobValue.Length));
+            }
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>)) //Map
+            {
+                var mapValue = (ICollection)value;
+                return (TdfType.Map, Convert.ToUInt32(mapValue.Count));
+            }
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ValueTuple<,>)) //Union
+            {
+                return (TdfType.Union, 0x0);
+            }
+            if (type.IsClass) //Struct?
+            {
+                return (TdfType.Struct, 0x0);
+            }
+
+            throw new ArgumentOutOfRangeException($"Unknown TdfType mapping for  {type}");
+
         }
 
     }

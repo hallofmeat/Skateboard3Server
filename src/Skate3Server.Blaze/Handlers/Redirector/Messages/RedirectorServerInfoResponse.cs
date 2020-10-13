@@ -1,4 +1,5 @@
-﻿using Skate3Server.Blaze.Serializer.Attributes;
+﻿using System;
+using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Redirector.Messages
 {
@@ -6,10 +7,8 @@ namespace Skate3Server.Blaze.Handlers.Redirector.Messages
     public class RedirectorServerInfoResponse
     {
         //Need to be in order
-        [TdfUnionKey("ADDR", nameof(Address))]
-        public NetworkAddressType AddressType { get; set; }
-        [TdfUnionValue]
-        public NetworkAddress Address { get; set; }
+        [TdfField("ADDR")]
+        public ValueTuple<NetworkAddressType, NetworkAddress> Address { get; set; }
 
         [TdfField("SECU")]
         public sbyte Secure { get; set; }

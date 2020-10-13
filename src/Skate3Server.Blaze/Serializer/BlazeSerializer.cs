@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Text;
 using NLog;
-using NLog.Fluent;
 using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Serializer
@@ -26,132 +25,159 @@ namespace Skate3Server.Blaze.Serializer
         {
             var request = Activator.CreateInstance(requestType);
 
-            var props = GetTdfMetadata(requestType);
-
             var payloadReader = new SequenceReader<byte>(payload);
-            var payloadStringBuilder = new StringBuilder();
-            var state = new SerializerState();
+            var state = new ParserState();
 
             while (!payloadReader.End)
             {
-                //Todo: removing passing props
-                ReadTdf(request, ref payloadReader, payloadStringBuilder, state, props);
+                ParseObject(ref payloadReader, request, state);
             }
 
-            Logger.Debug($"Decoded:{Environment.NewLine}{payloadStringBuilder}");
             return request;
         }
 
-        //TODO: this is gross
-        public void ReadTdf(object request, ref SequenceReader<byte> payloadReader, StringBuilder payloadStringBuilder,
-            SerializerState state, Dictionary<string, SerializerTdfMetadata> props)
+        private void ParseObject(ref SequenceReader<byte> payloadReader, object target, ParserState state)
         {
-            var label = TdfHelper.ParseLabel(ref payloadReader);
+            //TODO: this whole thing is using a lot of non cached reflection (fix this)
+            var tdfMetadata = GetTdfMetadata(target.GetType());
+
+            var tag = TdfHelper.ParseTag(ref payloadReader);
             var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
-            var type = typeData.Item1;
-            var length = typeData.Item2;
 
-            payloadStringBuilder.AppendLine($"{label} {type} {length}");
+            var parsed = ParseType(ref payloadReader, tdfMetadata[tag].Property.PropertyType, typeData.Type, typeData.Length, state);
+            try
+            {
+                tdfMetadata[tag].Property.SetValue(target, parsed);
+            }
+            catch (ArgumentException e)
+            {
+                Logger.Error($"Failed to set tag {tag}: {e}");
+                throw;
+            }
+        }
 
+        private object ParseType(ref SequenceReader<byte> payloadReader, Type currentType, TdfType type, uint length, ParserState state)
+        {
+            //TODO add type checking against currentType
             switch (type)
             {
                 case TdfType.Struct:
                     payloadReader.Advance(length);
-                    payloadStringBuilder.AppendLine("<start struct>");
-                    state.InStruct = true;
-                    break;
+                    state.StructDepth++;
+                    var subTarget = Activator.CreateInstance(currentType);
+                    do
+                    {
+                        ParseObject(ref payloadReader, subTarget, state);
+
+                    } while (!EndOfStruct(ref payloadReader, state));
+                    return subTarget;
                 case TdfType.String:
                     var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
                     payloadReader.Advance(length);
-                    //TODO: figure out if utf8 is correct
+                    //TODO: figure out if utf8
                     var str = Encoding.UTF8.GetString(byteStr.ToArray());
-                    payloadStringBuilder.AppendLine($"{str}");
-                    //TODO: error checking (check property type)
-                    //TODO: trim null byte
-                    props[label].Property.SetValue(request, str);
-                    break;
+                    return str;
                 case TdfType.Int8:
-                    payloadReader.TryRead(out var int8);
-                    payloadStringBuilder.AppendLine($"{int8}");
-                    //TODO: error checking (check property type)
-                    props[label].Property.SetValue(request, int8);
-                    break;
+                    payloadReader.TryRead(out byte int8);
+                    return int8;
                 case TdfType.Uint8:
-                    payloadReader.TryRead(out var uint8);
-                    payloadStringBuilder.AppendLine($"{uint8}");
-                    //TODO: error checking (check property type)
-                    props[label].Property.SetValue(request, uint8);
-                    break;
+                    payloadReader.TryRead(out byte uint8);
+                    return uint8;
                 case TdfType.Int16:
                     payloadReader.TryReadBigEndian(out short int16);
-                    payloadStringBuilder.AppendLine($"{int16}");
-                    //TODO: error checking (check property type)
-                    props[label].Property.SetValue(request, int16);
-                    break;
+                    return int16;
                 case TdfType.Uint16:
                     payloadReader.TryReadBigEndian(out short uint16);
-                    payloadStringBuilder.AppendLine($"{Convert.ToUInt16(uint16)}");
-                    //TODO: error checking (check property type)
-                    props[label].Property.SetValue(request, Convert.ToUInt16(uint16));
-                    break;
+                    return Convert.ToUInt16(uint16);
                 case TdfType.Int32:
                     payloadReader.TryReadBigEndian(out int int32);
-                    payloadStringBuilder.AppendLine($"{int32}");
-                    //TODO: error checking (check property type)
-                    props[label].Property.SetValue(request, int32);
-                    break;
+                    return int32;
                 case TdfType.Uint32:
                     payloadReader.TryReadBigEndian(out int uint32);
-                    payloadStringBuilder.AppendLine($"{Convert.ToUInt32(uint32)}");
-                    //TODO: error checking (check property type)
-                    props[label].Property.SetValue(request, Convert.ToUInt32(uint32));
-                    break;
+                    return Convert.ToUInt32(uint32);
                 case TdfType.Int64:
                     payloadReader.TryReadBigEndian(out long int64);
-                    payloadStringBuilder.AppendLine($"{int64}");
-                    //TODO: error checking (check property type)
-                    props[label].Property.SetValue(request, int64);
-                    break;
+                    return int64;
                 case TdfType.Uint64:
                     payloadReader.TryReadBigEndian(out long uint64);
-                    payloadStringBuilder.AppendLine($"{Convert.ToUInt64(uint64)}");
-                    //TODO: error checking (check property type)
-                    props[label].Property.SetValue(request, Convert.ToUInt64(uint64));
-                    break;
+                    return Convert.ToUInt64(uint64);
                 case TdfType.Array:
-                    //TODO
-                    payloadReader.Advance(length);
-                    payloadStringBuilder.AppendLine("<array>");
-                    break;
+                    //Length is the number of dimensions //TODO: handle multidimensional
+                    var listElementType = currentType.GetGenericArguments()[0];
+                    var listTarget = Activator.CreateInstance(currentType);
+                    payloadReader.TryRead(out byte elementCount);
+                    var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    for (var i = 0; i < elementCount; i++)
+                    {
+                        //TODO: I think struct or string will fail here
+                        var listParsed = ParseType(ref payloadReader, listElementType, typeData.Type, typeData.Length, state);
+                        currentType.GetMethod("Add")?.Invoke(listTarget, new[] { listParsed });
+                    }
+                    return listTarget;
                 case TdfType.Blob:
+                    var blobSeq = payloadReader.Sequence.Slice(payloadReader.Position, length);
                     payloadReader.Advance(length);
-                    payloadStringBuilder.AppendLine("<blob>");
-                    break;
+                    return blobSeq.ToArray();
                 case TdfType.Map:
-                    payloadReader.Advance(length);
-                    payloadStringBuilder.AppendLine("<map>");
-                    break;
+                    //Length is the number of elements
+                    var dictTarget = Activator.CreateInstance(currentType);
+                    var dictKeyType = currentType.GetGenericArguments()[0];
+                    var dictValueType = currentType.GetGenericArguments()[1];
+
+                    var keyTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    var parsedKey = ParseType(ref payloadReader, dictKeyType, keyTypeData.Type, keyTypeData.Length, state);
+                    var valueTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    var parsedValue = ParseType(ref payloadReader, dictValueType, valueTypeData.Type, valueTypeData.Length, state);
+                    currentType.GetMethod("Add")?.Invoke(dictTarget, new[] { parsedKey, parsedValue });
+
+                    var keyType = keyTypeData.Type;
+                    var valueType = valueTypeData.Type;
+                    //skip first key/value
+                    for (var i = 1; i < length; i++)
+                    {
+                        byte keyLength = 0;
+                        if (keyType != TdfType.Array && keyType != TdfType.Map && keyType != TdfType.Struct)
+                        {
+                            payloadReader.TryRead(out keyLength);
+                        }
+                        parsedKey = ParseType(ref payloadReader, dictKeyType, keyTypeData.Type, keyLength, state);
+                        byte valueLength = 0;
+                        if (valueType != TdfType.Array && valueType != TdfType.Map && valueType != TdfType.Struct)
+                        {
+                            payloadReader.TryRead(out valueLength);
+                        }
+                        parsedValue = ParseType(ref payloadReader, dictValueType, valueTypeData.Type, valueLength, state);
+                        currentType.GetMethod("Add")?.Invoke(dictTarget, new[] { parsedKey, parsedValue });
+                    }
+                    return dictTarget;
                 case TdfType.Union:
+                    var unionTarget = Activator.CreateInstance(currentType);
                     payloadReader.Advance(length);
-                    payloadReader.TryRead(out var key);
-                    payloadStringBuilder.AppendLine("<union>");
-                    //TODO: error checking (check property type)
-                    var unionMetadata = props[label];
-                    unionMetadata.Property.SetValue(request, key);
-                    //TODO: handle VALU
-                    break;
+                    payloadReader.TryRead(out byte unionKey);
+                    //VALU
+                    var unionValueType = currentType.GetGenericArguments()[1];
+                    TdfHelper.ParseTag(ref payloadReader);
+                    var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    var unionParsed = ParseType(ref payloadReader, unionValueType, valuTypeData.Type, valuTypeData.Length, state);
+                    currentType.GetField("Item1").SetValue(unionTarget, unionKey);
+                    currentType.GetField("Item2").SetValue(unionTarget,unionParsed);
+                    return unionTarget;
                 default:
-                    Logger.Debug($"Partial Decode:{Environment.NewLine}{payloadStringBuilder}");
                     throw new ArgumentOutOfRangeException();
             }
+        }
 
+        private bool EndOfStruct(ref SequenceReader<byte> payloadReader, ParserState state)
+        {
             //end of struct detection (not great and may break)
-            if (state.InStruct && payloadReader.TryPeek(out var nextByte) && nextByte == 0x0)
+            if (state.StructDepth > 0 && payloadReader.TryPeek(out var nextByte) && nextByte == 0x0)
             {
-                payloadStringBuilder.AppendLine("<end struct>");
                 payloadReader.Advance(1);
-                state.InStruct = false;
+                state.StructDepth--;
+                return true;
             }
+
+            return false;
         }
 
         public void Serialize(Stream output, BlazeHeader requestHeader, object payload)
@@ -160,30 +186,43 @@ namespace Skate3Server.Blaze.Serializer
             var bodyStream = new MemoryStream();
             SerializeObjectProperties(bodyStream, payload);
 
+            var bodyStreamBytes = bodyStream.ToArray();
+
             //Header
+            var headerStream = new MemoryStream();
             //Length
-            var length = BitConverter.GetBytes(Convert.ToUInt16(bodyStream.Length));
+            var length = BitConverter.GetBytes(Convert.ToUInt16(bodyStreamBytes.Length));
             Array.Reverse(length);//big endian
-            output.Write(length);
+            headerStream.Write(length);
             //Component
             var component = BitConverter.GetBytes((ushort)requestHeader.Component);
             Array.Reverse(component);//big endian
-            output.Write(component);
+            headerStream.Write(component);
             //Command
             var command = BitConverter.GetBytes(requestHeader.Command);
             Array.Reverse(command);//big endian
-            output.Write(command);
+            headerStream.Write(command);
             //ErrorCode
             var errorCode = BitConverter.GetBytes(Convert.ToUInt16(0));
             Array.Reverse(errorCode);//big endian
-            output.Write(errorCode);
+            headerStream.Write(errorCode);
             //MessageType/MessageId
             var messageData =
                 BitConverter.GetBytes(Convert.ToUInt32((int)BlazeMessageType.Reply << 28 | requestHeader.MessageId));
             Array.Reverse(messageData);//big endian
-            output.Write(messageData);
-            //Body TODO: dont use ToArray
-            output.Write(bodyStream.ToArray());
+            headerStream.Write(messageData);
+            var headerStreamBytes = headerStream.ToArray();
+
+            //For Debug
+            var headerHex = BitConverter.ToString(headerStreamBytes).Replace("-", " ");
+            Logger.Trace(headerHex);
+
+            //For Debug
+            var payloadHex = BitConverter.ToString(bodyStreamBytes).Replace("-", " ");
+            Logger.Trace(payloadHex);
+
+            output.Write(headerStreamBytes);
+            output.Write(bodyStreamBytes);
         }
 
         private void SerializeObjectProperties(Stream output, object target)
@@ -191,27 +230,22 @@ namespace Skate3Server.Blaze.Serializer
             var metadata = GetTdfMetadata(target.GetType());
             foreach (var meta in metadata.Values)
             {
-                SerializeProperty(output, target, meta);
+                var propertyType = meta.Property.PropertyType;
+                var propertyValue = meta.Property.GetValue(target);
+                var tdfData = TdfHelper.GetTdfTypeAndLength(propertyType, propertyValue);
+
+                TdfHelper.WriteLabel(output, meta.Attribute.Tag);
+                TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
+
+                SerializeType(output, propertyType, propertyValue);
             }
         }
 
-        private void SerializeProperty(Stream output, object target, SerializerTdfMetadata metadata)
+        private void SerializeType(Stream output, Type propertyType, object propertyValue)
         {
-            var propertyType = metadata.Property.PropertyType;
-            var propertyValue = metadata.Property.GetValue(target);
-
-            if (metadata.Attribute.GetType() == typeof(TdfUnionKeyAttribute))
-            {
-                var value = (byte)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Union, 0x0);
-                output.WriteByte(value);
-            }
-            else if (propertyType == typeof(string)) //string
+            if (propertyType == typeof(string)) //string
             {
                 var value = (string)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.String, Convert.ToUInt32(value.Length + 1));
                 //TODO: double check utf8
                 output.Write(Encoding.UTF8.GetBytes(value));
                 output.WriteByte(0x0); //terminate string
@@ -219,23 +253,17 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(sbyte)) //Int8
             {
                 var value = (sbyte)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Int8, 0x1);
                 output.WriteByte(Convert.ToByte(value));
             }
             else if (propertyType == typeof(byte)) //Uint8
             {
                 var value = (byte)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Uint8, 0x1);
                 output.WriteByte(value);
             }
             //TODO: condense int conversion
             else if (propertyType == typeof(short)) //Int16
             {
                 var value = (short)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Int16, 0x2);
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -243,8 +271,6 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(ushort)) //Uint16
             {
                 var value = (ushort)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Uint16, 0x2);
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -252,8 +278,6 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(int)) //Int32
             {
                 var value = (int)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Int32, 0x4);
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -261,8 +285,6 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(uint)) //Uint32
             {
                 var value = (uint)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Uint32, 0x4);
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -270,8 +292,6 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(long)) //Int64
             {
                 var value = (long)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Int32, 0x8);
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -279,37 +299,111 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(ulong)) //Uint64
             {
                 var value = (ulong)propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Uint32, 0x8);
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
             }
-            else if (propertyType == typeof(List<>)) //Array
+            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(List<>)) //Array
             {
-                //TODO: array
-                Logger.Warn($"TODO: Property {metadata.Property.Name} is Array, skipping");
+                var listValues = (ICollection)propertyValue;
+                TdfHelper.WriteLength(output, Convert.ToUInt32(listValues.Count));
+
+                //TODO: I think struct or string will fail here
+                var listValueType = propertyType.GetGenericArguments()[0];
+                var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, null);
+                TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
+                foreach (var item in listValues)
+                {
+                    SerializeType(output, listValueType, item);
+                }
             }
             else if (propertyType == typeof(byte[])) //Blob
             {
                 var value = (byte[])propertyValue;
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Blob, Convert.ToUInt32(value.Length));
                 output.Write(value);
             }
-            else if (propertyType == typeof(Dictionary<,>)) //Map
+            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Dictionary<,>)) //Map
             {
-                //TODO: map
-                Logger.Warn($"TODO: Property {metadata.Property.Name} is Map, skipping");
+                var mapKeyType = propertyType.GetGenericArguments()[0];
+                var mapValueType = propertyType.GetGenericArguments()[1];
+
+                var mapValues = (ICollection) propertyValue;
+
+                var index = 0;
+                foreach (var item in mapValues)
+                {
+                    //TODO: fix getting values
+                    var keyValue = item.GetType().GetProperty("Key")?.GetValue(item);
+                    var valueValue = item.GetType().GetProperty("Value")?.GetValue(item);
+
+                    var keyTdfData = TdfHelper.GetTdfTypeAndLength(mapKeyType, keyValue);
+                    var valueTdfData = TdfHelper.GetTdfTypeAndLength(mapValueType, valueValue);
+
+                    //first value
+                    if (index == 0)
+                    {
+                        //1F 06
+                        if (keyTdfData.Type != TdfType.Array && keyTdfData.Type != TdfType.Map &&
+                            keyTdfData.Type != TdfType.Struct)
+                        {
+                            TdfHelper.WriteType(output, keyTdfData.Type);
+                            TdfHelper.WriteLength(output, keyTdfData.Length);
+                        }
+                        else
+                        {
+                            TdfHelper.WriteTypeAndLength(output, keyTdfData.Type, keyTdfData.Length);
+                        }
+                        SerializeType(output, mapKeyType, keyValue);
+                        if (valueTdfData.Type != TdfType.Array && valueTdfData.Type != TdfType.Map &&
+                            valueTdfData.Type != TdfType.Struct)
+                        {
+                            TdfHelper.WriteType(output, valueTdfData.Type);
+                            TdfHelper.WriteLength(output, valueTdfData.Length);
+                        }
+                        else
+                        {
+                            TdfHelper.WriteTypeAndLength(output, valueTdfData.Type, valueTdfData.Length);
+                        }
+                        SerializeType(output, mapValueType, valueValue);
+                    }
+                    else
+                    {
+                        if (keyTdfData.Type != TdfType.Array && keyTdfData.Type != TdfType.Map &&
+                            keyTdfData.Type != TdfType.Struct)
+                        {
+                            TdfHelper.WriteLength(output, keyTdfData.Length);
+                        }
+                        SerializeType(output, mapKeyType, keyValue);
+                        if (valueTdfData.Type != TdfType.Array && valueTdfData.Type != TdfType.Map &&
+                            valueTdfData.Type != TdfType.Struct)
+                        {
+                            TdfHelper.WriteLength(output, valueTdfData.Length);
+                        }
+                        SerializeType(output, mapValueType, valueValue);
+                    }
+                    index++;
+                }
+            }
+            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(ValueTuple<,>)) //Union
+            {
+                var keyValue = (byte)propertyType.GetField("Item1").GetValue(propertyValue);
+                var valueValue = propertyType.GetField("Item2").GetValue(propertyValue);
+                var unionValueType = propertyType.GetGenericArguments()[1];
+                var tdfData = TdfHelper.GetTdfTypeAndLength(unionValueType, valueValue);
+
+                output.WriteByte(keyValue);
+                TdfHelper.WriteLabel(output, "VALU");
+                TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
+                SerializeType(output, unionValueType, valueValue);
             }
             else if (propertyType.IsClass) //Struct?
             {
-                TdfHelper.WriteLabel(output, metadata.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, TdfType.Struct, 0x0);
                 SerializeObjectProperties(output, propertyValue);
                 output.WriteByte(0x0); //terminate struct
             }
         }
+
+
 
         private Dictionary<string, SerializerTdfMetadata> GetTdfMetadata(Type sourceType)
         {
@@ -321,12 +415,6 @@ namespace Skate3Server.Blaze.Serializer
                 let attr = attributes.Single() as TdfFieldAttribute
                 select new SerializerTdfMetadata { Property = p, Attribute = attr }).ToDictionary(key => key.Attribute.Tag);
         }
-    }
-
-    public class SerializerState
-    {
-        public bool InStruct { get; set; }
-
     }
 
     public class SerializerTdfMetadata
