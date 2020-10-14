@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NLog;
 using Skate3Server.Blaze.Handlers.Authentication.Messages;
 using Skate3Server.Blaze.Handlers.Redirector.Messages;
+using Skate3Server.Blaze.Handlers.Util.Messages;
 using Skate3Server.Blaze.Serializer;
 
 namespace Skate3Server.Blaze
@@ -22,8 +23,11 @@ namespace Skate3Server.Blaze
         private static readonly Dictionary<(BlazeComponent, int), Type> RequestLookup =
             new Dictionary<(BlazeComponent, int), Type>
             {
-                { (BlazeComponent.Redirector, 0x1), typeof(RedirectorServerInfoRequest) }, //gosredirector
+                { (BlazeComponent.Redirector, 0x1), typeof(ServerInfoRequest) }, //gosredirector
                 { (BlazeComponent.Util, 0x7), typeof(PreAuthRequest) }, //eadpgs-blapp001
+                { (BlazeComponent.Util, 0x2), typeof(PingRequest) }, //eadpgs-blapp001
+                { (BlazeComponent.Authentication, 0xC8), typeof(LoginRequest) }, //eadpgs-blapp001
+                { (BlazeComponent.Util, 0x8), typeof(PostAuthRequest) }, //eadpgs-blapp001
             };
 
         public BlazeRequestParser(IBlazeSerializer blazeSerializer)
@@ -34,6 +38,10 @@ namespace Skate3Server.Blaze
         public bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition, out BlazeHeader header,
             out object request)
         {
+            //For Debug
+            var messageHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
+            Logger.Trace(messageHex);
+
             var reader = new SequenceReader<byte>(buffer);
 
             header = new BlazeHeader();
@@ -81,17 +89,13 @@ namespace Skate3Server.Blaze
             header.MessageType = (BlazeMessageType) (message >> 28);
             header.MessageId = message & 0xFFFFF;
 
+            Logger.Debug(
+                $"Request ^; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+
             //Read body
             var payload = reader.Sequence.Slice(reader.Position, header.Length);
             reader.Advance(header.Length);
             endPosition = reader.Position;
-
-            Logger.Debug(
-                $"Request; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
-
-            //For Debug
-            var payloadHex = BitConverter.ToString(payload.ToArray()).Replace("-", " ");
-            Logger.Trace(payloadHex);
 
             if (RequestLookup.TryGetValue((header.Component, header.Command), out var requestType))
             {

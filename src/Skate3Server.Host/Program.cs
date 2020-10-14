@@ -42,13 +42,13 @@ namespace Skate3Server.Host
                     webBuilder.ConfigureKestrel(serverOptions =>
                         {
                             //gosredirector (Blaze)
-                            serverOptions.ListenLocalhost(42100,
+                            serverOptions.ListenAnyIP(42100,
                                 options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
                             //eadpgs-blapp001 (Blaze)
-                            serverOptions.ListenLocalhost(10744,
+                            serverOptions.ListenAnyIP(10744,
                                 options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
                             //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
-                            serverOptions.ListenLocalhost(17502);
+                            serverOptions.ListenAnyIP(17502);
                             //Debug
                             //serverOptions.ListenLocalhost(5000, options =>
                             //{

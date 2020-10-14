@@ -53,25 +53,38 @@ namespace Skate3Server.BlazeProxy
             {
                 while (true)
                 {
-                    var tempStream = new MemoryStream();
-                    await reader.AsStream().CopyToAsync(tempStream);
 
-                    var requestBytes = tempStream.ToArray();
+                    var result = await reader.ReadAsync();
+                    var requestBuffer = result.Buffer;
+
+                    var requestCopy = GetCopyOfSequence(ref requestBuffer);
 
                     //parse client request
-                    var requestSequence = new ReadOnlySequence<byte>(requestBytes);
-                    if (_parser.TryParse(ref requestSequence))
-                    {
-                        Logger.Debug($"Request buffer length: {requestBytes.Length}");
-                    }
-                    else
-                    {
-                        Logger.Error("Failed to parse request message");
-                    }
+                    var requestConsumed = requestBuffer.Start;
+                    var requestExamined = requestBuffer.End;
 
-                    //send to server
-                    await proxyStream.WriteAsync(requestBytes);
-                    await proxyStream.FlushAsync();
+                    try
+                    {
+                        if (_parser.TryParse(ref requestBuffer, out var requestProcessedLength))
+                        {
+                            Logger.Debug($"Request buffer length: {requestBuffer.Length}");
+
+                            requestConsumed = requestProcessedLength;
+                            requestExamined = requestConsumed;
+                        }
+                        else
+                        {
+                            Logger.Error("Failed to parse request message");
+                        }
+
+                        //send to server
+                        await proxyStream.WriteAsync(requestCopy);
+                        await proxyStream.FlushAsync();
+                    }
+                    finally
+                    {
+                        reader.AdvanceTo(requestConsumed, requestExamined);
+                    }
 
                     //receive server response
                     var responseBytes = new byte[8192];
@@ -81,7 +94,7 @@ namespace Skate3Server.BlazeProxy
 
                     //parse what was received from server
                     var responseSequence = new ReadOnlySequence<byte>(responseBytes);
-                    if (_parser.TryParse(ref responseSequence))
+                    if (_parser.TryParse(ref responseSequence, out var responseProcessedLength))
                     {
                         Logger.Debug($"Response buffer length: {responseBytes.Length}");
                     }
@@ -91,7 +104,7 @@ namespace Skate3Server.BlazeProxy
                     }
 
                     //send response to client
-                    await writer.AsStream().WriteAsync(responseBytes);
+                    await writer.WriteAsync(responseBytes);
                     await writer.FlushAsync();
                     //TODO: handle connection hangup
                     //TODO: advance reader?
@@ -101,6 +114,14 @@ namespace Skate3Server.BlazeProxy
             {
                 await reader.CompleteAsync();
             }
+        }
+
+        private byte[] GetCopyOfSequence(ref ReadOnlySequence<byte> requestBuffer)
+        {
+            var array = new byte[requestBuffer.Length];
+            var requestCopy = new Span<byte>(array);
+            requestBuffer.CopyTo(requestCopy);
+            return requestCopy.ToArray();
         }
     }
 }

@@ -159,8 +159,8 @@ namespace Skate3Server.Blaze.Serializer
                     TdfHelper.ParseTag(ref payloadReader);
                     var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
                     var unionParsed = ParseType(ref payloadReader, unionValueType, valuTypeData.Type, valuTypeData.Length, state);
-                    currentType.GetField("Item1").SetValue(unionTarget, unionKey);
-                    currentType.GetField("Item2").SetValue(unionTarget,unionParsed);
+                    currentType.GetField("key", BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(unionTarget, unionKey);
+                    currentType.GetField("value", BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(unionTarget,unionParsed);
                     return unionTarget;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -215,11 +215,11 @@ namespace Skate3Server.Blaze.Serializer
 
             //For Debug
             var headerHex = BitConverter.ToString(headerStreamBytes).Replace("-", " ");
-            Logger.Trace(headerHex);
-
-            //For Debug
             var payloadHex = BitConverter.ToString(bodyStreamBytes).Replace("-", " ");
-            Logger.Trace(payloadHex);
+            Logger.Trace($"{headerHex} {payloadHex}");
+
+            Logger.Debug(
+                $"Response ^; Component:{requestHeader.Component} Command:{requestHeader.Command} ErrorCode:{requestHeader.ErrorCode} MessageType:{requestHeader.MessageType} MessageId:{requestHeader.MessageId}");
 
             output.Write(headerStreamBytes);
             output.Write(bodyStreamBytes);
@@ -343,8 +343,7 @@ namespace Skate3Server.Blaze.Serializer
                     if (index == 0)
                     {
                         //1F 06
-                        if (keyTdfData.Type != TdfType.Array && keyTdfData.Type != TdfType.Map &&
-                            keyTdfData.Type != TdfType.Struct)
+                        if (keyTdfData.Type != TdfType.Struct)
                         {
                             TdfHelper.WriteType(output, keyTdfData.Type);
                             TdfHelper.WriteLength(output, keyTdfData.Length);
@@ -354,8 +353,7 @@ namespace Skate3Server.Blaze.Serializer
                             TdfHelper.WriteTypeAndLength(output, keyTdfData.Type, keyTdfData.Length);
                         }
                         SerializeType(output, mapKeyType, keyValue);
-                        if (valueTdfData.Type != TdfType.Array && valueTdfData.Type != TdfType.Map &&
-                            valueTdfData.Type != TdfType.Struct)
+                        if (valueTdfData.Type != TdfType.Struct)
                         {
                             TdfHelper.WriteType(output, valueTdfData.Type);
                             TdfHelper.WriteLength(output, valueTdfData.Length);
@@ -368,14 +366,12 @@ namespace Skate3Server.Blaze.Serializer
                     }
                     else
                     {
-                        if (keyTdfData.Type != TdfType.Array && keyTdfData.Type != TdfType.Map &&
-                            keyTdfData.Type != TdfType.Struct)
+                        if (keyTdfData.Type != TdfType.Struct)
                         {
                             TdfHelper.WriteLength(output, keyTdfData.Length);
                         }
                         SerializeType(output, mapKeyType, keyValue);
-                        if (valueTdfData.Type != TdfType.Array && valueTdfData.Type != TdfType.Map &&
-                            valueTdfData.Type != TdfType.Struct)
+                        if (valueTdfData.Type != TdfType.Struct)
                         {
                             TdfHelper.WriteLength(output, valueTdfData.Length);
                         }
@@ -384,10 +380,10 @@ namespace Skate3Server.Blaze.Serializer
                     index++;
                 }
             }
-            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(ValueTuple<,>)) //Union
+            else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)) //Union
             {
-                var keyValue = (byte)propertyType.GetField("Item1").GetValue(propertyValue);
-                var valueValue = propertyType.GetField("Item2").GetValue(propertyValue);
+                var keyValue = (byte) propertyType.GetProperty("Key")?.GetValue(propertyValue);
+                var valueValue = propertyType.GetProperty("Value")?.GetValue(propertyValue);
                 var unionValueType = propertyType.GetGenericArguments()[1];
                 var tdfData = TdfHelper.GetTdfTypeAndLength(unionValueType, valueValue);
 

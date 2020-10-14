@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using MediatR;
 using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Redirector.Messages
 {
     //[BlazeRequest(BlazeComponent.Redirector, 0x1)]
-    public class RedirectorServerInfoRequest : IRequest<RedirectorServerInfoResponse>
+    public class ServerInfoRequest : IRequest<ServerInfoResponse>
     {
         [TdfField("BSDK")]
         public string BlazeSdk { get; set; }
@@ -29,7 +30,7 @@ namespace Skate3Server.Blaze.Handlers.Redirector.Messages
         public string Environment { get; set; }
 
         [TdfField("FPID")]
-        public ValueTuple<FirstPartyIdType, byte[]> FirstPartyId { get; set; }
+        public KeyValuePair<FirstPartyIdType, byte[]> FirstPartyId { get; set; }
 
         [TdfField("LOC")]
         public uint Locale { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,13 +8,13 @@ using Skate3Server.Blaze.Handlers.Redirector.Messages;
 
 namespace Skate3Server.Blaze.Handlers.Redirector
 {
-    public class ServerInfoHandler : IRequestHandler<RedirectorServerInfoRequest, RedirectorServerInfoResponse>
+    public class ServerInfoHandler : IRequestHandler<ServerInfoRequest, ServerInfoResponse>
     {
-        public async Task<RedirectorServerInfoResponse> Handle(RedirectorServerInfoRequest request, CancellationToken cancellationToken)
+        public async Task<ServerInfoResponse> Handle(ServerInfoRequest request, CancellationToken cancellationToken)
         {
-            var response = new RedirectorServerInfoResponse
+            var response = new ServerInfoResponse
             {
-                Address = (NetworkAddressType.Client, new NetworkAddress
+                Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Client, new NetworkAddress
                 {
                     Host = "localhost",
                     Ip = Convert.ToUInt32(IPAddress.Parse("127.0.0.1").Address),

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using Skate3Server.Blaze.Handlers.Redirector.Messages;
@@ -13,9 +14,9 @@ namespace Skate3Server.Blaze.Tests
         [Fact]
         public void Test1()
         {
-            var response = new RedirectorServerInfoResponse
+            var response = new ServerInfoResponse
             {
-                Address = (NetworkAddressType.Client, new NetworkAddress
+                Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Client, new NetworkAddress
                 {
                     Host = "localhost",
                     Ip = Convert.ToUInt32(IPAddress.Parse("127.0.0.1").Address),

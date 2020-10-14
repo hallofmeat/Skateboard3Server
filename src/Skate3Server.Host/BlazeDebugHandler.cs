@@ -31,11 +31,16 @@ namespace Skate3Server.Host
                     var result = await reader.ReadAsync();
                     var buffer = result.Buffer;
 
+                    var consumed = buffer.Start;
+                    var examined = buffer.End;
+
                     try
                     {
-                        if (_parser.TryParse(ref buffer))
+                        if (_parser.TryParse(ref buffer, out var processedLength ))
                         {
                             Logger.Debug($"Buffer length: {buffer.Length}");
+                            consumed = processedLength;
+                            examined = consumed;
                         }
                         else
                         {
@@ -54,7 +59,7 @@ namespace Skate3Server.Host
                     }
                     finally
                     {
-                        reader.AdvanceTo(buffer.Start, buffer.End);
+                        reader.AdvanceTo(consumed, examined);
                     }
                 }
             }

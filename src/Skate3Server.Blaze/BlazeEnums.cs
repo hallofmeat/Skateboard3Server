@@ -15,13 +15,8 @@
         Unknown0F = 0xF,
         Unknown19 = 0x19,
         Unknown7800 = 0x7800,
-        Unknown7802 = 0x7802,
+        UserSession = 0x7802,
         Unknown7803 = 0x7803,
-    }
-
-    public enum BlazeRedirectorCommand
-    {
-        ServerInfo = 0x1,
     }
 
     public enum BlazeMessageType
@@ -48,12 +43,12 @@
         Array = 0xa,    //List<T>
         Blob = 0xb,     //byte[]
         Map = 0xc,      //Dictionary<T,T>
-        Union = 0xd,    //ValueTuple<T,T>
+        Union = 0xd,    //KeyValuePair<T,T>
     }
 
     public enum FirstPartyIdType : byte
     {
-        Ps3 = 0x0,
+        PS3 = 0x0,
         Xbox = 0x1
     }
 
@@ -62,4 +57,11 @@
         Client = 0x0,
         Server = 0x1
     }
+
+    public enum ExternalProfileType : int
+    {
+        Unknown = 0x0,
+        Xbox = 0x1,
+        PS3 = 0x2
+    };
 }

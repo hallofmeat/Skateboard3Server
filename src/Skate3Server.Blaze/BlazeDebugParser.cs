@@ -8,7 +8,7 @@ namespace Skate3Server.Blaze
 {
     public interface IBlazeDebugParser
     {
-        bool TryParse(ref ReadOnlySequence<byte> buffer);
+        bool TryParse(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition);
     }
 
     /// <summary>
@@ -18,7 +18,7 @@ namespace Skate3Server.Blaze
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public bool TryParse(ref ReadOnlySequence<byte> buffer)
+        public bool TryParse(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition)
         {
             var messageHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
             Logger.Trace(messageHex);
@@ -29,6 +29,7 @@ namespace Skate3Server.Blaze
             //Parse header
             if (!reader.TryReadBigEndian(out short messageLength))
             {
+                endPosition = reader.Position;
                 return false;
             }
 
@@ -36,6 +37,7 @@ namespace Skate3Server.Blaze
 
             if (!reader.TryReadBigEndian(out short component))
             {
+                endPosition = reader.Position;
                 return false;
             }
 
@@ -43,6 +45,7 @@ namespace Skate3Server.Blaze
 
             if (!reader.TryReadBigEndian(out short command))
             {
+                endPosition = reader.Position;
                 return false;
             }
 
@@ -50,6 +53,7 @@ namespace Skate3Server.Blaze
 
             if (!reader.TryReadBigEndian(out short errorCode))
             {
+                endPosition = reader.Position;
                 return false;
             }
 
@@ -57,18 +61,35 @@ namespace Skate3Server.Blaze
 
             if (!reader.TryReadBigEndian(out int message))
             {
+                endPosition = reader.Position;
                 return false;
             }
 
             header.MessageType = (BlazeMessageType)(message >> 28);
             header.MessageId = message & 0xFFFFF;
 
+            Logger.Debug(
+                $"Request; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+
+            //Empty message
+            if (header.Length == 0)
+            {
+                endPosition = reader.Position;
+                return true;
+            }
+
+            //we read a bigger header than is in the buffer
+            if (header.Length > reader.Remaining)
+            {
+                Logger.Debug($"Header is longer than reader has remaining:{reader.Remaining}");
+                endPosition = reader.Position;
+                return true;
+            }
+
             //Read body
             var payload = reader.Sequence.Slice(reader.Position, header.Length);
             reader.Advance(header.Length);
-
-            Logger.Debug(
-                $"Request; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+            endPosition = reader.Position;
 
             var payloadReader = new SequenceReader<byte>(payload);
 

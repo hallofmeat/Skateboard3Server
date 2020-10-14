@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using NLog;
@@ -39,18 +40,17 @@ namespace Skate3Server.Host
                     var result = await reader.ReadAsync();
                     var buffer = result.Buffer;
 
-                    SequencePosition consumed = buffer.Start;
-                    SequencePosition examined = buffer.End;
+                    var consumed = buffer.Start;
+                    var examined = buffer.End;
 
                     try
                     {
-                        if (_parser.TryParseRequest(ref buffer, out var processedLength, out var header, out var request))
+                        if(_parser.TryParseRequest(ref buffer, out var processedLength, out var header, out var request))
                         {
                             Logger.Debug(
                                 $"Buffer length: {buffer.Length} Buffer processed: {processedLength.GetInteger()}");
-                            //examined = processedLength;
 
-                            consumed = buffer.Start;
+                            consumed = processedLength;
                             examined = consumed;
 
                             //TODO: remove stream?
@@ -60,7 +60,9 @@ namespace Skate3Server.Host
                         else
                         {
                             Logger.Error("Failed to parse message, trying debug parser");
-                            _debugParser.TryParse(ref buffer);
+                            _debugParser.TryParse(ref buffer, out var debugProcessedLength);
+                            consumed = debugProcessedLength;
+                            examined = consumed;
                             break;
                         }
 

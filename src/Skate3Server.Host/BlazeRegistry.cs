@@ -1,8 +1,8 @@
 using Autofac;
 using MediatR;
 using Skate3Server.Blaze;
-using Skate3Server.Blaze.Handlers.Authentication;
 using Skate3Server.Blaze.Handlers.Redirector;
+using Skate3Server.Blaze.Handlers.Util;
 using Skate3Server.Blaze.Serializer;
 
 namespace Skate3Server.Host
@@ -28,13 +28,11 @@ namespace Skate3Server.Host
                 return t => c.Resolve(t);
             });
 
-            // finally register our custom code (individually, or via assembly scanning)
-            // - requests & handlers as transient, i.e. InstancePerDependency()
-            // - pre/post-processors as scoped/per-request, i.e. InstancePerLifetimeScope()
-            // - behaviors as transient, i.e. InstancePerDependency()
-            //builder.RegisterAssemblyTypes(typeof(MyType).GetTypeInfo().Assembly).AsImplementedInterfaces(); // via assembly scan
-            builder.RegisterType<ServerInfoHandler>().AsImplementedInterfaces().InstancePerDependency();          // or individually
-            builder.RegisterType<PreAuthHandler>().AsImplementedInterfaces().InstancePerDependency();          // or individually
+            builder.RegisterType<ServerInfoHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<PreAuthHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<PingHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<LoginHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<PostAuthHandler>().AsImplementedInterfaces().InstancePerDependency();
         }
     }
 }

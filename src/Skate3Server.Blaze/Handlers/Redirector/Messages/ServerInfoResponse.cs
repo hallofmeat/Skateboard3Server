@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Redirector.Messages
 {
     //TODO Order attribute or param for tdffield?
-    public class RedirectorServerInfoResponse
+    public class ServerInfoResponse
     {
         //Need to be in order
         [TdfField("ADDR")]
-        public ValueTuple<NetworkAddressType, NetworkAddress> Address { get; set; }
+        public KeyValuePair<NetworkAddressType, NetworkAddress> Address { get; set; }
 
         [TdfField("SECU")]
         public sbyte Secure { get; set; }

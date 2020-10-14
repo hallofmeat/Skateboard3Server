@@ -145,6 +145,12 @@ namespace Skate3Server.Blaze.Serializer
 
         public static (TdfType Type, uint Length) GetTdfTypeAndLength(Type type, object value)
         {
+            //Convert enum to base type (ushort/int etc)
+            if (type.IsEnum)
+            {
+                type = Enum.GetUnderlyingType(type);
+            }
+
             if (type == typeof(string)) //string
             {
                 var strValue = (string)value;
@@ -196,7 +202,7 @@ namespace Skate3Server.Blaze.Serializer
                 var mapValue = (ICollection)value;
                 return (TdfType.Map, Convert.ToUInt32(mapValue.Count));
             }
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ValueTuple<,>)) //Union
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)) //Union
             {
                 return (TdfType.Union, 0x0);
             }

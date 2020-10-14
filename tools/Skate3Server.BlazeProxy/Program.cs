@@ -43,7 +43,7 @@ namespace Skate3Server.BlazeProxy
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
                     {
-                        serverOptions.ListenLocalhost(10744, options =>
+                        serverOptions.ListenAnyIP(10744, options =>
                         {
                             //Debug Proxy setup
                             var debugParser = new BlazeDebugParser();
