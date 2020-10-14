@@ -5,5 +5,6 @@ namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
     public class PostAuthRequest : IRequest<PostAuthResponse>
     {
+        //TODO
     }
 }

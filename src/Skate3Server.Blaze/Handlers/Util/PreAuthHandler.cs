@@ -25,7 +25,7 @@ namespace Skate3Server.Blaze.Handlers.Util
                     (ushort) BlazeComponent.Unknown0F,
                     (ushort) BlazeComponent.Unknown19,
                     (ushort) BlazeComponent.Unknown7800,
-                    (ushort) BlazeComponent.Unknown7802,
+                    (ushort) BlazeComponent.UserSession,
                     (ushort) BlazeComponent.Unknown7803
                 },
                 ServerConfig = new ServerConfig
