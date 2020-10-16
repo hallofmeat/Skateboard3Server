@@ -1,25 +1,57 @@
-﻿using System;
-using System.Threading.Tasks;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NLog;
+using NLog.Web;
+using Skate3Server.Blaze;
 
 namespace Skate3Server.BlazeProxy
 {
-    class Program
+    public class Program
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
+            //Setup NLog
+            LogManager.Setup().LoadConfigurationFromAppSettings();
+
+            //Handle arguments
+
+
             try
             {
-                var proxy = new BlazeProxy();
-                await proxy.Start("eadpgs-blapp001.ea.com", 10744, 10744);
+                CreateHostBuilder(args).Build().Run();
             }
-            catch (Exception ex)
+            finally
             {
-                Logger.Error($"Failed to start {ex.Message}");
-                throw;
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                LogManager.Shutdown();
             }
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                })
+                .UseNLog()
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.ListenAnyIP(10744, options =>
+                        {
+                            //Debug Proxy setup
+                            var debugParser = new BlazeDebugParser();
+                            var handler = new BlazeProxyHandler(debugParser, "eadpgs-blapp001.ea.com", 10744, true);
+                            options.Run(connection => handler.OnConnectedAsync(connection));
+                        });
+                    }).UseStartup<Startup>(); 
+                });
         }
     }
 }

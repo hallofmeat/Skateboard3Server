@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Skate3Server.BlazeProxy": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost"
+    }
+  }
+}
