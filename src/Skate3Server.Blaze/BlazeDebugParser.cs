@@ -127,7 +127,7 @@ namespace Skate3Server.Blaze
             ParseType(ref payloadReader, payloadStringBuilder, type, length, state);
         }
 
-        private void ParseType(ref SequenceReader<byte> payloadReader, StringBuilder payloadStringBuilder, TdfType type, uint length, ParserState state)
+        public void ParseType(ref SequenceReader<byte> payloadReader, StringBuilder payloadStringBuilder, TdfType type, uint length, ParserState state)
         {
             if (state.Depth++ >= 100)
             {
@@ -243,7 +243,7 @@ namespace Skate3Server.Blaze
             state.Depth--;
         }
 
-        private bool EndOfStruct(ref SequenceReader<byte> payloadReader, StringBuilder payloadStringBuilder, ParserState state)
+        public bool EndOfStruct(ref SequenceReader<byte> payloadReader, StringBuilder payloadStringBuilder, ParserState state)
         {
             //end of struct detection (not great and may break)
             if (state.StructDepth > 0 && payloadReader.TryPeek(out var nextByte) && nextByte == 0x0)
