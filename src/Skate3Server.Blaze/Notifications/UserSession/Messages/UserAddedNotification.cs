@@ -6,10 +6,10 @@ namespace Skate3Server.Blaze.Notifications.UserSession.Messages
     public class UserAddedNotification
     {
         [TdfField("AID")]
-        public long AId { get; set; } //TODO
+        public long AccountId { get; set; } //TODO
 
         [TdfField("ALOC")]
-        public ulong ALoc { get; set; } //TODO
+        public ulong AccountLocale { get; set; } //TODO
 
         [TdfField("EXBB")]
         public byte[] ExternalBlob { get; set; }
@@ -27,7 +27,7 @@ namespace Skate3Server.Blaze.Notifications.UserSession.Messages
         public bool Online { get; set; }
 
         [TdfField("PID")]
-        public bool ProfileId { get; set; }
+        public long ProfileId { get; set; }
 
     }
 }

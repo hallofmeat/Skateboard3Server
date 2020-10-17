@@ -66,4 +66,13 @@
         Xbox = 0x1,
         PS3 = 0x2
     };
+
+    public enum NatType : int
+    {
+        Open,
+        Moderate,
+        Sequential,
+        Strict,
+        Unknown
+    }
 }

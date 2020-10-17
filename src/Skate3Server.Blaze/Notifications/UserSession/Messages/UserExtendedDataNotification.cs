@@ -43,7 +43,7 @@ namespace Skate3Server.Blaze.Notifications.UserSession.Messages
         public ulong DownstreamBitsPerSecond { get; set; }
 
         [TdfField("NATT")]
-        public int NatType { get; set; }
+        public NatType NatType { get; set; }
 
         [TdfField("UBPS")]
         public ulong UpstreamBitsPerSecond { get; set; }
