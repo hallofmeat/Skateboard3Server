@@ -38,7 +38,9 @@ namespace Skate3Server.BlazeProxy
             var proxyClient = new TcpClient();
             await proxyClient.ConnectAsync(_proxyHost, _proxyPort);
 
-            Stream proxyStream = proxyClient.GetStream();
+            NetworkStream ogStream = proxyClient.GetStream();
+
+            Stream proxyStream = ogStream;
 
             if (_proxySecure)
             {
@@ -89,46 +91,44 @@ namespace Skate3Server.BlazeProxy
                         reader.AdvanceTo(requestConsumed, requestExamined);
                     }
 
-                    //receive server response
-                    var responseBytes = new byte[8192];
-                    var bytesRead = await proxyStream.ReadAsync(responseBytes, 0, responseBytes.Length);
-
-                    if (bytesRead == 0)
+                    do
                     {
-                        break;
-                    }
+                        //receive server response
+                        var responseBytes = new byte[8192];
+                        var bytesRead = await proxyStream.ReadAsync(responseBytes, 0, responseBytes.Length);
 
-                    if (bytesRead == 12)
-                    {
-                        //notification (keep reading)
-                        var notificationBytes =
-                            await proxyStream.ReadAsync(responseBytes, 12, responseBytes.Length);
-                        Logger.Debug($"Response buffer extra read: {notificationBytes}");
-                        bytesRead += notificationBytes;
-                    }
+                        if (bytesRead == 12)
+                        {
+                            //notification (keep reading)
+                            var notificationBytes =
+                                await proxyStream.ReadAsync(responseBytes, 12, responseBytes.Length);
+                            Logger.Debug($"Response buffer extra read: {notificationBytes}");
+                            bytesRead += notificationBytes;
+                        }
 
 
-                    Logger.Debug($"Response buffer read: {bytesRead}");
-                    Array.Resize(ref responseBytes, bytesRead);
+                        Logger.Debug($"Response buffer read: {bytesRead}");
+                        Array.Resize(ref responseBytes, bytesRead);
 
-                    //parse what was received from server
-                    var responseSequence = new ReadOnlySequence<byte>(responseBytes);
+                        //parse what was received from server
+                        var responseSequence = new ReadOnlySequence<byte>(responseBytes);
 
-                    Logger.Debug($"Parsing Response");
+                        Logger.Debug($"Parsing Response");
 
-                    if (_parser.TryParse(ref responseSequence, out var responseProcessedLength))
-                    {
-                        Logger.Debug(
-                            $"Response buffer length: {responseBytes.Length}, processed: {responseProcessedLength.GetInteger()}");
-                    }
-                    else
-                    {
-                        Logger.Error("Failed to parse response message");
-                    }
+                        if (_parser.TryParse(ref responseSequence, out var responseProcessedLength))
+                        {
+                            Logger.Debug(
+                                $"Response buffer length: {responseBytes.Length}, processed: {responseProcessedLength.GetInteger()}");
+                        }
+                        else
+                        {
+                            Logger.Error("Failed to parse response message");
+                        }
 
-                    //send response to client
-                    await writer.WriteAsync(responseBytes);
-                    await writer.FlushAsync();
+                        //send response to client
+                        await writer.WriteAsync(responseBytes);
+                        await writer.FlushAsync();
+                    } while (ogStream.DataAvailable);
 
                     //TODO: handle connection hangup
                     //TODO: advance reader?
