@@ -156,7 +156,7 @@ namespace Skate3Server.Blaze.Serializer
                 var strValue = (string)value;
                 return (TdfType.String, Convert.ToUInt32(strValue.Length + 1));
             }
-            if (type == typeof(sbyte)) //Int8
+            if (type == typeof(bool)) //Int8
             {
                 return (TdfType.Int8, 0x1);
             }

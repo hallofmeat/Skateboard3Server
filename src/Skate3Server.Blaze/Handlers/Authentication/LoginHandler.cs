@@ -11,14 +11,14 @@ namespace Skate3Server.Blaze.Handlers.Redirector
         {
             var response = new LoginResponse
             {
-                Agup = 0,
+                Agup = false,
                 Priv = "",
                 Session = new Session
                 {
-                    BUserId = 1, //TODO
-                    Frst = 0, //TODO
+                    BlazeId = 1, //TODO
+                    FirstLogin = false, //TODO
                     Key = "", //TODO
-                    LastLogin = 0, //TODO
+                    LastLoginTime = 0, //TODO
                     Email = "",
                     Profile = new Profile
                     {
@@ -30,9 +30,9 @@ namespace Skate3Server.Blaze.Handlers.Redirector
                     },
                     UserId = 1, //TODO
                 },
-                Spam = 0,
-                Thst = "",
-                Turi = ""
+                Spam = false,
+                TermsHost = "",
+                TermsUrl = ""
             };
             return response;
         }

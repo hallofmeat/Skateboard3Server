@@ -77,9 +77,9 @@ namespace Skate3Server.Blaze.Serializer
                     //TODO: figure out if utf8
                     var str = Encoding.UTF8.GetString(byteStr.ToArray());
                     return str;
-                case TdfType.Int8:
+                case TdfType.Int8: //bool
                     payloadReader.TryRead(out byte int8);
-                    return int8;
+                    return Convert.ToBoolean(int8);
                 case TdfType.Uint8:
                     payloadReader.TryRead(out byte uint8);
                     return uint8;
@@ -88,19 +88,19 @@ namespace Skate3Server.Blaze.Serializer
                     return int16;
                 case TdfType.Uint16:
                     payloadReader.TryReadBigEndian(out short uint16);
-                    return Convert.ToUInt16(uint16);
+                    return (ushort) uint16;
                 case TdfType.Int32:
                     payloadReader.TryReadBigEndian(out int int32);
                     return int32;
                 case TdfType.Uint32:
                     payloadReader.TryReadBigEndian(out int uint32);
-                    return Convert.ToUInt32(uint32);
+                    return (uint) uint32;
                 case TdfType.Int64:
                     payloadReader.TryReadBigEndian(out long int64);
                     return int64;
                 case TdfType.Uint64:
                     payloadReader.TryReadBigEndian(out long uint64);
-                    return Convert.ToUInt64(uint64);
+                    return (ulong) uint64;
                 case TdfType.Array:
                     //Length is the number of dimensions //TODO: handle multidimensional
                     var listElementType = currentType.GetGenericArguments()[0];
@@ -135,16 +135,16 @@ namespace Skate3Server.Blaze.Serializer
                     //skip first key/value
                     for (var i = 1; i < length; i++)
                     {
-                        byte keyLength = 0;
-                        if (keyType != TdfType.Array && keyType != TdfType.Map && keyType != TdfType.Struct)
+                        var keyLength = keyTypeData.Length;
+                        if (keyType == TdfType.String)
                         {
-                            payloadReader.TryRead(out keyLength);
+                            keyLength = TdfHelper.ParseLength(ref payloadReader);
                         }
                         parsedKey = ParseType(ref payloadReader, dictKeyType, keyTypeData.Type, keyLength, state);
-                        byte valueLength = 0;
-                        if (valueType != TdfType.Array && valueType != TdfType.Map && valueType != TdfType.Struct)
+                        var valueLength = valueTypeData.Length;
+                        if (valueType == TdfType.String)
                         {
-                            payloadReader.TryRead(out valueLength);
+                            valueLength = TdfHelper.ParseLength(ref payloadReader);
                         }
                         parsedValue = ParseType(ref payloadReader, dictValueType, valueTypeData.Type, valueLength, state);
                         currentType.GetMethod("Add")?.Invoke(dictTarget, new[] { parsedKey, parsedValue });
@@ -208,7 +208,7 @@ namespace Skate3Server.Blaze.Serializer
             headerStream.Write(errorCode);
             //MessageType/MessageId
             var messageData =
-                BitConverter.GetBytes(Convert.ToUInt32((int)BlazeMessageType.Reply << 28 | requestHeader.MessageId));
+                BitConverter.GetBytes((int)BlazeMessageType.Reply << 28 | requestHeader.MessageId);
             Array.Reverse(messageData);//big endian
             headerStream.Write(messageData);
             var headerStreamBytes = headerStream.ToArray();
@@ -250,9 +250,9 @@ namespace Skate3Server.Blaze.Serializer
                 output.Write(Encoding.UTF8.GetBytes(value));
                 output.WriteByte(0x0); //terminate string
             }
-            else if (propertyType == typeof(sbyte)) //Int8
+            else if (propertyType == typeof(bool)) //Int8 (bool)
             {
-                var value = (sbyte)propertyValue;
+                var value = (bool)propertyValue;
                 output.WriteByte(Convert.ToByte(value));
             }
             else if (propertyType == typeof(byte)) //Uint8

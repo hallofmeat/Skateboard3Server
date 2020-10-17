@@ -33,7 +33,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Length = Convert.ToUInt16(messageLength);
+            header.Length = (ushort) messageLength;
 
             if (!reader.TryReadBigEndian(out short component))
             {
@@ -41,7 +41,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Component = (BlazeComponent)Convert.ToUInt16(component);
+            header.Component = (BlazeComponent)(ushort)component;
 
             if (!reader.TryReadBigEndian(out short command))
             {
@@ -49,7 +49,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Command = Convert.ToUInt16(command);
+            header.Command = (ushort) command;
 
             if (!reader.TryReadBigEndian(out short errorCode))
             {
@@ -57,7 +57,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.ErrorCode = Convert.ToUInt16(errorCode);
+            header.ErrorCode = (ushort) errorCode;
 
             if (!reader.TryReadBigEndian(out int message))
             {
@@ -69,7 +69,7 @@ namespace Skate3Server.Blaze
             header.MessageId = message & 0xFFFFF;
 
             Logger.Debug(
-                $"Request; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+                $"Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
             //Empty message
             if (header.Length == 0)
@@ -165,7 +165,7 @@ namespace Skate3Server.Blaze
                     break;
                 case TdfType.Uint16:
                     payloadReader.TryReadBigEndian(out short uint16);
-                    payloadStringBuilder.AppendLine($"{Convert.ToUInt16(uint16)}");
+                    payloadStringBuilder.AppendLine($"{(ushort) uint16}");
                     break;
                 case TdfType.Int32:
                     payloadReader.TryReadBigEndian(out int int32);
@@ -173,7 +173,7 @@ namespace Skate3Server.Blaze
                     break;
                 case TdfType.Uint32:
                     payloadReader.TryReadBigEndian(out int uint32);
-                    payloadStringBuilder.AppendLine($"{Convert.ToUInt32(uint32)}");
+                    payloadStringBuilder.AppendLine($"{(uint) uint32}");
                     break;
                 case TdfType.Int64:
                     payloadReader.TryReadBigEndian(out long int64);
@@ -181,7 +181,7 @@ namespace Skate3Server.Blaze
                     break;
                 case TdfType.Uint64:
                     payloadReader.TryReadBigEndian(out long uint64);
-                    payloadStringBuilder.AppendLine($"{Convert.ToUInt64(uint64)}");
+                    payloadStringBuilder.AppendLine($"{(ulong) uint64}");
                     break;
                 case TdfType.Array:
                     //Length is the number of dimensions //TODO: handle multidimensional
@@ -210,16 +210,16 @@ namespace Skate3Server.Blaze
                     //skip first key/value
                     for (var i = 1; i < length; i++)
                     {
-                        byte keyLength = 0;
-                        if (keyType != TdfType.Array && keyType != TdfType.Map && keyType != TdfType.Struct)
+                        var keyLength = keyTypeData.Length;
+                        if (keyType == TdfType.String)
                         {
-                            payloadReader.TryRead(out keyLength);
+                            keyLength = TdfHelper.ParseLength(ref payloadReader);
                         }
                         ParseType(ref payloadReader, payloadStringBuilder, keyTypeData.Type, keyLength, state);
-                        byte valueLength = 0;
-                        if (valueType != TdfType.Array && valueType != TdfType.Map && valueType != TdfType.Struct)
+                        var valueLength = valueTypeData.Length;
+                        if (valueType == TdfType.String)
                         {
-                            payloadReader.TryRead(out valueLength);
+                            valueLength = TdfHelper.ParseLength(ref payloadReader);
                         }
                         ParseType(ref payloadReader, payloadStringBuilder, valueTypeData.Type, valueLength, state);
                     }

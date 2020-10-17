@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
 using NLog;
-using Skate3Server.Blaze.Handlers.Authentication.Messages;
-using Skate3Server.Blaze.Handlers.Redirector.Messages;
-using Skate3Server.Blaze.Handlers.Util.Messages;
 using Skate3Server.Blaze.Serializer;
 
 namespace Skate3Server.Blaze
@@ -17,22 +13,13 @@ namespace Skate3Server.Blaze
     public class BlazeRequestParser : IBlazeRequestParser
     {
         private readonly IBlazeSerializer _blazeSerializer;
+        private readonly IBlazeTypeLookup _blazeTypeLookup;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        //TODO: pull from blaze request attribute
-        private static readonly Dictionary<(BlazeComponent, int), Type> RequestLookup =
-            new Dictionary<(BlazeComponent, int), Type>
-            {
-                { (BlazeComponent.Redirector, 0x1), typeof(ServerInfoRequest) }, //gosredirector
-                { (BlazeComponent.Util, 0x7), typeof(PreAuthRequest) }, //eadpgs-blapp001
-                { (BlazeComponent.Util, 0x2), typeof(PingRequest) }, //eadpgs-blapp001
-                { (BlazeComponent.Authentication, 0xC8), typeof(LoginRequest) }, //eadpgs-blapp001
-                { (BlazeComponent.Util, 0x8), typeof(PostAuthRequest) }, //eadpgs-blapp001
-            };
-
-        public BlazeRequestParser(IBlazeSerializer blazeSerializer)
+        public BlazeRequestParser(IBlazeSerializer blazeSerializer, IBlazeTypeLookup blazeTypeLookup)
         {
             _blazeSerializer = blazeSerializer;
+            _blazeTypeLookup = blazeTypeLookup;
         }
 
         public bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition, out BlazeHeader header,
@@ -54,7 +41,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Length = Convert.ToUInt16(messageLength);
+            header.Length = (ushort) messageLength;
 
             if (!reader.TryReadBigEndian(out short component))
             {
@@ -62,7 +49,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Component = (BlazeComponent)Convert.ToUInt16(component);
+            header.Component = (BlazeComponent) (ushort) component;
 
             if (!reader.TryReadBigEndian(out short command))
             {
@@ -70,7 +57,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Command = Convert.ToUInt16(command);
+            header.Command = (ushort) command;
 
             if (!reader.TryReadBigEndian(out short errorCode))
             {
@@ -78,7 +65,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.ErrorCode = Convert.ToUInt16(errorCode);
+            header.ErrorCode = (ushort) errorCode;
 
             if (!reader.TryReadBigEndian(out int message))
             {
@@ -97,7 +84,7 @@ namespace Skate3Server.Blaze
             reader.Advance(header.Length);
             endPosition = reader.Position;
 
-            if (RequestLookup.TryGetValue((header.Component, header.Command), out var requestType))
+            if (_blazeTypeLookup.TryGetRequestType(header.Component, header.Command, out var requestType))
             {
                 try
                 {

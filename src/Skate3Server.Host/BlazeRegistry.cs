@@ -15,6 +15,7 @@ namespace Skate3Server.Host
             builder.RegisterType<BlazeRequestParser>().As<IBlazeRequestParser>();
             builder.RegisterType<BlazeSerializer>().As<IBlazeSerializer>();
             builder.RegisterType<BlazeDebugParser>().As<IBlazeDebugParser>();
+            builder.RegisterType<BlazeTypeLookup>().As<IBlazeTypeLookup>();
 
             //Mediator
             builder

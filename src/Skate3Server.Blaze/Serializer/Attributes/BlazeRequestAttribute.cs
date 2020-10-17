@@ -3,11 +3,10 @@
 namespace Skate3Server.Blaze.Serializer.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class BlazeRequestAttribute : Attribute
+    public class BlazeRequestAttribute : BlazeMessageAttribute
     {
-        public BlazeRequestAttribute(BlazeComponent component, int command)
+        public BlazeRequestAttribute(BlazeComponent component, ushort command) : base(component, command)
         {
-            
         }
     }
 }

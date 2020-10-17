@@ -3,6 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.IO.Pipelines;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using NLog;
@@ -65,6 +66,8 @@ namespace Skate3Server.BlazeProxy
 
                     try
                     {
+                        Logger.Debug($"Parsing Request");
+
                         if (_parser.TryParse(ref requestBuffer, out var requestProcessedLength))
                         {
                             Logger.Debug($"Request buffer length: {requestBuffer.Length}");
@@ -89,14 +92,34 @@ namespace Skate3Server.BlazeProxy
                     //receive server response
                     var responseBytes = new byte[8192];
                     var bytesRead = await proxyStream.ReadAsync(responseBytes, 0, responseBytes.Length);
+
+                    if (bytesRead == 0)
+                    {
+                        break;
+                    }
+
+                    if (bytesRead == 12)
+                    {
+                        //notification (keep reading)
+                        var notificationBytes =
+                            await proxyStream.ReadAsync(responseBytes, 12, responseBytes.Length);
+                        Logger.Debug($"Response buffer extra read: {notificationBytes}");
+                        bytesRead += notificationBytes;
+                    }
+
+
                     Logger.Debug($"Response buffer read: {bytesRead}");
                     Array.Resize(ref responseBytes, bytesRead);
 
                     //parse what was received from server
                     var responseSequence = new ReadOnlySequence<byte>(responseBytes);
+
+                    Logger.Debug($"Parsing Response");
+
                     if (_parser.TryParse(ref responseSequence, out var responseProcessedLength))
                     {
-                        Logger.Debug($"Response buffer length: {responseBytes.Length}");
+                        Logger.Debug(
+                            $"Response buffer length: {responseBytes.Length}, processed: {responseProcessedLength.GetInteger()}");
                     }
                     else
                     {
@@ -106,6 +129,7 @@ namespace Skate3Server.BlazeProxy
                     //send response to client
                     await writer.WriteAsync(responseBytes);
                     await writer.FlushAsync();
+
                     //TODO: handle connection hangup
                     //TODO: advance reader?
                 }

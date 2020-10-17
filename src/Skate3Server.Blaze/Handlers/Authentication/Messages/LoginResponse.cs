@@ -2,10 +2,11 @@
 
 namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 {
-    public class LoginResponse
+    [BlazeResponse(BlazeComponent.Authentication, 0xC8)]
+    public class LoginResponse : BlazeResponse
     {
         [TdfField("AGUP")]
-        public sbyte Agup { get; set; } //TODO
+        public bool Agup { get; set; } //TODO
 
         [TdfField("PRIV")]
         public string Priv { get; set; } //TODO
@@ -14,28 +15,28 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         public Session Session { get; set; }
 
         [TdfField("SPAM")]
-        public sbyte Spam { get; set; }
+        public bool Spam { get; set; }
 
         [TdfField("THST")]
-        public string Thst { get; set; } //TODO
+        public string TermsHost { get; set; }
 
         [TdfField("TURI")]
-        public string Turi { get; set; } //TODO
+        public string TermsUrl { get; set; }
     }
 
     public class Session
     {
         [TdfField("BUID")]
-        public uint BUserId { get; set; } //TODO: not the same as UID???
+        public uint BlazeId { get; set; }
 
         [TdfField("FRST")]
-        public byte Frst { get; set; } //TODO
+        public bool FirstLogin { get; set; }
 
         [TdfField("KEY")]
         public string Key { get; set; }
 
         [TdfField("LLOG")]
-        public long LastLogin { get; set; }
+        public long LastLoginTime { get; set; }
 
         [TdfField("MAIL")]
         public string Email { get; set; }

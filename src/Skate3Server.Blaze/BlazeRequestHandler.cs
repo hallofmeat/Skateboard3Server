@@ -26,9 +26,18 @@ namespace Skate3Server.Blaze
         public async Task ProcessRequest(BlazeHeader header, object request, Stream output)
         {
 
-            var response = await _mediator.Send(request);
+            var response = (BlazeResponse) await _mediator.Send(request);
             //TODO: refine signature
             _blazeSerializer.Serialize(output, header, response);
+
+            //TODO: this is bad but works for now
+            if (response != null)
+            {
+                foreach (var note in response.Notifications)
+                {
+                    _blazeSerializer.Serialize(output, note.Key, note.Value);
+                }
+            }
         }
     }
 }

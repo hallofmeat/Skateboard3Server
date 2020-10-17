@@ -3,7 +3,8 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
-    public class PreAuthResponse
+    [BlazeResponse(BlazeComponent.Util, 0x7)]
+    public class PreAuthResponse : BlazeResponse
     {
         [TdfField("CIDS")]
         public List<ushort> ComponentIds { get; set; }

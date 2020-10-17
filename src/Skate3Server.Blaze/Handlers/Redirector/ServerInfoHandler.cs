@@ -20,7 +20,7 @@ namespace Skate3Server.Blaze.Handlers.Redirector
                     Ip = Convert.ToUInt32(IPAddress.Parse("127.0.0.1").Address),
                     Port = 10744
                 }),
-                Secure = 0,
+                Secure = false,
                 Xdns = 0
             };
             return response;

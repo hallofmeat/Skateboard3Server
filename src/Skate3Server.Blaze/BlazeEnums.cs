@@ -32,7 +32,7 @@
         // TDF Type  /  C# Type
         Struct = 0x0,   //class
         String = 0x1,   //string
-        Int8 = 0x2,     //sbyte
+        Int8 = 0x2,     //bool
         Uint8 = 0x3,    //byte
         Int16 = 0x4,    //short
         Uint16 = 0x5,   //ushort
@@ -55,7 +55,9 @@
     public enum NetworkAddressType : byte
     {
         Client = 0x0,
-        Server = 0x1
+        Server = 0x1,
+        Pair = 0x2,
+        Unset = 0x7F
     }
 
     public enum ExternalProfileType : int

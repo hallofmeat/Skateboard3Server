@@ -1,9 +1,9 @@
-﻿using System;
-using Skate3Server.Blaze.Serializer.Attributes;
+﻿using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
-    public class PingResponse
+    [BlazeResponse(BlazeComponent.Util, 0x2)]
+    public class PingResponse : BlazeResponse
     {
         [TdfField("STIM")]
         public uint Timestamp { get; set; }
