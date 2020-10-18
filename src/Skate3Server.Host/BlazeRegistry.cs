@@ -1,6 +1,7 @@
 using Autofac;
 using MediatR;
 using Skate3Server.Blaze;
+using Skate3Server.Blaze.Handlers.Authentication;
 using Skate3Server.Blaze.Handlers.Redirector;
 using Skate3Server.Blaze.Handlers.Util;
 using Skate3Server.Blaze.Serializer;

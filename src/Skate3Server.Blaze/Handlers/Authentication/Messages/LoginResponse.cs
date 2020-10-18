@@ -15,7 +15,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         public Session Session { get; set; }
 
         [TdfField("SPAM")]
-        public bool Spam { get; set; }
+        public bool Spam { get; set; } //TODO
 
         [TdfField("THST")]
         public string TermsHost { get; set; }
@@ -51,7 +51,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
     public class Profile
     {
         [TdfField("DSNM")]
-        public string Username { get; set; }
+        public string DisplayName { get; set; }
 
         [TdfField("LAST")]
         public uint LastUsed { get; set; }

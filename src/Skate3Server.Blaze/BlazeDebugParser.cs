@@ -184,6 +184,7 @@ namespace Skate3Server.Blaze
                     payloadStringBuilder.AppendLine($"{(ulong) uint64}");
                     break;
                 case TdfType.Array:
+                    //TODO print key/value type
                     //Length is the number of dimensions //TODO: handle multidimensional
                     payloadStringBuilder.AppendLine($"<array start>");
                     payloadReader.TryRead(out byte elementCount);
@@ -199,6 +200,7 @@ namespace Skate3Server.Blaze
                     payloadStringBuilder.AppendLine($"<blob>");
                     break;
                 case TdfType.Map:
+                    //TODO print key/value type
                     //Length is the number of elements
                     payloadStringBuilder.AppendLine($"<map start>");
                     var keyTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
@@ -226,6 +228,7 @@ namespace Skate3Server.Blaze
                     payloadStringBuilder.AppendLine($"<map end>");
                     break;
                 case TdfType.Union:
+                    //TODO print key/value type
                     payloadReader.Advance(length);
                     payloadReader.TryRead(out byte key);
                     payloadStringBuilder.AppendLine($"<union key>");

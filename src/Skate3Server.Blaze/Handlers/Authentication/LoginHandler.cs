@@ -5,7 +5,7 @@ using MediatR;
 using Skate3Server.Blaze.Handlers.Authentication.Messages;
 using Skate3Server.Blaze.Notifications.UserSession.Messages;
 
-namespace Skate3Server.Blaze.Handlers.Redirector
+namespace Skate3Server.Blaze.Handlers.Authentication
 {
     public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     {
@@ -17,22 +17,22 @@ namespace Skate3Server.Blaze.Handlers.Redirector
                 Priv = "",
                 Session = new Session
                 {
-                    BlazeId = 1, //TODO
+                    BlazeId = 1234, //TODO
                     FirstLogin = false, //TODO
                     Key = "", //TODO
                     LastLoginTime = 0, //TODO
                     Email = "",
                     Profile = new Profile
                     {
-                        Username = "testUser", //TODO
+                        DisplayName = "testUser", //TODO
                         LastUsed = 0, //TODO
-                        ProfileId = 1, //TODO,
+                        ProfileId = 1234, //TODO,
                         ExternalProfileId = 1234, //TODO
                         ExternalProfileType = ExternalProfileType.PS3,
                     },
-                    UserId = 1, //TODO
+                    UserId = 1234, //TODO
                 },
-                Spam = false,
+                Spam = true,
                 TermsHost = "",
                 TermsUrl = ""
             };
@@ -46,14 +46,14 @@ namespace Skate3Server.Blaze.Handlers.Redirector
                 ErrorCode = 0
             }, new UserAddedNotification
             {
-               AccountId = 1234,
-               AccountLocale = 1701729619, //enUS
-               ExternalBlob = new byte[0],
-               Id = 1234,
-               ProfileId = 1234,
-               Username = "testUser",
-               ExternalId = 1234,
-               Online = true
+                AccountId = 1234,
+                AccountLocale = 1701729619, //enUS
+                ExternalBlob = new byte[0],
+                Id = 1234,
+                ProfileId = 1234,
+                Username = "testUser",
+                ExternalId = 1234,
+                Online = true
             });
 
             response.Notifications.Add(new BlazeHeader
@@ -67,7 +67,7 @@ namespace Skate3Server.Blaze.Handlers.Redirector
             {
                 Data = new ExtendedData
                 {
-                    Address = new KeyValuePair<NetworkAddressType, object>(NetworkAddressType.Unset, ""),
+                    Address = new KeyValuePair<NetworkAddressType, string>(NetworkAddressType.Unset, ""),
                     Bps = "",
                     Cty = "",
                     Dmap = new Dictionary<uint, int>

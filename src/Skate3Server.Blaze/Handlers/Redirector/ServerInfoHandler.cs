@@ -16,8 +16,8 @@ namespace Skate3Server.Blaze.Handlers.Redirector
             {
                 Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Client, new NetworkAddress
                 {
-                    Host = "localhost",
-                    Ip = Convert.ToUInt32(IPAddress.Parse("127.0.0.1").Address),
+                    Host = BlazeConfig.BlazeHost,
+                    Ip = Convert.ToUInt32(IPAddress.Parse(BlazeConfig.BlazeIp).Address),
                     Port = 10744
                 }),
                 Secure = false,

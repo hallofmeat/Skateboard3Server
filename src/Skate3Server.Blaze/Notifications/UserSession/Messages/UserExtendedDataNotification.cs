@@ -16,7 +16,7 @@ namespace Skate3Server.Blaze.Notifications.UserSession.Messages
     public class ExtendedData
     {
         [TdfField("ADDR")]
-        public KeyValuePair<NetworkAddressType, object> Address { get; set; } //TODO this can also be an address pair
+        public KeyValuePair<NetworkAddressType, string> Address { get; set; } //TODO this can also be an address pair
 
         [TdfField("BPS")]
         public string Bps { get; set; } //TODO bits per second?
@@ -40,13 +40,13 @@ namespace Skate3Server.Blaze.Notifications.UserSession.Messages
     public class NetworkData
     {
         [TdfField("DBPS")]
-        public ulong DownstreamBitsPerSecond { get; set; }
+        public uint DownstreamBitsPerSecond { get; set; }
 
         [TdfField("NATT")]
         public NatType NatType { get; set; }
 
         [TdfField("UBPS")]
-        public ulong UpstreamBitsPerSecond { get; set; }
+        public uint UpstreamBitsPerSecond { get; set; }
 
     }
 }

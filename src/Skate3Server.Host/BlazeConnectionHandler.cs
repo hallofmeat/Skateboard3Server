@@ -40,6 +40,13 @@ namespace Skate3Server.Host
                     var result = await reader.ReadAsync();
                     var buffer = result.Buffer;
 
+                    //We didnt read anything new (probably the end)
+                    if (buffer.IsEmpty)
+                    {
+                        Logger.Warn($"Request buffer empty (connection closed?)");
+                        break;
+                    }
+
                     var consumed = buffer.Start;
                     var examined = buffer.End;
 
@@ -48,7 +55,7 @@ namespace Skate3Server.Host
                         if(_parser.TryParseRequest(ref buffer, out var processedLength, out var header, out var request))
                         {
                             Logger.Debug(
-                                $"Buffer length: {buffer.Length} Buffer processed: {processedLength.GetInteger()}");
+                                $"Request buffer length: {buffer.Length} buffer processed: {processedLength.GetInteger()}");
 
                             consumed = processedLength;
                             examined = consumed;

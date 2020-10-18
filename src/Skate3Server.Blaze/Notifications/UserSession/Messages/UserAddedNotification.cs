@@ -9,7 +9,7 @@ namespace Skate3Server.Blaze.Notifications.UserSession.Messages
         public long AccountId { get; set; } //TODO
 
         [TdfField("ALOC")]
-        public ulong AccountLocale { get; set; } //TODO
+        public uint AccountLocale { get; set; } //TODO
 
         [TdfField("EXBB")]
         public byte[] ExternalBlob { get; set; }

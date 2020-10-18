@@ -34,6 +34,8 @@ namespace Skate3Server.Blaze
             header = new BlazeHeader();
             request = null;
 
+            Logger.Debug($"Reader Pos Start:{reader.Position.GetInteger()} length: {reader.Length}");
+
             //Parse header
             if (!reader.TryReadBigEndian(out short messageLength))
             {
@@ -77,12 +79,14 @@ namespace Skate3Server.Blaze
             header.MessageId = message & 0xFFFFF;
 
             Logger.Debug(
-                $"Request ^; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+                $"Request ^; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
             //Read body
             var payload = reader.Sequence.Slice(reader.Position, header.Length);
             reader.Advance(header.Length);
             endPosition = reader.Position;
+
+            Logger.Debug($"Reader Pos End:{reader.Position.GetInteger()} length: {reader.Length}");
 
             if (_blazeTypeLookup.TryGetRequestType(header.Component, header.Command, out var requestType))
             {

@@ -219,7 +219,7 @@ namespace Skate3Server.Blaze.Serializer
             Logger.Trace($"{headerHex} {payloadHex}");
 
             Logger.Debug(
-                $"Response ^; Component:{requestHeader.Component} Command:{requestHeader.Command} ErrorCode:{requestHeader.ErrorCode} MessageType:{requestHeader.MessageType} MessageId:{requestHeader.MessageId}");
+                $"Response ^; Length:{bodyStreamBytes.Length} Component:{requestHeader.Component} Command:{requestHeader.Command} ErrorCode:{requestHeader.ErrorCode} MessageType:{requestHeader.MessageType} MessageId:{requestHeader.MessageId}");
 
             output.Write(headerStreamBytes);
             output.Write(bodyStreamBytes);
