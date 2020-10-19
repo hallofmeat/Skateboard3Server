@@ -4,7 +4,7 @@ Also known as a `X-I-5-Ticket`
 
 These are based off the information in https://psdevwiki.com/ps3/X-I-5-Ticket and https://psdevwiki.com/ps3/PSN
 
-Games request a ticket via the `sceNpManagerRequestTicket` or `sceNpManagerRequestTicket2` calls, then the ps3 requests a ticket from the PSN.
+Games request a ticket via the `sceNpManagerRequestTicket` or `sceNpManagerRequestTicket2` calls, then the ps3 requests a ticket from PSN.
 
 //TODO: how PSN gets tickets
 
@@ -49,76 +49,78 @@ This is based off the version 3.0 ticket but the version only affects the body f
 ## Format
 
 ### Sections
-`30 XX 00 YY`
-XX is section type, YY is section size
-`00` Body
-`02` Footer
-`10` Unknown
-`11` Date of Birth
+* `30 XX 00 YY`
+* XX is section type, YY is section size
+* `00` Body
+* `02` Footer
+* `10` Unknown
+* `11` Date of Birth
 
 ### Values
 
-`00 XX 00 YY`
-XX is value type, YY is value length
-`00` empty
-`01` uint32
-`02` uint64
-`04` string
-`07` timestamp (milliseconds)
-`08` binary
+* `00 XX 00 YY`
+* XX is value type, YY is value length
+* `00` empty
+* `01` uint32
+* `02` uint64
+* `04` string
+* `07` timestamp (milliseconds)
+* `08` binary
+
+## Ticket
 
 ### Header
 
-`31` Major Version: 3
-`00` Minor Version: 0
-`00 00 00 00 00` 
-`F8` Ticket Length: 0xF8
+* `31` Major Version: 3
+* `00` Minor Version: 0
+* `00 00 00 00 00` 
+* `F8` Ticket Length: 0xF8
 
 Valid header versions are (2.0, 2.1, 3.0, 4.0)
 
 ### Body
 
 * serial_id
-  //TODO: figure out where this comes from
+  * //TODO: figure out where this comes from
 * issuer_id
-  `0` Prod/QA (QA)
-  `1-8` SP-INT (Developer)
-  `100` NP (Retail)
+  * `0` Prod/QA (QA)
+  * `1-8` SP-INT (Developer)
+  * `100` NP (Retail)
 * issued_date
-  unix timestamp for issued time of ticket
+  * unix timestamp for issued time of ticket
 * expire_date
-  unix timestamp for expire time of ticket
+  * unix timestamp for expire time of ticket
 * user_id
-  Id for PSN
+  * Id for PSN
 * online_id
-  Username for PSN
+  * Username for PSN
 * region/language
-  `75 73 00` string value for region
-  `01` language value (`0x0` ja, `0x1` en, `0x2` fr, `0x3` es, `0x4` de, `0x5` it, `0x6` no, `0x7` pt, `0x8` ru, `0x9` ko, `0x10` zh)
+  * `75 73 00` string value for region
+  * `01` language value (`0x0` ja, `0x1` en, `0x2` fr, `0x3` es, `0x4` de, `0x5` it, `0x6` no, `0x7` pt, `0x8` ru, `0x9` ko, `0x10` zh)
 * domain
-  //TODO: figure out what domain means
+  * //TODO: figure out what domain means
 * service_id
-  string of game identifier (UP0006-BLUS30464_00)
+  * string of game identifier (UP0006-BLUS30464_00)
 * date_of_birth
-  DoB is its own section
-  `07 BD` Year: 1981
-  `02` Month: 02
-  `1D` Day: 29
+  * DoB is its own section
+  * `07 BD` Year: 1981
+  * `02` Month: 02
+  * `1D` Day: 29
 * age/status
-  `27` Age: 39
-  `00`
-  `02` Status?
-  `00`
+  * `27` Age: 39
+  * `00`
+  * `02` Status?
+  * `00`
 * unknown
-  //TODO: figure out what unknown section means
+  * //TODO: figure out what unknown section means
 
 ### Footer
 
 * cipher_id
-  This is an Id for looking up the corresponding cipher/public key on the game server side (types of ciphers are HMAC, RSA, EC)
+  * This is an Id for looking up the corresponding cipher/public key on the game server side (types of ciphers are HMAC, RSA, EC)
 
 * signature
-  This is used for input for the cipher, this ticket was using a RSA cipher. The the body section of the ticket is SHA1 hashed and fed into RSA_verify with this signature and the public key on the game server. The signature in this ticket is a RSAPublicKey in the DER format. 
+  * This is used for input for the cipher, this ticket was using a RSA cipher. The the body section of the ticket is SHA1 hashed and fed into RSA_verify with this signature and the public key on the game server. The signature in this ticket is a RSAPublicKey in the DER format. 
 
   ```
   $ openssl rsa -text -RSAPublicKey_in -in ticket_sig.der -inform der
