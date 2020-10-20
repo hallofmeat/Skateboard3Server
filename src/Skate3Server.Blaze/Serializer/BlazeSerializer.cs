@@ -75,7 +75,7 @@ namespace Skate3Server.Blaze.Serializer
                     var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
                     payloadReader.Advance(length);
                     //TODO: figure out if utf8
-                    var str = Encoding.UTF8.GetString(byteStr.ToArray());
+                    var str = Encoding.UTF8.GetString(byteStr.ToArray()).TrimEnd('\0');
                     return str;
                 case TdfType.Int8: //bool
                     payloadReader.TryRead(out byte int8);

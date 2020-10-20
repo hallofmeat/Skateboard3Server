@@ -6,7 +6,7 @@
 
         public TicketBody Body { get; set; }
         
-        public TicketFooter Signature { get; set; }
+        public TicketFooter Footer { get; set; }
     }
 
     public class TicketHeader
@@ -17,7 +17,7 @@
 
     public class TicketBody
     {
-        public byte[] Signature { get; set; } //(ticket_id for rpcn, serial_id for PSN)
+        public byte[] SerialId { get; set; } //(ticket_id for rpcn, serial_id for PSN)
 
         public uint IssuerId { get; set; } //issuer_id
 
@@ -35,13 +35,13 @@
 
         public string Domain { get; set; } //domain
 
-        public string ServiceId { get; set; } //service_id
+        public byte[] ServiceId { get; set; } //service_id
 
         public DateOfBirth DateOfBirth { get; set; } //date_of_birth
 
         public byte Age { get; set; }
 
-        public uint Status { get; set; } //status
+        public byte Status { get; set; } //status
 
     }
 
@@ -49,7 +49,7 @@
     {
         public byte[] CipherId { get; set; } 
 
-        public byte[] Key { get; set; } //RSA, HMAC, EC
+        public byte[] Signature { get; set; } //RSA public key, HMAC key, EC public key
 
     }
 

@@ -24,7 +24,7 @@ This is based off the version 3.0 ticket but the version only affects the body f
     00 07 00 08 (type: milliseconds, length: 0x8)
         00 00 01 74 DC 6B BF 78 (expire_date)
     00 02 00 08 (type: uint64, length: 0x8)
-        00 00 00 64 75 A1 62 0C (user_id: 100)
+        00 00 00 00 00 01 E2 40 (user_id: 123456)
     00 04 00 20 (type: string, length: 0x20)
         74 65 73 74 75 73 65 72 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 (online_id: testuser)
     00 08 00 04 (type: binary, length: 0x4)
@@ -50,7 +50,7 @@ This is based off the version 3.0 ticket but the version only affects the body f
 
 ### Sections
 * `30 XX 00 YY`
-* XX is section type, YY is section size
+* XX is section type, YY is section length
 * `00` Body
 * `02` Footer
 * `10` Unknown
@@ -117,8 +117,9 @@ Valid header versions are (2.0, 2.1, 3.0, 4.0)
 ### Footer
 
 * cipher_id
-  * This is an Id for looking up the corresponding cipher/public key on the game server side (types of ciphers are HMAC, RSA, EC)
-
+  
+* This is an Id for looking up the corresponding cipher/public key on the game server side (types of ciphers are HMAC, RSA, EC)
+  
 * signature
   * This is used for input for the cipher, this ticket was using a RSA cipher. The the body section of the ticket is SHA1 hashed and fed into RSA_verify with this signature and the public key on the game server. The signature in this ticket is a RSAPublicKey in the DER format. 
 

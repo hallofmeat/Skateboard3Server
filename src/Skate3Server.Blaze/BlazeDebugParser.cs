@@ -148,7 +148,7 @@ namespace Skate3Server.Blaze
                     var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
                     payloadReader.Advance(length);
                     //TODO: figure out if utf8
-                    var str = Encoding.UTF8.GetString(byteStr.ToArray());
+                    var str = Encoding.UTF8.GetString(byteStr.ToArray()).TrimEnd('\0');
                     payloadStringBuilder.AppendLine($"{str}");
                     break;
                 case TdfType.Int8:
