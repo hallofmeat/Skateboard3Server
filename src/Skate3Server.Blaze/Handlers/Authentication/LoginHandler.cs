@@ -53,6 +53,17 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 TermsUrl = ""
             };
 
+            //TODO: this is a hack
+            var externalBlob = new List<byte>();
+            externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Username));
+            externalBlob.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+            externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Domain));
+            externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Region));
+            externalBlob.AddRange(Encoding.ASCII.GetBytes("ps3"));
+            externalBlob.Add(0x0);
+            externalBlob.Add(0x1);
+            externalBlob.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+
             response.Notifications.Add(new BlazeHeader
             {
                 Component = BlazeComponent.UserSession,
@@ -64,7 +75,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
             {
                 AccountId = 1234,
                 AccountLocale = 1701729619, //enUS
-                ExternalBlob = Encoding.UTF8.GetBytes(ticket.Body.Username),
+                ExternalBlob = externalBlob.ToArray(),
                 Id = 1234,
                 ProfileId = 1234,
                 Username = ticket.Body.Username,
