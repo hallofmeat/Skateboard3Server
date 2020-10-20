@@ -37,6 +37,7 @@ namespace Skate3Server.Host
             builder.RegisterType<PingHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<LoginHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<PostAuthHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<ClientMetricsHandler>().AsImplementedInterfaces().InstancePerDependency();
         }
     }
 }
