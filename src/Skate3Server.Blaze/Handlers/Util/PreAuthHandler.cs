@@ -12,7 +12,7 @@ namespace Skate3Server.Blaze.Handlers.Util
         {
             var response = new PreAuthResponse
             {
-                //0x01, 0x04, 0x07, 0x09, 0x0B, 0x0C, 0x0F, 0x19, 0x7800, 0x7802, 0x7803
+                //0x01, 0x04, 0x07, 0x8, 0x09, 0x0B, 0x0C, 0x0F, 0x19, 0x7800, 0x7802, 0x7803
                 ComponentIds = new List<ushort>
                 {
                     (ushort) BlazeComponent.Authentication,
@@ -48,7 +48,7 @@ namespace Skate3Server.Blaze.Handlers.Util
                     PingServers = new Dictionary<string, QosAddress>
                     {
                         //default has 3 servers (lets see if it works with just one)
-                        { "test", new QosAddress
+                        { "tst", new QosAddress
                         {
                             Hostname = BlazeConfig.BlazeHost,
                             Port = 17502,

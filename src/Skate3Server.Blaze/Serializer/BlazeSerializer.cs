@@ -14,7 +14,7 @@ namespace Skate3Server.Blaze.Serializer
     public interface IBlazeSerializer
     {
         object Deserialize(ref ReadOnlySequence<byte> payload, Type requestType);
-        void Serialize(Stream output, BlazeHeader requestHeader, object payload);
+        void Serialize(Stream output, BlazeHeader requestHeader, BlazeMessageType messageType, object payload);
     }
 
     public class BlazeSerializer : IBlazeSerializer
@@ -180,7 +180,7 @@ namespace Skate3Server.Blaze.Serializer
             return false;
         }
 
-        public void Serialize(Stream output, BlazeHeader requestHeader, object payload)
+        public void Serialize(Stream output, BlazeHeader requestHeader, BlazeMessageType messageType, object payload)
         {
             //TODO: so many streams
             var bodyStream = new MemoryStream();
@@ -208,7 +208,7 @@ namespace Skate3Server.Blaze.Serializer
             headerStream.Write(errorCode);
             //MessageType/MessageId
             var messageData =
-                BitConverter.GetBytes((int)BlazeMessageType.Reply << 28 | requestHeader.MessageId);
+                BitConverter.GetBytes((int)messageType << 28 | requestHeader.MessageId);
             Array.Reverse(messageData);//big endian
             headerStream.Write(messageData);
             var headerStreamBytes = headerStream.ToArray();
@@ -219,7 +219,7 @@ namespace Skate3Server.Blaze.Serializer
             Logger.Trace($"{headerHex} {payloadHex}");
 
             Logger.Debug(
-                $"Response ^; Length:{bodyStreamBytes.Length} Component:{requestHeader.Component} Command:{requestHeader.Command} ErrorCode:{requestHeader.ErrorCode} MessageType:{requestHeader.MessageType} MessageId:{requestHeader.MessageId}");
+                $"Response ^; Length:{bodyStreamBytes.Length} Component:{requestHeader.Component} Command:{requestHeader.Command} ErrorCode:{requestHeader.ErrorCode} MessageType:{messageType} MessageId:{requestHeader.MessageId}");
 
             output.Write(headerStreamBytes);
             output.Write(bodyStreamBytes);

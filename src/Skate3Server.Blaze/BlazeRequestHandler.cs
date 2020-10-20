@@ -28,14 +28,14 @@ namespace Skate3Server.Blaze
 
             var response = (BlazeResponse) await _mediator.Send(request);
             //TODO: refine signature
-            _blazeSerializer.Serialize(output, header, response);
+            _blazeSerializer.Serialize(output, header, BlazeMessageType.Reply, response);
 
             //TODO: this is bad but works for now
             if (response != null)
             {
                 foreach (var note in response.Notifications)
                 {
-                    _blazeSerializer.Serialize(output, note.Key, note.Value);
+                    _blazeSerializer.Serialize(output, note.Key, BlazeMessageType.Notification, note.Value);
                 }
             }
         }

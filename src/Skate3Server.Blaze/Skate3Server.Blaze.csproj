@@ -9,4 +9,8 @@
     <PackageReference Include="MediatR" Version="8.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Skate3Server.Common\Skate3Server.Common.csproj" />
+  </ItemGroup>
+
 </Project>

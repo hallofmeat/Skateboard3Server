@@ -5,6 +5,7 @@ using Skate3Server.Blaze.Handlers.Authentication;
 using Skate3Server.Blaze.Handlers.Redirector;
 using Skate3Server.Blaze.Handlers.Util;
 using Skate3Server.Blaze.Serializer;
+using Skate3Server.Common.Decoders;
 
 namespace Skate3Server.Host
 {
@@ -17,6 +18,7 @@ namespace Skate3Server.Host
             builder.RegisterType<BlazeSerializer>().As<IBlazeSerializer>();
             builder.RegisterType<BlazeDebugParser>().As<IBlazeDebugParser>();
             builder.RegisterType<BlazeTypeLookup>().As<IBlazeTypeLookup>();
+            builder.RegisterType<Ps3TicketDecoder>().As<IPs3TicketDecoder>();
 
             //Mediator
             builder

@@ -1,16 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Skate3Server.Blaze.Handlers.Authentication.Messages;
 using Skate3Server.Blaze.Notifications.UserSession.Messages;
+using Skate3Server.Common.Decoders;
 
 namespace Skate3Server.Blaze.Handlers.Authentication
 {
     public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     {
+        private readonly IPs3TicketDecoder _ticketDecoder;
+
+        public LoginHandler(IPs3TicketDecoder ticketDecoder)
+        {
+            _ticketDecoder = ticketDecoder;
+        }
+
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
+            var ticket = _ticketDecoder.DecodeTicket(request.Ticket);
+            if (ticket == null)
+            {
+                throw new Exception("Could not parse ticket, unable to login");
+            }
+
             var response = new LoginResponse
             {
                 Agup = false,
@@ -19,15 +35,15 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 {
                     BlazeId = 1234, //TODO
                     FirstLogin = false, //TODO
-                    Key = "", //TODO
-                    LastLoginTime = 0, //TODO
+                    Key = "12345678_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", //TODO
+                    LastLoginTime = 1602965309, //TODO
                     Email = "",
                     Profile = new Profile
                     {
-                        DisplayName = "testUser", //TODO
-                        LastUsed = 0, //TODO
+                        DisplayName = ticket.Body.Username, //TODO
+                        LastUsed = 1602965280, //TODO
                         ProfileId = 1234, //TODO,
-                        ExternalProfileId = 1234, //TODO
+                        ExternalProfileId = ticket.Body.UserId, //TODO
                         ExternalProfileType = ExternalProfileType.PS3,
                     },
                     UserId = 1234, //TODO
@@ -48,11 +64,11 @@ namespace Skate3Server.Blaze.Handlers.Authentication
             {
                 AccountId = 1234,
                 AccountLocale = 1701729619, //enUS
-                ExternalBlob = new byte[0],
+                ExternalBlob = Encoding.UTF8.GetBytes(ticket.Body.Username),
                 Id = 1234,
                 ProfileId = 1234,
-                Username = "testUser",
-                ExternalId = 1234,
+                Username = ticket.Body.Username,
+                ExternalId = ticket.Body.UserId,
                 Online = true
             });
 
