@@ -55,8 +55,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
 
             //TODO: this is a hack
             var externalBlob = new List<byte>();
-            externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Username));
-            externalBlob.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+            externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Username.PadRight(20, '\0')));
             externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Domain));
             externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Region));
             externalBlob.AddRange(Encoding.ASCII.GetBytes("ps3"));

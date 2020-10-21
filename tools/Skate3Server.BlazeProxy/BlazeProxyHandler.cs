@@ -19,12 +19,12 @@ namespace Skate3Server.BlazeProxy
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly BlazeProxyParser _parser;
+        private readonly BlazeDebugParser _parser;
         private readonly string _proxyHost;
         private readonly int _proxyPort;
         private readonly bool _proxySecure;
 
-        public BlazeProxyHandler(BlazeProxyParser parser, string proxyHost, int proxyPort, bool proxySecure)
+        public BlazeProxyHandler(BlazeDebugParser parser, string proxyHost, int proxyPort, bool proxySecure)
         {
             _parser = parser;
             _proxyHost = proxyHost;
@@ -59,6 +59,13 @@ namespace Skate3Server.BlazeProxy
 
                     var result = await reader.ReadAsync();
                     var requestBuffer = result.Buffer;
+
+                    //We didnt read anything new (probably the end)
+                    if (requestBuffer.IsEmpty)
+                    {
+                        Logger.Warn($"Request buffer empty (connection closed?)");
+                        continue;
+                    }
 
                     var requestCopy = GetCopyOfSequence(ref requestBuffer);
 

@@ -67,7 +67,7 @@ namespace Skate3Server.Host
                         else
                         {
                             Logger.Error("Failed to parse message, trying debug parser");
-                            _debugParser.TryParse(ref buffer, out var debugProcessedLength);
+                            _debugParser.TryParseRequest(ref buffer, out var debugProcessedLength);
                             consumed = debugProcessedLength;
                             examined = consumed;
                             break;

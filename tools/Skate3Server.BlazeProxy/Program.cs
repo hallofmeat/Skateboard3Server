@@ -46,7 +46,7 @@ namespace Skate3Server.BlazeProxy
                         serverOptions.ListenAnyIP(10744, options =>
                         {
                             //Debug Proxy setup
-                            var debugParser = new BlazeProxyParser();
+                            var debugParser = new BlazeDebugParser();
                             var handler = new BlazeProxyHandler(debugParser, "eadpgs-blapp001.ea.com", 10744, true);
                             options.Run(connection => handler.OnConnectedAsync(connection));
                         });

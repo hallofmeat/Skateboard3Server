@@ -25,26 +25,33 @@ namespace Skate3Server.Blaze.Serializer
         {
             var request = Activator.CreateInstance(requestType);
 
+            var requestSb = new StringBuilder();
+
             var payloadReader = new SequenceReader<byte>(payload);
             var state = new ParserState();
 
             while (!payloadReader.End)
             {
-                ParseObject(ref payloadReader, request, state);
+                ParseObject(ref payloadReader, request, state, requestSb);
             }
+
+            Logger.Trace($"Request parsed:{Environment.NewLine}{requestSb}");
 
             return request;
         }
 
-        private void ParseObject(ref SequenceReader<byte> payloadReader, object target, ParserState state)
+        private void ParseObject(ref SequenceReader<byte> payloadReader, object target, ParserState state,
+            StringBuilder requestSb)
         {
             //TODO: this whole thing is using a lot of non cached reflection (fix this)
             var tdfMetadata = GetTdfMetadata(target.GetType());
 
             var tag = TdfHelper.ParseTag(ref payloadReader);
             var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+            
+            requestSb.AppendLine($"{tag} {typeData.Type} {typeData.Length}");
 
-            var parsed = ParseType(ref payloadReader, tdfMetadata[tag].Property.PropertyType, typeData.Type, typeData.Length, state);
+            var parsed = ParseType(ref payloadReader, tdfMetadata[tag].Property.PropertyType, typeData.Type, typeData.Length, state, requestSb);
             try
             {
                 tdfMetadata[tag].Property.SetValue(target, parsed);
@@ -56,7 +63,8 @@ namespace Skate3Server.Blaze.Serializer
             }
         }
 
-        private object ParseType(ref SequenceReader<byte> payloadReader, Type currentType, TdfType type, uint length, ParserState state)
+        private object ParseType(ref SequenceReader<byte> payloadReader, Type currentType, TdfType type, uint length, ParserState state,
+            StringBuilder requestSb)
         {
             //TODO add type checking against currentType
             switch (type)
@@ -65,41 +73,51 @@ namespace Skate3Server.Blaze.Serializer
                     payloadReader.Advance(length);
                     state.StructDepth++;
                     var subTarget = Activator.CreateInstance(currentType);
+                    requestSb.AppendLine("<start struct>");
                     do
                     {
-                        ParseObject(ref payloadReader, subTarget, state);
+                        ParseObject(ref payloadReader, subTarget, state, requestSb);
 
-                    } while (!EndOfStruct(ref payloadReader, state));
+                    } while (!EndOfStruct(ref payloadReader, state, requestSb));
                     return subTarget;
                 case TdfType.String:
                     var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
                     payloadReader.Advance(length);
                     //TODO: figure out if utf8
                     var str = Encoding.UTF8.GetString(byteStr.ToArray()).TrimEnd('\0');
+                    requestSb.AppendLine($"{str}");
                     return str;
                 case TdfType.Int8: //bool
                     payloadReader.TryRead(out byte int8);
+                    requestSb.AppendLine($"{int8}");
                     return Convert.ToBoolean(int8);
                 case TdfType.Uint8:
                     payloadReader.TryRead(out byte uint8);
+                    requestSb.AppendLine($"{uint8}");
                     return uint8;
                 case TdfType.Int16:
                     payloadReader.TryReadBigEndian(out short int16);
+                    requestSb.AppendLine($"{int16}");
                     return int16;
                 case TdfType.Uint16:
                     payloadReader.TryReadBigEndian(out short uint16);
+                    requestSb.AppendLine($"{uint16}");
                     return (ushort) uint16;
                 case TdfType.Int32:
                     payloadReader.TryReadBigEndian(out int int32);
+                    requestSb.AppendLine($"{int32}");
                     return int32;
                 case TdfType.Uint32:
                     payloadReader.TryReadBigEndian(out int uint32);
+                    requestSb.AppendLine($"{uint32}");
                     return (uint) uint32;
                 case TdfType.Int64:
                     payloadReader.TryReadBigEndian(out long int64);
+                    requestSb.AppendLine($"{int64}");
                     return int64;
                 case TdfType.Uint64:
                     payloadReader.TryReadBigEndian(out long uint64);
+                    requestSb.AppendLine($"{uint64}");
                     return (ulong) uint64;
                 case TdfType.Array:
                     //Length is the number of dimensions //TODO: handle multidimensional
@@ -107,16 +125,19 @@ namespace Skate3Server.Blaze.Serializer
                     var listTarget = Activator.CreateInstance(currentType);
                     payloadReader.TryRead(out byte elementCount);
                     var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    requestSb.AppendLine($"{typeData.Type} {typeData.Length} {elementCount}");
+
                     for (var i = 0; i < elementCount; i++)
                     {
                         //TODO: I think struct or string will fail here
-                        var listParsed = ParseType(ref payloadReader, listElementType, typeData.Type, typeData.Length, state);
+                        var listParsed = ParseType(ref payloadReader, listElementType, typeData.Type, typeData.Length, state, requestSb);
                         currentType.GetMethod("Add")?.Invoke(listTarget, new[] { listParsed });
                     }
                     return listTarget;
                 case TdfType.Blob:
                     var blobSeq = payloadReader.Sequence.Slice(payloadReader.Position, length);
                     payloadReader.Advance(length);
+                    requestSb.AppendLine("<blob>");
                     return blobSeq.ToArray();
                 case TdfType.Map:
                     //Length is the number of elements
@@ -125,9 +146,11 @@ namespace Skate3Server.Blaze.Serializer
                     var dictValueType = currentType.GetGenericArguments()[1];
 
                     var keyTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
-                    var parsedKey = ParseType(ref payloadReader, dictKeyType, keyTypeData.Type, keyTypeData.Length, state);
+                    requestSb.AppendLine($"{keyTypeData.Type} {keyTypeData.Length}");
+                    var parsedKey = ParseType(ref payloadReader, dictKeyType, keyTypeData.Type, keyTypeData.Length, state, requestSb);
                     var valueTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
-                    var parsedValue = ParseType(ref payloadReader, dictValueType, valueTypeData.Type, valueTypeData.Length, state);
+                    requestSb.AppendLine($"{valueTypeData.Type} {valueTypeData.Length}");
+                    var parsedValue = ParseType(ref payloadReader, dictValueType, valueTypeData.Type, valueTypeData.Length, state, requestSb);
                     currentType.GetMethod("Add")?.Invoke(dictTarget, new[] { parsedKey, parsedValue });
 
                     var keyType = keyTypeData.Type;
@@ -140,13 +163,15 @@ namespace Skate3Server.Blaze.Serializer
                         {
                             keyLength = TdfHelper.ParseLength(ref payloadReader);
                         }
-                        parsedKey = ParseType(ref payloadReader, dictKeyType, keyTypeData.Type, keyLength, state);
+                        requestSb.AppendLine($"{keyTypeData.Type} {keyLength}");
+                        parsedKey = ParseType(ref payloadReader, dictKeyType, keyTypeData.Type, keyLength, state, requestSb);
                         var valueLength = valueTypeData.Length;
                         if (valueType == TdfType.String)
                         {
                             valueLength = TdfHelper.ParseLength(ref payloadReader);
                         }
-                        parsedValue = ParseType(ref payloadReader, dictValueType, valueTypeData.Type, valueLength, state);
+                        requestSb.AppendLine($"{valueTypeData.Type} {valueLength}");
+                        parsedValue = ParseType(ref payloadReader, dictValueType, valueTypeData.Type, valueLength, state, requestSb);
                         currentType.GetMethod("Add")?.Invoke(dictTarget, new[] { parsedKey, parsedValue });
                     }
                     return dictTarget;
@@ -154,11 +179,13 @@ namespace Skate3Server.Blaze.Serializer
                     var unionTarget = Activator.CreateInstance(currentType);
                     payloadReader.Advance(length);
                     payloadReader.TryRead(out byte unionKey);
+                    requestSb.AppendLine($"{unionKey}");
                     //VALU
                     var unionValueType = currentType.GetGenericArguments()[1];
                     TdfHelper.ParseTag(ref payloadReader);
                     var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
-                    var unionParsed = ParseType(ref payloadReader, unionValueType, valuTypeData.Type, valuTypeData.Length, state);
+                    requestSb.AppendLine($"{valuTypeData.Type} {valuTypeData.Length}");
+                    var unionParsed = ParseType(ref payloadReader, unionValueType, valuTypeData.Type, valuTypeData.Length, state, requestSb);
                     currentType.GetField("key", BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(unionTarget, unionKey);
                     currentType.GetField("value", BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(unionTarget,unionParsed);
                     return unionTarget;
@@ -167,11 +194,13 @@ namespace Skate3Server.Blaze.Serializer
             }
         }
 
-        private bool EndOfStruct(ref SequenceReader<byte> payloadReader, ParserState state)
+        private bool EndOfStruct(ref SequenceReader<byte> payloadReader, ParserState state,
+            StringBuilder requestSb)
         {
             //end of struct detection (not great and may break)
             if (state.StructDepth > 0 && payloadReader.TryPeek(out var nextByte) && nextByte == 0x0)
             {
+                requestSb.AppendLine("<end struct>");
                 payloadReader.Advance(1);
                 state.StructDepth--;
                 return true;
@@ -182,9 +211,12 @@ namespace Skate3Server.Blaze.Serializer
 
         public void Serialize(Stream output, BlazeHeader requestHeader, BlazeMessageType messageType, object payload)
         {
+            //Debug
+            var responseSb = new StringBuilder();
+
             //TODO: so many streams
             var bodyStream = new MemoryStream();
-            SerializeObjectProperties(bodyStream, payload);
+            SerializeObjectProperties(bodyStream, payload, responseSb);
 
             var bodyStreamBytes = bodyStream.ToArray();
 
@@ -221,11 +253,13 @@ namespace Skate3Server.Blaze.Serializer
             Logger.Debug(
                 $"Response ^; Length:{bodyStreamBytes.Length} Component:{requestHeader.Component} Command:{requestHeader.Command} ErrorCode:{requestHeader.ErrorCode} MessageType:{messageType} MessageId:{requestHeader.MessageId}");
 
+            Logger.Trace($"Response generated:{Environment.NewLine}{responseSb}");
+
             output.Write(headerStreamBytes);
             output.Write(bodyStreamBytes);
         }
 
-        private void SerializeObjectProperties(Stream output, object target)
+        private void SerializeObjectProperties(Stream output, object target, StringBuilder responseSb)
         {
             var metadata = GetTdfMetadata(target.GetType());
             foreach (var meta in metadata.Values)
@@ -234,18 +268,29 @@ namespace Skate3Server.Blaze.Serializer
                 var propertyValue = meta.Property.GetValue(target);
                 var tdfData = TdfHelper.GetTdfTypeAndLength(propertyType, propertyValue);
 
+
                 TdfHelper.WriteLabel(output, meta.Attribute.Tag);
                 TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
 
-                SerializeType(output, propertyType, propertyValue);
+                responseSb.AppendLine($"{meta.Attribute.Tag} {tdfData.Type} {tdfData.Length}");
+
+                SerializeType(output, propertyType, propertyValue, responseSb);
             }
         }
 
-        private void SerializeType(Stream output, Type propertyType, object propertyValue)
+        private void SerializeType(Stream output, Type propertyType, object propertyValue, StringBuilder responseSb)
         {
+            //handle enum types
+            if (propertyType.IsEnum)
+            {
+                propertyType = Enum.GetUnderlyingType(propertyType);
+            }
+
+            //type handling
             if (propertyType == typeof(string)) //string
             {
                 var value = (string)propertyValue;
+                responseSb.AppendLine($"{value}");
                 //TODO: double check utf8
                 output.Write(Encoding.UTF8.GetBytes(value));
                 output.WriteByte(0x0); //terminate string
@@ -253,17 +298,20 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(bool)) //Int8 (bool)
             {
                 var value = (bool)propertyValue;
+                responseSb.AppendLine($"{Convert.ToByte(value)}");
                 output.WriteByte(Convert.ToByte(value));
             }
             else if (propertyType == typeof(byte)) //Uint8
             {
                 var value = (byte)propertyValue;
+                responseSb.AppendLine($"{value}");
                 output.WriteByte(value);
             }
             //TODO: condense int conversion
             else if (propertyType == typeof(short)) //Int16
             {
                 var value = (short)propertyValue;
+                responseSb.AppendLine($"{value}");
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -271,6 +319,7 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(ushort)) //Uint16
             {
                 var value = (ushort)propertyValue;
+                responseSb.AppendLine($"{value}");
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -278,6 +327,7 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(int)) //Int32
             {
                 var value = (int)propertyValue;
+                responseSb.AppendLine($"{value}");
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -285,6 +335,7 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(uint)) //Uint32
             {
                 var value = (uint)propertyValue;
+                responseSb.AppendLine($"{value}");
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -292,6 +343,7 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(long)) //Int64
             {
                 var value = (long)propertyValue;
+                responseSb.AppendLine($"{value}");
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -299,6 +351,7 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType == typeof(ulong)) //Uint64
             {
                 var value = (ulong)propertyValue;
+                responseSb.AppendLine($"{value}");
                 var valueBytes = BitConverter.GetBytes(value);
                 Array.Reverse(valueBytes); //big endian
                 output.Write(valueBytes);
@@ -312,14 +365,17 @@ namespace Skate3Server.Blaze.Serializer
                 var listValueType = propertyType.GetGenericArguments()[0];
                 var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, null);
                 TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
+                responseSb.AppendLine($"{tdfData.Type} {tdfData.Length} {listValues.Count}");
+
                 foreach (var item in listValues)
                 {
-                    SerializeType(output, listValueType, item);
+                    SerializeType(output, listValueType, item, responseSb);
                 }
             }
             else if (propertyType == typeof(byte[])) //Blob
             {
                 var value = (byte[])propertyValue;
+                responseSb.AppendLine("<blob>");
                 output.Write(value);
             }
             else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Dictionary<,>)) //Map
@@ -352,7 +408,9 @@ namespace Skate3Server.Blaze.Serializer
                         {
                             TdfHelper.WriteTypeAndLength(output, keyTdfData.Type, keyTdfData.Length);
                         }
-                        SerializeType(output, mapKeyType, keyValue);
+                        responseSb.AppendLine($"{keyTdfData.Type} {keyTdfData.Length}");
+                        SerializeType(output, mapKeyType, keyValue, responseSb);
+
                         if (valueTdfData.Type != TdfType.Struct)
                         {
                             TdfHelper.WriteType(output, valueTdfData.Type);
@@ -362,7 +420,8 @@ namespace Skate3Server.Blaze.Serializer
                         {
                             TdfHelper.WriteTypeAndLength(output, valueTdfData.Type, valueTdfData.Length);
                         }
-                        SerializeType(output, mapValueType, valueValue);
+                        responseSb.AppendLine($"{valueTdfData.Type} {valueTdfData.Length}");
+                        SerializeType(output, mapValueType, valueValue, responseSb);
                     }
                     else
                     {
@@ -370,12 +429,15 @@ namespace Skate3Server.Blaze.Serializer
                         {
                             TdfHelper.WriteLength(output, keyTdfData.Length);
                         }
-                        SerializeType(output, mapKeyType, keyValue);
+                        responseSb.AppendLine($"{keyTdfData.Type} {keyTdfData.Length}");
+                        SerializeType(output, mapKeyType, keyValue, responseSb);
+
                         if (valueTdfData.Type != TdfType.Struct)
                         {
                             TdfHelper.WriteLength(output, valueTdfData.Length);
                         }
-                        SerializeType(output, mapValueType, valueValue);
+                        responseSb.AppendLine($"{valueTdfData.Type} {valueTdfData.Length}");
+                        SerializeType(output, mapValueType, valueValue, responseSb);
                     }
                     index++;
                 }
@@ -390,12 +452,17 @@ namespace Skate3Server.Blaze.Serializer
                 output.WriteByte(keyValue);
                 TdfHelper.WriteLabel(output, "VALU");
                 TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
-                SerializeType(output, unionValueType, valueValue);
+                responseSb.AppendLine($"{keyValue}");
+                responseSb.AppendLine($"{tdfData.Type} {tdfData.Length}");
+
+                SerializeType(output, unionValueType, valueValue, responseSb);
             }
             else if (propertyType.IsClass) //Struct?
             {
-                SerializeObjectProperties(output, propertyValue);
+                responseSb.AppendLine($"<start struct>");
+                SerializeObjectProperties(output, propertyValue, responseSb);
                 output.WriteByte(0x0); //terminate struct
+                responseSb.AppendLine($"<end struct>");
             }
         }
 

@@ -36,7 +36,7 @@ namespace Skate3Server.Host
 
                     try
                     {
-                        if (_parser.TryParse(ref buffer, out var processedLength ))
+                        if (_parser.TryParseRequest(ref buffer, out var processedLength ))
                         {
                             Logger.Debug($"Buffer length: {buffer.Length}");
                             consumed = processedLength;

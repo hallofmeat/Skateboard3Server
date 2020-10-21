@@ -8,7 +8,9 @@ namespace Skate3Server.Blaze
 {
     public interface IBlazeDebugParser
     {
-        bool TryParse(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition);
+        bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition);
+        bool TryParseResponseHeader(ref ReadOnlySequence<byte> buffer, out BlazeHeader header);
+        bool TryParseResponseBody(ref ReadOnlySequence<byte> buffer);
     }
 
     /// <summary>
@@ -18,10 +20,11 @@ namespace Skate3Server.Blaze
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public bool TryParse(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition)
+
+        public bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition)
         {
             var messageHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
-            Logger.Trace(messageHex);
+            Logger.Trace($"Request Message: {messageHex}");
 
             var reader = new SequenceReader<byte>(buffer);
             var header = new BlazeHeader();
@@ -33,7 +36,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Length = (ushort) messageLength;
+            header.Length = (ushort)messageLength;
 
             if (!reader.TryReadBigEndian(out short component))
             {
@@ -49,7 +52,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.Command = (ushort) command;
+            header.Command = (ushort)command;
 
             if (!reader.TryReadBigEndian(out short errorCode))
             {
@@ -57,7 +60,7 @@ namespace Skate3Server.Blaze
                 return false;
             }
 
-            header.ErrorCode = (ushort) errorCode;
+            header.ErrorCode = (ushort)errorCode;
 
             if (!reader.TryReadBigEndian(out int message))
             {
@@ -69,7 +72,7 @@ namespace Skate3Server.Blaze
             header.MessageId = message & 0xFFFFF;
 
             Logger.Debug(
-                $"Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+                $"Request; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
             //Empty message
             if (header.Length == 0)
@@ -106,7 +109,92 @@ namespace Skate3Server.Blaze
 
                 Logger.Debug($"Decoded:{Environment.NewLine}{payloadStringBuilder}");
             }
-            catch(Exception e)
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                Logger.Debug($"Partial Decode:{Environment.NewLine}{payloadStringBuilder}");
+            }
+
+            return true;
+        }
+
+
+        public bool TryParseResponseHeader(ref ReadOnlySequence<byte> buffer, out BlazeHeader header)
+        {
+            var headerHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
+            Logger.Trace($"Response Header: {headerHex}");
+
+            var reader = new SequenceReader<byte>(buffer);
+            header = new BlazeHeader();
+
+            //Parse header
+            if (!reader.TryReadBigEndian(out short messageLength))
+            {
+                return false;
+            }
+
+            header.Length = (ushort)messageLength;
+
+            Logger.Debug(
+                $"Response; Header Length:{header.Length}");
+
+            if (!reader.TryReadBigEndian(out short component))
+            {
+                return false;
+            }
+
+            header.Component = (BlazeComponent)(ushort)component;
+
+            if (!reader.TryReadBigEndian(out short command))
+            {
+                return false;
+            }
+
+            header.Command = (ushort)command;
+
+            if (!reader.TryReadBigEndian(out short errorCode))
+            {
+                return false;
+            }
+
+            header.ErrorCode = (ushort)errorCode;
+
+            if (!reader.TryReadBigEndian(out int message))
+            {
+                return false;
+            }
+
+            header.MessageType = (BlazeMessageType)(message >> 28);
+            header.MessageId = message & 0xFFFFF;
+
+            Logger.Debug(
+                $"Response; Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+
+            //Empty message
+            return true;
+        }
+
+        public bool TryParseResponseBody(ref ReadOnlySequence<byte> buffer)
+        {
+            var bodyHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
+            Logger.Trace($"Response Body: {bodyHex}");
+
+            var payloadReader = new SequenceReader<byte>(buffer);
+
+            var payloadStringBuilder = new StringBuilder();
+
+            var state = new ParserState();
+
+            try
+            {
+                while (!payloadReader.End)
+                {
+                    ParseObject(ref payloadReader, payloadStringBuilder, state);
+                }
+
+                Logger.Debug($"Decoded:{Environment.NewLine}{payloadStringBuilder}");
+            }
+            catch (Exception e)
             {
                 Logger.Error(e);
                 Logger.Debug($"Partial Decode:{Environment.NewLine}{payloadStringBuilder}");
@@ -189,6 +277,7 @@ namespace Skate3Server.Blaze
                     payloadStringBuilder.AppendLine($"<array start>");
                     payloadReader.TryRead(out byte elementCount);
                     var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    payloadStringBuilder.AppendLine($"{typeData.Type} {typeData.Length} {elementCount}");
                     for (var i = 0; i < elementCount; i++)
                     {
                         ParseType(ref payloadReader, payloadStringBuilder, typeData.Type, typeData.Length, state);
@@ -204,8 +293,10 @@ namespace Skate3Server.Blaze
                     //Length is the number of elements
                     payloadStringBuilder.AppendLine($"<map start>");
                     var keyTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    payloadStringBuilder.AppendLine($"{keyTypeData.Type} {keyTypeData.Length}");
                     ParseType(ref payloadReader, payloadStringBuilder, keyTypeData.Type, keyTypeData.Length, state);
                     var valueTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    payloadStringBuilder.AppendLine($"{valueTypeData.Type} {valueTypeData.Length}");
                     ParseType(ref payloadReader, payloadStringBuilder, valueTypeData.Type, valueTypeData.Length, state);
                     var keyType = keyTypeData.Type;
                     var valueType = valueTypeData.Type;
@@ -217,25 +308,28 @@ namespace Skate3Server.Blaze
                         {
                             keyLength = TdfHelper.ParseLength(ref payloadReader);
                         }
+                        payloadStringBuilder.AppendLine($"{keyTypeData.Type} {keyLength}");
                         ParseType(ref payloadReader, payloadStringBuilder, keyTypeData.Type, keyLength, state);
                         var valueLength = valueTypeData.Length;
                         if (valueType == TdfType.String)
                         {
                             valueLength = TdfHelper.ParseLength(ref payloadReader);
                         }
+                        payloadStringBuilder.AppendLine($"{valueTypeData.Type} {valueLength}");
                         ParseType(ref payloadReader, payloadStringBuilder, valueTypeData.Type, valueLength, state);
                     }
                     payloadStringBuilder.AppendLine($"<map end>");
                     break;
                 case TdfType.Union:
+                    payloadStringBuilder.AppendLine($"<union start>");
                     //TODO print key/value type
                     payloadReader.Advance(length);
                     payloadReader.TryRead(out byte key);
-                    payloadStringBuilder.AppendLine($"<union key>");
                     payloadStringBuilder.AppendLine($"{key}");
                     //VALU
-                    payloadStringBuilder.AppendLine($"<union value>");
-                    ParseObject(ref payloadReader, payloadStringBuilder, state);
+                    var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                    payloadStringBuilder.AppendLine($"{valuTypeData.Type} {valuTypeData.Length}");
+                    ParseType(ref payloadReader, payloadStringBuilder, valuTypeData.Type, valuTypeData.Length, state);
                     break;
                 default:
                     Logger.Debug($"Partial Decode:{Environment.NewLine}{payloadStringBuilder}");
