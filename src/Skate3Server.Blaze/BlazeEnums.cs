@@ -33,13 +33,13 @@
         Struct = 0x0,   //class
         String = 0x1,   //string
         Int8 = 0x2,     //bool
-        Uint8 = 0x3,    //byte
+        UInt8 = 0x3,    //byte
         Int16 = 0x4,    //short
-        Uint16 = 0x5,   //ushort
+        UInt16 = 0x5,   //ushort
         Int32 = 0x6,    //int
-        Uint32 = 0x7,   //uint
+        UInt32 = 0x7,   //uint
         Int64 = 0x8,    //long
-        Uint64 = 0x9,   //ulong
+        UInt64 = 0x9,   //ulong
         Array = 0xa,    //List<T>
         Blob = 0xb,     //byte[]
         Map = 0xc,      //Dictionary<T,T>

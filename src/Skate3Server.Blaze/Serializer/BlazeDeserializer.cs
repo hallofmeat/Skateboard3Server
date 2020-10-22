@@ -87,7 +87,7 @@ namespace Skate3Server.Blaze.Serializer
                     payloadReader.TryRead(out byte int8);
                     requestSb.AppendLine($"{int8}");
                     return Convert.ToBoolean(int8);
-                case TdfType.Uint8:
+                case TdfType.UInt8:
                     payloadReader.TryRead(out byte uint8);
                     requestSb.AppendLine($"{uint8}");
                     return uint8;
@@ -95,7 +95,7 @@ namespace Skate3Server.Blaze.Serializer
                     payloadReader.TryReadBigEndian(out short int16);
                     requestSb.AppendLine($"{int16}");
                     return int16;
-                case TdfType.Uint16:
+                case TdfType.UInt16:
                     payloadReader.TryReadBigEndian(out short uint16);
                     requestSb.AppendLine($"{uint16}");
                     return (ushort) uint16;
@@ -103,7 +103,7 @@ namespace Skate3Server.Blaze.Serializer
                     payloadReader.TryReadBigEndian(out int int32);
                     requestSb.AppendLine($"{int32}");
                     return int32;
-                case TdfType.Uint32:
+                case TdfType.UInt32:
                     payloadReader.TryReadBigEndian(out int uint32);
                     requestSb.AppendLine($"{uint32}");
                     return (uint) uint32;
@@ -111,7 +111,7 @@ namespace Skate3Server.Blaze.Serializer
                     payloadReader.TryReadBigEndian(out long int64);
                     requestSb.AppendLine($"{int64}");
                     return int64;
-                case TdfType.Uint64:
+                case TdfType.UInt64:
                     payloadReader.TryReadBigEndian(out long uint64);
                     requestSb.AppendLine($"{uint64}");
                     return (ulong) uint64;

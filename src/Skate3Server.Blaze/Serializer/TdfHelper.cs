@@ -164,7 +164,7 @@ namespace Skate3Server.Blaze.Serializer
             }
             if (type == typeof(byte)) //Uint8
             {
-                return (TdfType.Uint8, 0x1);
+                return (TdfType.UInt8, 0x1);
             }
             if (type == typeof(short)) //Int16
             {
@@ -172,7 +172,7 @@ namespace Skate3Server.Blaze.Serializer
             }
             if (type == typeof(ushort)) //Uint16
             {
-                return (TdfType.Uint16, 0x2);
+                return (TdfType.UInt16, 0x2);
             }
             if (type == typeof(int)) //Int32
             {
@@ -180,7 +180,7 @@ namespace Skate3Server.Blaze.Serializer
             }
             if (type == typeof(uint)) //Uint32
             {
-                return (TdfType.Uint32, 0x4);
+                return (TdfType.UInt32, 0x4);
             }
             if (type == typeof(long)) //Int64
             {
@@ -188,7 +188,7 @@ namespace Skate3Server.Blaze.Serializer
             }
             if (type == typeof(ulong)) //Uint64
             {
-                return (TdfType.Uint64, 0x8);
+                return (TdfType.UInt64, 0x8);
             }
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) //Array
             {

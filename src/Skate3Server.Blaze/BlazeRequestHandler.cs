@@ -8,7 +8,7 @@ namespace Skate3Server.Blaze
 {
     public interface IBlazeRequestHandler
     {
-        Task ProcessRequest(BlazeHeader header, object request, Stream output);
+        Task ProcessRequest(Stream output, BlazeHeader requestHeader, object request);
     }
 
     public class BlazeRequestHandler : IBlazeRequestHandler
@@ -23,19 +23,26 @@ namespace Skate3Server.Blaze
             _blazeSerializer = blazeSerializer;
         }
 
-        public async Task ProcessRequest(BlazeHeader header, object request, Stream output)
+        public async Task ProcessRequest(Stream output, BlazeHeader requestHeader, object request)
         {
 
             var response = (BlazeResponse) await _mediator.Send(request);
-            //TODO: refine signature
-            _blazeSerializer.Serialize(output, header, BlazeMessageType.Reply, response);
+            var header = new BlazeHeader
+            {
+                Component = requestHeader.Component,
+                Command = requestHeader.Command,
+                ErrorCode = 0,
+                MessageType = BlazeMessageType.Reply,
+                MessageId = requestHeader.MessageId
+            };
+            _blazeSerializer.Serialize(output, header, response);
 
             //TODO: this is bad but works for now
             if (response != null)
             {
                 foreach (var note in response.Notifications)
                 {
-                    _blazeSerializer.Serialize(output, note.Key, BlazeMessageType.Notification, note.Value);
+                    _blazeSerializer.Serialize(output, note.Key, note.Value);
                 }
             }
         }

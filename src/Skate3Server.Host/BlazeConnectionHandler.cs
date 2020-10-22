@@ -61,7 +61,7 @@ namespace Skate3Server.Host
                             examined = consumed;
 
                             //TODO: remove stream?
-                            await _handler.ProcessRequest(header, request, writer.AsStream());
+                            await _handler.ProcessRequest(writer.AsStream(), header, request);
                             await writer.FlushAsync();
                         }
                         else

@@ -11,14 +11,14 @@ namespace Skate3Server.Blaze.Serializer
 {
     public interface IBlazeSerializer
     {
-        void Serialize(Stream output, BlazeHeader requestHeader, BlazeMessageType messageType, object payload);
+        void Serialize(Stream output, BlazeHeader responseHeader, object payload);
     }
 
     public class BlazeSerializer : IBlazeSerializer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public void Serialize(Stream output, BlazeHeader requestHeader, BlazeMessageType messageType, object payload)
+        public void Serialize(Stream output, BlazeHeader responseHeader, object payload)
         {
             //Debug
             var responseSb = new StringBuilder();
@@ -36,20 +36,20 @@ namespace Skate3Server.Blaze.Serializer
             Array.Reverse(length);//big endian
             headerStream.Write(length);
             //Component
-            var component = BitConverter.GetBytes((ushort)requestHeader.Component);
+            var component = BitConverter.GetBytes((ushort)responseHeader.Component);
             Array.Reverse(component);//big endian
             headerStream.Write(component);
             //Command
-            var command = BitConverter.GetBytes(requestHeader.Command);
+            var command = BitConverter.GetBytes(responseHeader.Command);
             Array.Reverse(command);//big endian
             headerStream.Write(command);
             //ErrorCode
-            var errorCode = BitConverter.GetBytes(Convert.ToUInt16(0));
+            var errorCode = BitConverter.GetBytes(responseHeader.ErrorCode);
             Array.Reverse(errorCode);//big endian
             headerStream.Write(errorCode);
             //MessageType/MessageId
             var messageData =
-                BitConverter.GetBytes((int)messageType << 28 | requestHeader.MessageId);
+                BitConverter.GetBytes((int)responseHeader.MessageType << 28 | responseHeader.MessageId);
             Array.Reverse(messageData);//big endian
             headerStream.Write(messageData);
             var headerStreamBytes = headerStream.ToArray();
@@ -60,7 +60,7 @@ namespace Skate3Server.Blaze.Serializer
             Logger.Trace($"{headerHex} {payloadHex}");
 
             Logger.Debug(
-                $"Response ^; Length:{bodyStreamBytes.Length} Component:{requestHeader.Component} Command:{requestHeader.Command} ErrorCode:{requestHeader.ErrorCode} MessageType:{messageType} MessageId:{requestHeader.MessageId}");
+                $"Response ^; Length:{bodyStreamBytes.Length} Component:{responseHeader.Component} Command:{responseHeader.Command} ErrorCode:{responseHeader.ErrorCode} MessageType:{responseHeader.MessageType} MessageId:{responseHeader.MessageId}");
 
             Logger.Trace($"Response generated:{Environment.NewLine}{responseSb}");
 
@@ -68,7 +68,7 @@ namespace Skate3Server.Blaze.Serializer
             output.Write(bodyStreamBytes);
         }
 
-        private void SerializeObjectProperties(Stream output, object target, StringBuilder responseSb)
+        public void SerializeObjectProperties(Stream output, object target, StringBuilder responseSb)
         {
             var metadata = TdfHelper.GetTdfMetadata(target.GetType());
             foreach (var meta in metadata.Values)
@@ -87,7 +87,7 @@ namespace Skate3Server.Blaze.Serializer
             }
         }
 
-        private void SerializeType(Stream output, Type propertyType, object propertyValue, StringBuilder responseSb)
+        public void SerializeType(Stream output, Type propertyType, object propertyValue, StringBuilder responseSb)
         {
             //handle enum types
             if (propertyType.IsEnum)

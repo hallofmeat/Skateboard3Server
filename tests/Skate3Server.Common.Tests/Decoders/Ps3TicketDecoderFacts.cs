@@ -3,7 +3,7 @@ using Skate3Server.Common.Decoders;
 using Skate3Server.Common.Models;
 using Xunit;
 
-namespace Skate3Server.Common.Tests
+namespace Skate3Server.Common.Tests.Decoders
 {
     public class Ps3TicketDecoderFacts
     {

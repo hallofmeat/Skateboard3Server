@@ -243,7 +243,7 @@ namespace Skate3Server.Blaze
                     payloadReader.TryRead(out byte int8);
                     payloadStringBuilder.AppendLine($"{int8}");
                     break;
-                case TdfType.Uint8:
+                case TdfType.UInt8:
                     payloadReader.TryRead(out byte uint8);
                     payloadStringBuilder.AppendLine($"{uint8}");
                     break;
@@ -251,7 +251,7 @@ namespace Skate3Server.Blaze
                     payloadReader.TryReadBigEndian(out short int16);
                     payloadStringBuilder.AppendLine($"{int16}");
                     break;
-                case TdfType.Uint16:
+                case TdfType.UInt16:
                     payloadReader.TryReadBigEndian(out short uint16);
                     payloadStringBuilder.AppendLine($"{(ushort) uint16}");
                     break;
@@ -259,7 +259,7 @@ namespace Skate3Server.Blaze
                     payloadReader.TryReadBigEndian(out int int32);
                     payloadStringBuilder.AppendLine($"{int32}");
                     break;
-                case TdfType.Uint32:
+                case TdfType.UInt32:
                     payloadReader.TryReadBigEndian(out int uint32);
                     payloadStringBuilder.AppendLine($"{(uint) uint32}");
                     break;
@@ -267,7 +267,7 @@ namespace Skate3Server.Blaze
                     payloadReader.TryReadBigEndian(out long int64);
                     payloadStringBuilder.AppendLine($"{int64}");
                     break;
-                case TdfType.Uint64:
+                case TdfType.UInt64:
                     payloadReader.TryReadBigEndian(out long uint64);
                     payloadStringBuilder.AppendLine($"{(ulong) uint64}");
                     break;
