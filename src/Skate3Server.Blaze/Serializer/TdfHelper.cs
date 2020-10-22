@@ -3,7 +3,9 @@ using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Serializer
 {
@@ -213,6 +215,17 @@ namespace Skate3Server.Blaze.Serializer
 
             throw new ArgumentOutOfRangeException($"Unknown TdfType mapping for  {type}");
 
+        }
+
+        public static Dictionary<string, SerializerTdfMetadata> GetTdfMetadata(Type sourceType)
+        {
+            //Get dictionary for tag -> property/attribute
+            //TODO: cache this
+            return (from p in sourceType.GetProperties()
+                let attributes = p.GetCustomAttributes(typeof(TdfFieldAttribute), true)
+                where attributes.Length == 1
+                let attr = attributes.Single() as TdfFieldAttribute
+                select new SerializerTdfMetadata { Property = p, Attribute = attr }).ToDictionary(key => key.Attribute.Tag);
         }
 
     }

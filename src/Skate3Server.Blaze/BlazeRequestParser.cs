@@ -12,13 +12,13 @@ namespace Skate3Server.Blaze
 
     public class BlazeRequestParser : IBlazeRequestParser
     {
-        private readonly IBlazeSerializer _blazeSerializer;
+        private readonly IBlazeDeserializer _blazeDeserializer;
         private readonly IBlazeTypeLookup _blazeTypeLookup;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public BlazeRequestParser(IBlazeSerializer blazeSerializer, IBlazeTypeLookup blazeTypeLookup)
+        public BlazeRequestParser(IBlazeDeserializer blazeDeserializer, IBlazeTypeLookup blazeTypeLookup)
         {
-            _blazeSerializer = blazeSerializer;
+            _blazeDeserializer = blazeDeserializer;
             _blazeTypeLookup = blazeTypeLookup;
         }
 
@@ -92,7 +92,7 @@ namespace Skate3Server.Blaze
             {
                 try
                 {
-                    request = _blazeSerializer.Deserialize(ref payload, requestType);
+                    request = _blazeDeserializer.Deserialize(ref payload, requestType);
                     return true;
                 }
                 catch (Exception e)
