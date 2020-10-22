@@ -101,7 +101,7 @@ namespace Skate3Server.Blaze.Serializer
                 var value = (string)propertyValue;
                 responseSb.AppendLine($"{value}");
                 //TODO: double check utf8
-                output.Write(Encoding.UTF8.GetBytes(value));
+                output.Write(Encoding.ASCII.GetBytes(value));
                 output.WriteByte(0x0); //terminate string
             }
             else if (propertyType == typeof(bool)) //Int8 (bool)
@@ -255,16 +255,19 @@ namespace Skate3Server.Blaze.Serializer
             {
                 var keyValue = (byte) propertyType.GetProperty("Key")?.GetValue(propertyValue);
                 var valueValue = propertyType.GetProperty("Value")?.GetValue(propertyValue);
-                var unionValueType = propertyType.GetGenericArguments()[1];
-                var tdfData = TdfHelper.GetTdfTypeAndLength(unionValueType, valueValue);
 
                 output.WriteByte(keyValue);
-                TdfHelper.WriteLabel(output, "VALU");
-                TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
                 responseSb.AppendLine($"{keyValue}");
-                responseSb.AppendLine($"{tdfData.Type} {tdfData.Length}");
+                if (valueValue != null) //VALU is not set if value is null
+                {
+                    var unionValueType = propertyType.GetGenericArguments()[1];
+                    var tdfData = TdfHelper.GetTdfTypeAndLength(unionValueType, valueValue);
+                    TdfHelper.WriteLabel(output, "VALU");
+                    TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
+                    responseSb.AppendLine($"{tdfData.Type} {tdfData.Length}");
 
-                SerializeType(output, unionValueType, valueValue, responseSb);
+                    SerializeType(output, unionValueType, valueValue, responseSb);
+                }
             }
             else if (propertyType.IsClass) //Struct?
             {

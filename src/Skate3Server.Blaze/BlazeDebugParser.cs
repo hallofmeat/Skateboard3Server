@@ -236,7 +236,7 @@ namespace Skate3Server.Blaze
                     var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
                     payloadReader.Advance(length);
                     //TODO: figure out if utf8
-                    var str = Encoding.UTF8.GetString(byteStr.ToArray()).TrimEnd('\0');
+                    var str = Encoding.ASCII.GetString(byteStr.ToArray()).TrimEnd('\0');
                     payloadStringBuilder.AppendLine($"{str}");
                     break;
                 case TdfType.Int8:
@@ -272,7 +272,6 @@ namespace Skate3Server.Blaze
                     payloadStringBuilder.AppendLine($"{(ulong) uint64}");
                     break;
                 case TdfType.Array:
-                    //TODO print key/value type
                     //Length is the number of dimensions //TODO: handle multidimensional
                     payloadStringBuilder.AppendLine($"<array start>");
                     payloadReader.TryRead(out byte elementCount);
@@ -289,7 +288,6 @@ namespace Skate3Server.Blaze
                     payloadStringBuilder.AppendLine($"<blob>");
                     break;
                 case TdfType.Map:
-                    //TODO print key/value type
                     //Length is the number of elements
                     payloadStringBuilder.AppendLine($"<map start>");
                     var keyTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
@@ -322,14 +320,26 @@ namespace Skate3Server.Blaze
                     break;
                 case TdfType.Union:
                     payloadStringBuilder.AppendLine($"<union start>");
-                    //TODO print key/value type
                     payloadReader.Advance(length);
                     payloadReader.TryRead(out byte key);
                     payloadStringBuilder.AppendLine($"{key}");
                     //VALU
-                    var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
-                    payloadStringBuilder.AppendLine($"{valuTypeData.Type} {valuTypeData.Length}");
-                    ParseType(ref payloadReader, payloadStringBuilder, valuTypeData.Type, valuTypeData.Length, state);
+                    byte readTemp; //TODO this is gross, but VALU can be optional if value is null
+                    if (payloadReader.TryPeek(out readTemp) && readTemp == 0xDA)
+                    {
+                        payloadReader.Advance(1);
+                        if (payloadReader.TryPeek(out readTemp) && readTemp == 0x1B)
+                        {
+                            payloadReader.Advance(1);
+                            if (payloadReader.TryPeek(out readTemp) && readTemp == 0x35)
+                            {
+                                var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                                payloadStringBuilder.AppendLine($"{valuTypeData.Type} {valuTypeData.Length}");
+                                ParseType(ref payloadReader, payloadStringBuilder, valuTypeData.Type,
+                                    valuTypeData.Length, state);
+                            }
+                        }
+                    }
                     break;
                 default:
                     Logger.Debug($"Partial Decode:{Environment.NewLine}{payloadStringBuilder}");

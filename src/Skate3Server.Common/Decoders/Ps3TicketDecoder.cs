@@ -94,7 +94,7 @@ namespace Skate3Server.Common.Decoders
             //online_id
             var usernameHeader = ReadValueHeader(reader);
             //TODO: confirm utf8
-            body.Username = Encoding.UTF8.GetString(reader.ReadBytes(usernameHeader.Length)).TrimEnd('\0');
+            body.Username = Encoding.ASCII.GetString(reader.ReadBytes(usernameHeader.Length)).TrimEnd('\0');
 
             //region/lang
             var regionHeader = ReadValueHeader(reader);
@@ -151,7 +151,7 @@ namespace Skate3Server.Common.Decoders
             //online_id
             var usernameHeader = ReadValueHeader(reader);
             //TODO: confirm utf8
-            body.Username = Encoding.UTF8.GetString(reader.ReadBytes(usernameHeader.Length)).TrimEnd('\0');
+            body.Username = Encoding.ASCII.GetString(reader.ReadBytes(usernameHeader.Length)).TrimEnd('\0');
 
             //region/lang
             var regionHeader = ReadValueHeader(reader);

@@ -80,7 +80,7 @@ namespace Skate3Server.Blaze.Serializer
                     var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
                     payloadReader.Advance(length);
                     //TODO: figure out if utf8
-                    var str = Encoding.UTF8.GetString(byteStr.ToArray()).TrimEnd('\0');
+                    var str = Encoding.ASCII.GetString(byteStr.ToArray()).TrimEnd('\0');
                     requestSb.AppendLine($"{str}");
                     return str;
                 case TdfType.Int8: //bool
@@ -185,17 +185,30 @@ namespace Skate3Server.Blaze.Serializer
                     payloadReader.Advance(length);
                     payloadReader.TryRead(out byte unionKey);
                     requestSb.AppendLine($"{unionKey}");
-                    //VALU
-                    var unionValueType = currentType.GetGenericArguments()[1];
-                    TdfHelper.ParseTag(ref payloadReader);
-                    var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
-                    requestSb.AppendLine($"{valuTypeData.Type} {valuTypeData.Length}");
-                    var unionParsed = ParseType(ref payloadReader, unionValueType, valuTypeData.Type,
-                        valuTypeData.Length, state, requestSb);
                     currentType.GetField("key", BindingFlags.Instance | BindingFlags.NonPublic)
                         ?.SetValue(unionTarget, unionKey);
-                    currentType.GetField("value", BindingFlags.Instance | BindingFlags.NonPublic)
-                        ?.SetValue(unionTarget, unionParsed);
+                    //VALU
+                    var unionValueType = currentType.GetGenericArguments()[1];
+                    byte readTemp; //TODO this is gross, but VALU can be optional if value is null
+                    if (payloadReader.TryPeek(out readTemp) && readTemp == 0xDA)
+                    {
+                        payloadReader.Advance(1);
+                        if (payloadReader.TryPeek(out readTemp) && readTemp == 0x1B)
+                        {
+                            payloadReader.Advance(1);
+                            if (payloadReader.TryPeek(out readTemp) && readTemp == 0x35)
+                            {
+                                payloadReader.Advance(1);
+                                //TdfHelper.ParseTag(ref payloadReader);
+                                var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
+                                requestSb.AppendLine($"{valuTypeData.Type} {valuTypeData.Length}");
+                                var unionParsed = ParseType(ref payloadReader, unionValueType, valuTypeData.Type,
+                                    valuTypeData.Length, state, requestSb);
+                                currentType.GetField("value", BindingFlags.Instance | BindingFlags.NonPublic)
+                                    ?.SetValue(unionTarget, unionParsed);
+                            }
+                        }
+                    }
                     return unionTarget;
                 default:
                     throw new ArgumentOutOfRangeException();
