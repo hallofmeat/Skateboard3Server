@@ -16,6 +16,7 @@ namespace Skate3Server.Host
             builder.RegisterType<BlazeRequestHandler>().As<IBlazeRequestHandler>();
             builder.RegisterType<BlazeRequestParser>().As<IBlazeRequestParser>();
             builder.RegisterType<BlazeSerializer>().As<IBlazeSerializer>();
+            builder.RegisterType<BlazeDeserializer>().As<IBlazeDeserializer>();
             builder.RegisterType<BlazeDebugParser>().As<IBlazeDebugParser>();
             builder.RegisterType<BlazeTypeLookup>().As<IBlazeTypeLookup>();
             builder.RegisterType<Ps3TicketDecoder>().As<IPs3TicketDecoder>();
