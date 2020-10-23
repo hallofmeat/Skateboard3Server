@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Handlers.Authentication.Messages;
 using Skate3Server.Blaze.Notifications.UserSession.Messages;
 using Skate3Server.Common.Decoders;
@@ -31,14 +32,14 @@ namespace Skate3Server.Blaze.Handlers.Authentication
             {
                 Agup = false,
                 Priv = "",
-                Session = new Session
+                Session = new LoginSession
                 {
                     BlazeId = 1234, //TODO
                     FirstLogin = false, //TODO
-                    Key = "12345678_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", //TODO
+                    BlazeKey = "12345678_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", //TODO
                     LastLoginTime = 1602965309, //TODO
                     Email = "",
-                    Profile = new Profile
+                    Profile = new LoginProfile
                     {
                         DisplayName = ticket.Body.Username, //TODO
                         LastUsed = 1602965280, //TODO
@@ -93,7 +94,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
             {
                 Data = new ExtendedData
                 {
-                    Address = new KeyValuePair<NetworkAddressType, string>(NetworkAddressType.Unset, ""),
+                    Address = new KeyValuePair<NetworkAddressType, string>(NetworkAddressType.Unset, null),
                     Bps = "",
                     Cty = "",
                     Dmap = new Dictionary<uint, int>
@@ -101,7 +102,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                         { 0x00070047 , 0 }
                     },
                     HardwareFlags = 0,
-                    NetworkData = new NetworkData
+                    NetworkData = new QosNetworkData
                     {
                         DownstreamBitsPerSecond = 0,
                         NatType = NatType.Open,

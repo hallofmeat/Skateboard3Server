@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Handlers.Redirector.Messages;
 
 namespace Skate3Server.Blaze.Handlers.Redirector
@@ -14,7 +15,7 @@ namespace Skate3Server.Blaze.Handlers.Redirector
         {
             var response = new ServerInfoResponse
             {
-                Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Client, new NetworkAddress
+                Address = new KeyValuePair<NetworkAddressType, ServerNetworkAddress>(NetworkAddressType.Server, new ServerNetworkAddress
                 {
                     Host = BlazeConfig.BlazeHost,
                     Ip = Convert.ToUInt32(IPAddress.Parse(BlazeConfig.BlazeIp).Address),

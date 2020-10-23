@@ -28,14 +28,14 @@ namespace Skate3Server.Blaze
 
         public async Task ProcessRequest(Stream output, BlazeHeader requestHeader, object request)
         {
-            //Send pending notifications
-            while(!_pendingNotifications.IsEmpty)
-            {
-                if (_pendingNotifications.TryDequeue(out var notification))
-                {
-                    _blazeSerializer.Serialize(output, notification.Header, notification.Body);
-                }
-            }
+            ////Send pending notifications
+            //while(!_pendingNotifications.IsEmpty)
+            //{
+            //    if (_pendingNotifications.TryDequeue(out var notification))
+            //    {
+            //        _blazeSerializer.Serialize(output, notification.Header, notification.Body);
+            //    }
+            //}
 
             //Send response
             var response = (BlazeResponse) await _mediator.Send(request);
@@ -49,13 +49,23 @@ namespace Skate3Server.Blaze
             };
             _blazeSerializer.Serialize(output, header, response);
 
-            //Enqueue new notifications
+            ////Enqueue new notifications
+            ////TODO: this is bad but works for now
+            //if (response != null)
+            //{
+            //    foreach (var note in response.Notifications)
+            //    {
+            //        _pendingNotifications.Enqueue(new Notification { Header = note.Key, Body = note.Value});
+            //    }
+            //}
+
+            //Send new notifications
             //TODO: this is bad but works for now
             if (response != null)
             {
                 foreach (var note in response.Notifications)
                 {
-                    _pendingNotifications.Enqueue(new Notification { Header = note.Key, Body = note.Value});
+                    _blazeSerializer.Serialize(output, note.Key, note.Value);
                 }
             }
         }

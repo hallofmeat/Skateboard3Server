@@ -16,14 +16,14 @@ namespace Skate3Server.Blaze.Handlers.Util
                 ComponentIds = new List<ushort>
                 {
                     (ushort) BlazeComponent.Authentication,
-                    (ushort) BlazeComponent.GameManager,
-                    (ushort) BlazeComponent.Stats,
+                    (ushort) BlazeComponent.Unknown04,
+                    (ushort) BlazeComponent.Unknown07,
                     (ushort) BlazeComponent.Unknown08,
                     (ushort) BlazeComponent.Util,
                     (ushort) BlazeComponent.Unknown0B,
-                    (ushort) BlazeComponent.Unknown0C,
+                    (ushort) BlazeComponent.Stats,
                     (ushort) BlazeComponent.Unknown0F,
-                    (ushort) BlazeComponent.Unknown19,
+                    (ushort) BlazeComponent.Social,
                     (ushort) BlazeComponent.Unknown7800,
                     (ushort) BlazeComponent.UserSession,
                     (ushort) BlazeComponent.Unknown7803

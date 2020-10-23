@@ -3,6 +3,10 @@ using MediatR;
 using Skate3Server.Blaze;
 using Skate3Server.Blaze.Handlers.Authentication;
 using Skate3Server.Blaze.Handlers.Redirector;
+using Skate3Server.Blaze.Handlers.Social;
+using Skate3Server.Blaze.Handlers.Stats;
+using Skate3Server.Blaze.Handlers.Unknown0B;
+using Skate3Server.Blaze.Handlers.UserSession;
 using Skate3Server.Blaze.Handlers.Util;
 using Skate3Server.Blaze.Serializer;
 using Skate3Server.Common.Decoders;
@@ -39,6 +43,14 @@ namespace Skate3Server.Host
             builder.RegisterType<LoginHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<PostAuthHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<ClientMetricsHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<SessionDataHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<HardwareFlagsHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<FriendsListHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<NetworkInfoHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<SkateStatsHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<DlcHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<Unknown2700Handler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<Unknown1600Handler>().AsImplementedInterfaces().InstancePerDependency();
         }
     }
 }

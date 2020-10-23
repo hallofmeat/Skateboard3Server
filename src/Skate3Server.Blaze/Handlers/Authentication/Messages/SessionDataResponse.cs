@@ -2,29 +2,8 @@
 
 namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 {
-    [BlazeResponse(BlazeComponent.Authentication, 0xC8)]
-    public class LoginResponse : BlazeResponse
-    {
-        [TdfField("AGUP")]
-        public bool Agup { get; set; } //TODO
-
-        [TdfField("PRIV")]
-        public string Priv { get; set; } //TODO
-
-        [TdfField("SESS")]
-        public LoginSession Session { get; set; }
-
-        [TdfField("SPAM")]
-        public bool Spam { get; set; } //TODO
-
-        [TdfField("THST")]
-        public string TermsHost { get; set; }
-
-        [TdfField("TURI")]
-        public string TermsUrl { get; set; }
-    }
-
-    public class LoginSession
+    [BlazeResponse(BlazeComponent.Authentication, 0xE6)]
+    public class SessionDataResponse : BlazeResponse
     {
         [TdfField("BUID")]
         public uint BlazeId { get; set; }
@@ -33,7 +12,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         public bool FirstLogin { get; set; }
 
         [TdfField("KEY")]
-        public string BlazeKey { get; set; }
+        public string Key { get; set; }
 
         [TdfField("LLOG")]
         public long LastLoginTime { get; set; }
@@ -42,13 +21,13 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         public string Email { get; set; }
 
         [TdfField("PDTL")]
-        public LoginProfile Profile { get; set; }
+        public SessionDataProfile Profile { get; set; }
 
         [TdfField("UID")]
         public long UserId { get; set; }
     }
 
-    public class LoginProfile
+    public class SessionDataProfile
     {
         [TdfField("DSNM")]
         public string DisplayName { get; set; }

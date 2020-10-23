@@ -4,16 +4,16 @@
 
     public enum BlazeComponent : ushort
     {
-        Authentication = 0x1, //Guess?
-        GameManager = 0x4, //Guess?
+        Authentication = 0x1,
+        Unknown04 = 0x4,
         Redirector = 0x5,
-        Stats = 0x7, //Guess?
+        Unknown07 = 0x7,
         Unknown08 = 0x8,
-        Util = 0x9, //Guess?
+        Util = 0x9,
         Unknown0B = 0xB,
-        Unknown0C = 0xC,
+        Stats = 0xC,
         Unknown0F = 0xF,
-        Unknown19 = 0x19,
+        Social = 0x19, //Might be metadata?
         Unknown7800 = 0x7800,
         UserSession = 0x7802,
         Unknown7803 = 0x7803,
@@ -54,8 +54,8 @@
 
     public enum NetworkAddressType : byte
     {
-        Client = 0x0,
-        Server = 0x1,
+        Server = 0x0,
+        Client = 0x1,
         Pair = 0x2,
         Unset = 0x7F
     }

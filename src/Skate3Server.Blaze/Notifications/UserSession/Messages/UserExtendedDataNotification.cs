@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Notifications.UserSession.Messages
@@ -31,22 +32,9 @@ namespace Skate3Server.Blaze.Notifications.UserSession.Messages
         public uint HardwareFlags { get; set; }
 
         [TdfField("QDAT")]
-        public NetworkData NetworkData { get; set; }
+        public QosNetworkData NetworkData { get; set; }
 
         [TdfField("UATT")]
         public ulong Uatt { get; set; } //TODO
-    }
-
-    public class NetworkData
-    {
-        [TdfField("DBPS")]
-        public uint DownstreamBitsPerSecond { get; set; }
-
-        [TdfField("NATT")]
-        public NatType NatType { get; set; }
-
-        [TdfField("UBPS")]
-        public uint UpstreamBitsPerSecond { get; set; }
-
     }
 }
