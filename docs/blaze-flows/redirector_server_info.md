@@ -1,6 +1,6 @@
 # Redirector, Server Info
 
-This request returns details for the application specific blaze server, this is hosted on gosredirector port: 42100
+This is the first request ever sent to the blaze server. This request returns details for the application specific blaze server, this is hosted on gosredirector port: 42100
 
 ```mermaid
 sequenceDiagram

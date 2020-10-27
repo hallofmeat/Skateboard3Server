@@ -13,3 +13,15 @@ See [TdfFormat.md](TdfFormat.md) for more information on the binary protocol.
 
 See [blaze-flows](blaze-flows) for more information on flows used by Skate 3.
 
+Blaze servers used by Skate 3:
+
+* gosredirector
+  * Blaze server to redirect to application specific blaze servers
+* eadpgs-blapp001
+  * Application specific blaze server
+
+QoS servers used by Skate 3:
+
+* gosgvaprod-qos01
+* gosiadprod-qos01
+* gossjcprod-qos01
