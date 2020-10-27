@@ -37,7 +37,7 @@ namespace Skate3Server.Host
             {
                 while (true)
                 {
-                    var result = await reader.ReadAsync();
+                    var result = await reader.ReadAsync(); //TODO fix partial reads
                     var buffer = result.Buffer;
 
                     //We didnt read anything new (probably the end)
