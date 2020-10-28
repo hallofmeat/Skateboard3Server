@@ -1,5 +1,6 @@
 using Autofac;
 using MediatR;
+using Skate3Server.Api.Services;
 using Skate3Server.Blaze;
 using Skate3Server.Blaze.Handlers.Authentication;
 using Skate3Server.Blaze.Handlers.Redirector;
@@ -37,6 +38,7 @@ namespace Skate3Server.Host
                 return t => c.Resolve(t);
             });
 
+            //Blaze Message Handlers
             builder.RegisterType<ServerInfoHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<PreAuthHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<PingHandler>().AsImplementedInterfaces().InstancePerDependency();
@@ -51,6 +53,10 @@ namespace Skate3Server.Host
             builder.RegisterType<DlcHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<Unknown2700Handler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<Unknown1600Handler>().AsImplementedInterfaces().InstancePerDependency();
+
+            //Soap Services
+            builder.RegisterType<SkateFeedService>().As<ISkateFeedService>().SingleInstance();
+
         }
     }
 }

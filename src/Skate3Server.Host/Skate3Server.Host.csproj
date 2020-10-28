@@ -13,6 +13,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\Skate3Server.Api\Skate3Server.Api.csproj" />
     <ProjectReference Include="..\Skate3Server.Blaze\Skate3Server.Blaze.csproj" />
   </ItemGroup>
 

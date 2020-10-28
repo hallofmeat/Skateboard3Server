@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.2" />
+    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
   </ItemGroup>
 
 </Project>
