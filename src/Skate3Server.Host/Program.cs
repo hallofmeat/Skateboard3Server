@@ -41,6 +41,8 @@ namespace Skate3Server.Host
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
                         {
+                            //TODO: add connection logging middleware
+
                             //gosredirector (Blaze)
                             serverOptions.ListenAnyIP(42100,
                                 options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
@@ -48,21 +50,13 @@ namespace Skate3Server.Host
                             serverOptions.ListenAnyIP(10744,
                                 options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
                             //gostelemetry //TODO: no idea when this gets called
-                            serverOptions.ListenAnyIP(9946,
-                                options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
+                            //serverOptions.ListenAnyIP(9946,
+                            //    options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
                             //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
                             serverOptions.ListenAnyIP(17502);
                             //TODO qos UDP 17499
                             //downloads.skate.online (HTTP)
                             serverOptions.ListenAnyIP(80);
-                            //Debug
-                            //serverOptions.ListenLocalhost(5000, options =>
-                            //{
-                            //    //Debug setup
-                            //    var debugParser = new BlazeDebugParser();
-                            //    var handler = new BlazeDebugHandler(debugParser);
-                            //    options.Run(connection => handler.OnConnectedAsync(connection));
-                            //});
                         })
                         .UseStartup<Startup>();
                 });

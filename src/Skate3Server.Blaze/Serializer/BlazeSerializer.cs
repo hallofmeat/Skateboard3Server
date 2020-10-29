@@ -11,61 +11,20 @@ namespace Skate3Server.Blaze.Serializer
 {
     public interface IBlazeSerializer
     {
-        void Serialize(Stream output, BlazeHeader responseHeader, object payload);
+        void Serialize(Stream output, object payload);
     }
 
     public class BlazeSerializer : IBlazeSerializer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public void Serialize(Stream output, BlazeHeader responseHeader, object payload)
+        public void Serialize(Stream output, object payload)
         {
-            //Debug
             var responseSb = new StringBuilder();
 
-            //TODO: so many streams
-            var bodyStream = new MemoryStream();
-            SerializeObjectProperties(bodyStream, payload, responseSb);
-
-            var bodyStreamBytes = bodyStream.ToArray();
-
-            //Header
-            var headerStream = new MemoryStream();
-            //Length
-            var length = BitConverter.GetBytes(Convert.ToUInt16(bodyStreamBytes.Length));
-            Array.Reverse(length);//big endian
-            headerStream.Write(length);
-            //Component
-            var component = BitConverter.GetBytes((ushort)responseHeader.Component);
-            Array.Reverse(component);//big endian
-            headerStream.Write(component);
-            //Command
-            var command = BitConverter.GetBytes(responseHeader.Command);
-            Array.Reverse(command);//big endian
-            headerStream.Write(command);
-            //ErrorCode
-            var errorCode = BitConverter.GetBytes(responseHeader.ErrorCode);
-            Array.Reverse(errorCode);//big endian
-            headerStream.Write(errorCode);
-            //MessageType/MessageId
-            var messageData =
-                BitConverter.GetBytes((int)responseHeader.MessageType << 28 | responseHeader.MessageId);
-            Array.Reverse(messageData);//big endian
-            headerStream.Write(messageData);
-            var headerStreamBytes = headerStream.ToArray();
-
-            //For Debug
-            var headerHex = BitConverter.ToString(headerStreamBytes).Replace("-", " ");
-            var payloadHex = BitConverter.ToString(bodyStreamBytes).Replace("-", " ");
-            Logger.Trace($"{headerHex} {payloadHex}");
-
-            Logger.Debug(
-                $"Response ^; Length:{bodyStreamBytes.Length} Component:{responseHeader.Component} Command:{responseHeader.Command} ErrorCode:{responseHeader.ErrorCode} MessageType:{responseHeader.MessageType} MessageId:{responseHeader.MessageId}");
+            SerializeObjectProperties(output, payload, responseSb);
 
             Logger.Trace($"Response generated:{Environment.NewLine}{responseSb}");
-
-            output.Write(headerStreamBytes);
-            output.Write(bodyStreamBytes);
         }
 
         public void SerializeObjectProperties(Stream output, object target, StringBuilder responseSb)

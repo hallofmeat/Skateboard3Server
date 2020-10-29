@@ -1,6 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using NLog;
 using Skate3Server.Blaze;
@@ -11,87 +10,49 @@ namespace Skate3Server.Host
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IBlazeRequestParser _parser;
-        //private readonly BlazeDebugParser _debugParser;
-        private readonly IBlazeRequestHandler _handler;
-        private readonly IBlazeDebugParser _debugParser;
+        private readonly IBlazeMessageHandler _handler;
 
-        public BlazeConnectionHandler(IBlazeRequestParser parser, IBlazeRequestHandler handler, IBlazeDebugParser debugParser)
+        public BlazeConnectionHandler(IBlazeMessageHandler handler)
         {
-            _parser = parser;
-           // _debugParser = debugParser;
             _handler = handler;
-            _debugParser = debugParser;
         }
 
         public override async Task OnConnectedAsync(ConnectionContext connection)
         {
-            //https://devblogs.microsoft.com/dotnet/system-io-pipelines-high-performance-io-in-net/
-            //https://github.com/davidfowl/MultiProtocolAspNetCore
-            //https://docs.microsoft.com/en-us/dotnet/standard/io/pipelines
+            //TODO: DI
+            var protocol = new BlazeProtocol();
+            var reader = connection.CreateReader();
+            var writer = connection.CreateWriter();
 
-            var reader = connection.Transport.Input;
-            var writer = connection.Transport.Output;
-
-            try
+            while (true)
             {
-                while (true)
+                try
                 {
-                    var result = await reader.ReadAsync(); //TODO fix partial reads
-                    var buffer = result.Buffer;
+                    var result = await reader.ReadAsync(protocol);
+                    var message = result.Message;
 
-                    //We didnt read anything new (probably the end)
-                    if (buffer.IsEmpty)
+                    //TODO: readd debug parser
+                    if (message != null)
                     {
-                        Logger.Warn($"Request buffer empty (connection closed?)");
+                        var responses = await _handler.ProcessMessage(message);
+                        if (responses != null)
+                        {
+                            foreach (var response in responses)
+                            {
+                                await writer.WriteAsync(protocol, response);
+                            }
+                        }
+                    }
+
+                    if (result.IsCompleted)
+                    {
                         break;
-                    }
-
-                    var consumed = buffer.Start;
-                    var examined = buffer.End;
-
-                    try
-                    {
-                        if(_parser.TryParseRequest(ref buffer, out var processedLength, out var header, out var request))
-                        {
-                            Logger.Debug(
-                                $"Request buffer length: {buffer.Length} buffer processed: {processedLength.GetInteger()}");
-
-                            consumed = processedLength;
-                            examined = consumed;
-
-                            //TODO: remove stream?
-                            await _handler.ProcessRequest(writer.AsStream(), header, request);
-                            await writer.FlushAsync();
-                        }
-                        else
-                        {
-                            Logger.Error("Failed to parse message, trying debug parser");
-                            _debugParser.TryParseRequest(ref buffer, out var debugProcessedLength);
-                            consumed = debugProcessedLength;
-                            examined = consumed;
-                            break;
-                        }
-
-                        if (result.IsCompleted)
-                        {
-                            break;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error($"Failed to handle request: {e}");
-                        break;
-                    }
-                    finally
-                    {
-                        reader.AdvanceTo(consumed, examined);
                     }
                 }
-            }
-            finally
-            {
-                await reader.CompleteAsync();
+                finally
+                {
+                    reader.Advance();
+                }
             }
         }
     }

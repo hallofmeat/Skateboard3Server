@@ -18,8 +18,7 @@ namespace Skate3Server.Host
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<BlazeRequestHandler>().As<IBlazeRequestHandler>();
-            builder.RegisterType<BlazeRequestParser>().As<IBlazeRequestParser>();
+            builder.RegisterType<BlazeMessageHandler>().As<IBlazeMessageHandler>();
             builder.RegisterType<BlazeSerializer>().As<IBlazeSerializer>();
             builder.RegisterType<BlazeDeserializer>().As<IBlazeDeserializer>();
             builder.RegisterType<BlazeDebugParser>().As<IBlazeDebugParser>();
