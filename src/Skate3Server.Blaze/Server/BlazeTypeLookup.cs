@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Skate3Server.Blaze.Serializer.Attributes;
 
-namespace Skate3Server.Blaze
+namespace Skate3Server.Blaze.Server
 {
     public interface IBlazeTypeLookup
     {

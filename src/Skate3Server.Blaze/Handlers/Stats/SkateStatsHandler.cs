@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Skate3Server.Blaze.Handlers.Stats.Messages;
 using Skate3Server.Blaze.Notifications.UserSession.Messages;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Stats
 {

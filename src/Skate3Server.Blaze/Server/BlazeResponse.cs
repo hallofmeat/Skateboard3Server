@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Skate3Server.Blaze
+namespace Skate3Server.Blaze.Server
 {
     //TODO: I dont like this but its quick and dirty to get notifications out of request handlers
     public class BlazeResponse

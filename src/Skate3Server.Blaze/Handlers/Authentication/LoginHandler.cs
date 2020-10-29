@@ -7,6 +7,7 @@ using MediatR;
 using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Handlers.Authentication.Messages;
 using Skate3Server.Blaze.Notifications.UserSession.Messages;
+using Skate3Server.Blaze.Server;
 using Skate3Server.Common.Decoders;
 
 namespace Skate3Server.Blaze.Handlers.Authentication

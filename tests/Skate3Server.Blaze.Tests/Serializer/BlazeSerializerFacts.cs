@@ -3,6 +3,7 @@ using System.Text;
 using FluentAssertions;
 using Skate3Server.Blaze.Serializer;
 using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 using Xunit;
 
 namespace Skate3Server.Blaze.Tests.Serializer

@@ -1,4 +1,4 @@
-﻿namespace Skate3Server.Blaze
+﻿namespace Skate3Server.Blaze.Server
 {
     public class BlazeHeader
     {
