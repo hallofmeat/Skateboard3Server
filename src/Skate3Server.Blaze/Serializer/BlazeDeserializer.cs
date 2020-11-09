@@ -8,14 +8,14 @@ namespace Skate3Server.Blaze.Serializer
 {
     public interface IBlazeDeserializer
     {
-        object Deserialize(ref ReadOnlySequence<byte> payload, Type requestType);
+        object Deserialize(in ReadOnlySequence<byte> payload, Type requestType);
     }
 
     public class BlazeDeserializer : IBlazeDeserializer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public object Deserialize(ref ReadOnlySequence<byte> payload, Type requestType)
+        public object Deserialize(in ReadOnlySequence<byte> payload, Type requestType)
         {
             var request = Activator.CreateInstance(requestType);
 
@@ -67,14 +67,13 @@ namespace Skate3Server.Blaze.Serializer
             {
                 case TdfType.Struct:
                     payloadReader.Advance(length);
+                    requestSb.AppendLine($"<start struct {state.StructDepth}>");
                     state.StructDepth++;
                     var subTarget = Activator.CreateInstance(currentType);
-                    requestSb.AppendLine("<start struct>");
-                    do
+                    while (!EndOfStruct(ref payloadReader, state, requestSb))
                     {
                         ParseObject(ref payloadReader, subTarget, state, requestSb);
-                    } while (!EndOfStruct(ref payloadReader, state, requestSb));
-
+                    }
                     return subTarget;
                 case TdfType.String:
                     var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
@@ -122,13 +121,20 @@ namespace Skate3Server.Blaze.Serializer
                     payloadReader.TryRead(out byte elementCount);
                     var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
                     requestSb.AppendLine($"{typeData.Type} {typeData.Length} {elementCount}");
-
-                    for (var i = 0; i < elementCount; i++)
+                    //first element
+                    var firstParsed = ParseType(ref payloadReader, listElementType, typeData.Type, typeData.Length,
+                        state, requestSb);
+                    currentType.GetMethod("Add")?.Invoke(listTarget, new[] { firstParsed });
+                    for (var i = 1; i < elementCount; i++)
                     {
-                        //TODO: I think struct or string will fail here
-                        var listParsed = ParseType(ref payloadReader, listElementType, typeData.Type, typeData.Length,
+                        var elementLength = typeData.Length;
+                        if (typeData.Type == TdfType.String || typeData.Type == TdfType.Blob)
+                        {
+                            elementLength = TdfHelper.ParseLength(ref payloadReader);
+                        }
+                        var elementParsed = ParseType(ref payloadReader, listElementType, typeData.Type, elementLength,
                             state, requestSb);
-                        currentType.GetMethod("Add")?.Invoke(listTarget, new[] {listParsed});
+                        currentType.GetMethod("Add")?.Invoke(listTarget, new[] {elementParsed});
                     }
 
                     return listTarget;
@@ -159,7 +165,7 @@ namespace Skate3Server.Blaze.Serializer
                     for (var i = 1; i < length; i++)
                     {
                         var keyLength = keyTypeData.Length;
-                        if (keyType == TdfType.String)
+                        if (keyType == TdfType.String || keyType == TdfType.Blob)
                         {
                             keyLength = TdfHelper.ParseLength(ref payloadReader);
                         }
@@ -168,7 +174,7 @@ namespace Skate3Server.Blaze.Serializer
                         parsedKey = ParseType(ref payloadReader, dictKeyType, keyTypeData.Type, keyLength, state,
                             requestSb);
                         var valueLength = valueTypeData.Length;
-                        if (valueType == TdfType.String)
+                        if (valueType == TdfType.String || valueType == TdfType.Blob)
                         {
                             valueLength = TdfHelper.ParseLength(ref payloadReader);
                         }
@@ -221,9 +227,9 @@ namespace Skate3Server.Blaze.Serializer
             //end of struct detection (not great and may break)
             if (state.StructDepth > 0 && payloadReader.TryPeek(out var nextByte) && nextByte == 0x0)
             {
-                requestSb.AppendLine("<end struct>");
                 payloadReader.Advance(1);
                 state.StructDepth--;
+                requestSb.AppendLine($"<end struct {state.StructDepth}>");
                 return true;
             }
 

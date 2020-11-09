@@ -60,6 +60,13 @@ namespace Skate3Server.BlazeProxy
             header.MessageType = (BlazeMessageType)(messageInfo >> 28);
             header.MessageId = messageInfo & 0xFFFFF;
 
+            //Not enough data in the buffer
+            if (reader.Remaining < header.Length)
+            {
+                message = default;
+                return false;
+            }
+
             //Read body
             var payload = input.Slice(reader.Position, header.Length);
             message = new BlazeMessage

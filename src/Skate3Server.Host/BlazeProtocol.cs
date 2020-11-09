@@ -61,7 +61,14 @@ namespace Skate3Server.Host
             header.MessageId = messageInfo & 0xFFFFF;
 
             Logger.Debug(
-               $"Request; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+               $"Request; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+
+            //Not enough data in the buffer
+            if (reader.Remaining < header.Length)
+            {
+                message = default;
+                return false;
+            }
 
             //Read body
             var payload = input.Slice(reader.Position, header.Length);
@@ -82,7 +89,7 @@ namespace Skate3Server.Host
             var header = message.Header;
 
             Logger.Debug(
-                $"Response; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+                $"Response; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
             //Length
             var length = BitConverter.GetBytes(Convert.ToUInt16(message.Payload.Length));

@@ -62,13 +62,16 @@ namespace Skate3Server.BlazeProxy
                     {
                         var header = message.Header;
                         Logger.Debug(
-                            $"Client -> Proxy; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+                            $"Client -> Proxy; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
                         var requestPayload = message.Payload;
 
-                        if (!_parser.TryParseBody(ref requestPayload))
+                        if (!requestPayload.IsEmpty)
                         {
-                            Logger.Error("Failed to parse request message");
+                            if (!_parser.TryParseBody(requestPayload))
+                            {
+                                Logger.Error("Failed to parse request message");
+                            }
                         }
 
                         await remoteWriter.WriteAsync(blazeProtocol, message);
@@ -95,13 +98,16 @@ namespace Skate3Server.BlazeProxy
                         {
                             var header = message.Header;
                             Logger.Debug(
-                                $"Proxy <- Server; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+                                $"Proxy <- Server; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
                             var responsePayload = message.Payload;
 
-                            if (!_parser.TryParseBody(ref responsePayload))
+                            if (!responsePayload.IsEmpty)
                             {
-                                Logger.Error("Failed to parse response message");
+                                if (!_parser.TryParseBody(responsePayload))
+                                {
+                                    Logger.Error("Failed to parse response message");
+                                }
                             }
 
                             await localWriter.WriteAsync(blazeProtocol, message);

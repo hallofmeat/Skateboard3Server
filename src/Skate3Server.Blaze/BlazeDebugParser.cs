@@ -8,7 +8,7 @@ namespace Skate3Server.Blaze
 {
     public interface IBlazeDebugParser
     { 
-        bool TryParseBody(ref ReadOnlySequence<byte> buffer);
+        bool TryParseBody(in ReadOnlySequence<byte> buffer);
     }
 
     /// <summary>
@@ -18,8 +18,11 @@ namespace Skate3Server.Blaze
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public bool TryParseBody(ref ReadOnlySequence<byte> buffer)
+        public bool TryParseBody(in ReadOnlySequence<byte> buffer)
         {
+            var bodyHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
+            Logger.Trace($"Raw Body: {bodyHex}");
+
             var payloadReader = new SequenceReader<byte>(buffer);
 
             var payloadStringBuilder = new StringBuilder();
@@ -58,7 +61,7 @@ namespace Skate3Server.Blaze
 
         public void ParseType(ref SequenceReader<byte> payloadReader, StringBuilder payloadStringBuilder, TdfType type, uint length, ParserState state)
         {
-            if (state.Depth++ >= 100)
+            if (state.Depth++ >= 20)
             {
                 throw new Exception("TOO DEEP!!");
             }
@@ -66,12 +69,12 @@ namespace Skate3Server.Blaze
             {
                 case TdfType.Struct:
                     payloadReader.Advance(length);
-                    payloadStringBuilder.AppendLine($"<start struct>");
+                    payloadStringBuilder.AppendLine($"<start struct {state.StructDepth}>");
                     state.StructDepth++;
-                    do
+                    while (!EndOfStruct(ref payloadReader, payloadStringBuilder, state))
                     {
                         ParseObject(ref payloadReader, payloadStringBuilder, state);
-                    } while (!EndOfStruct(ref payloadReader, payloadStringBuilder, state));
+                    }
                     break;
                 case TdfType.String:
                     var byteStr = payloadReader.Sequence.Slice(payloadReader.Position, length);
@@ -118,9 +121,16 @@ namespace Skate3Server.Blaze
                     payloadReader.TryRead(out byte elementCount);
                     var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
                     payloadStringBuilder.AppendLine($"{typeData.Type} {typeData.Length} {elementCount}");
-                    for (var i = 0; i < elementCount; i++)
+                    //Parse first element
+                    ParseType(ref payloadReader, payloadStringBuilder, typeData.Type, typeData.Length, state);
+                    for (var i = 1; i < elementCount; i++)
                     {
-                        ParseType(ref payloadReader, payloadStringBuilder, typeData.Type, typeData.Length, state);
+                        var elementLength = typeData.Length;
+                        if (typeData.Type == TdfType.String || typeData.Type == TdfType.Blob)
+                        {
+                            elementLength = TdfHelper.ParseLength(ref payloadReader);
+                        }
+                        ParseType(ref payloadReader, payloadStringBuilder, typeData.Type, elementLength, state);
                     } 
                     payloadStringBuilder.AppendLine($"<array end>");
                     break;
@@ -143,14 +153,14 @@ namespace Skate3Server.Blaze
                     for (var i = 1; i < length; i++)
                     {
                         var keyLength = keyTypeData.Length;
-                        if (keyType == TdfType.String)
+                        if (keyType == TdfType.String || keyType == TdfType.Blob)
                         {
                             keyLength = TdfHelper.ParseLength(ref payloadReader);
                         }
                         payloadStringBuilder.AppendLine($"{keyTypeData.Type} {keyLength}");
                         ParseType(ref payloadReader, payloadStringBuilder, keyTypeData.Type, keyLength, state);
                         var valueLength = valueTypeData.Length;
-                        if (valueType == TdfType.String)
+                        if (valueType == TdfType.String || valueType == TdfType.Blob)
                         {
                             valueLength = TdfHelper.ParseLength(ref payloadReader);
                         }
@@ -174,6 +184,7 @@ namespace Skate3Server.Blaze
                             payloadReader.Advance(1);
                             if (payloadReader.TryPeek(out readTemp) && readTemp == 0x35)
                             {
+                                payloadReader.Advance(1);
                                 var valuTypeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
                                 payloadStringBuilder.AppendLine($"{valuTypeData.Type} {valuTypeData.Length}");
                                 ParseType(ref payloadReader, payloadStringBuilder, valuTypeData.Type,
@@ -196,9 +207,9 @@ namespace Skate3Server.Blaze
             //end of struct detection (not great and may break)
             if (state.StructDepth > 0 && payloadReader.TryPeek(out var nextByte) && nextByte == 0x0)
             {
-                payloadStringBuilder.AppendLine($"<end struct>");
                 payloadReader.Advance(1);
                 state.StructDepth--;
+                payloadStringBuilder.AppendLine($"<end struct {state.StructDepth}>");
                 return true;
             }
 

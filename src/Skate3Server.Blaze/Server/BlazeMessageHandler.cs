@@ -41,7 +41,7 @@ namespace Skate3Server.Blaze.Server
             {
                 try
                 {
-                    var parsedRequest = _blazeDeserializer.Deserialize(ref requestPayload, requestType);
+                    var parsedRequest = _blazeDeserializer.Deserialize(requestPayload, requestType);
 
                     var response = (BlazeResponse) await _mediator.Send(parsedRequest);
                     var responseHeader = new BlazeHeader
@@ -95,7 +95,7 @@ namespace Skate3Server.Blaze.Server
             }
 
             Logger.Error($"Unknown component: {requestHeader.Component} and command: {requestHeader.Command}");
-            _debugParser.TryParseBody(ref requestPayload);
+            _debugParser.TryParseBody(requestPayload);
             return null;
         }
     }
