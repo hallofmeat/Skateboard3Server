@@ -3,6 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
 using NLog;
@@ -44,108 +45,78 @@ namespace Skate3Server.BlazeProxy
                 proxyStream = protocol.Stream;
             }
 
-            var reader = connection.Transport.Input;
-            var writer = connection.Transport.Output;
+            var blazeProtocol = new BlazeProxyProtocol();
+            var localReader = connection.CreateReader();
+            var localWriter = connection.CreateWriter();
 
-            try
+            var remoteReader = new ProtocolReader(proxyStream);
+            var remoteWriter = new ProtocolWriter(proxyStream);
+
+
+            while (true)
             {
-                while (true)
+                try
                 {
+                    var result = await localReader.ReadAsync(blazeProtocol);
+                    var message = result.Message;
 
-                    var result = await reader.ReadAsync();
-                    var requestBuffer = result.Buffer;
-
-                    //We didnt read anything new (probably the end)
-                    if (requestBuffer.IsEmpty)
+                    if (message != null)
                     {
-                        Logger.Warn($"Request buffer empty (connection closed?)");
-                        continue;
-                    }
+                        var requestPayload = message.Payload;
 
-                    var requestCopy = GetCopyOfSequence(ref requestBuffer);
-
-                    //parse client request
-                    var requestConsumed = requestBuffer.Start;
-                    var requestExamined = requestBuffer.End;
-
-                    try
-                    {
                         Logger.Debug($"Parsing Request");
 
-                        if (_parser.TryParseRequest(ref requestBuffer, out var requestProcessedLength))
-                        {
-                            Logger.Debug($"Request buffer length: {requestBuffer.Length}");
-
-                            requestConsumed = requestProcessedLength;
-                            requestExamined = requestConsumed;
-                        }
-                        else
+                        if (!_parser.TryParseRequestBody(ref requestPayload))
                         {
                             Logger.Error("Failed to parse request message");
                         }
 
-                        //send to server
-                        await proxyStream.WriteAsync(requestCopy);
-                        await proxyStream.FlushAsync();
+                        await remoteWriter.WriteAsync(blazeProtocol, message);
+                    }
+
+                    if (result.IsCompleted)
+                    {
+                        break;
+                    }
+                }
+                finally
+                {
+                    localReader.Advance();
+                }
+
+                do
+                {
+                    try
+                    {
+                        var result = await remoteReader.ReadAsync(blazeProtocol);
+                        var message = result.Message;
+
+                        if (message != null)
+                        {
+                            var responsePayload = message.Payload;
+
+                            Logger.Debug($"Parsing Response");
+
+                            if (!_parser.TryParseResponseBody(ref responsePayload))
+                            {
+                                Logger.Error("Failed to parse response message");
+                            }
+
+                            await localWriter.WriteAsync(blazeProtocol, message);
+                        }
+
+                        if (result.IsCompleted)
+                        {
+                            break;
+                        }
                     }
                     finally
                     {
-                        reader.AdvanceTo(requestConsumed, requestExamined);
+                        remoteReader.Advance();
                     }
-
-                    do
-                    {
-                        //receive server response
-                        //Parse header
-                        var headerBytes = new byte[12];
-                        var headerBytesRead = await proxyStream.ReadAsync(headerBytes, 0, headerBytes.Length);
-                        if (headerBytesRead != 12)
-                        {
-                            Logger.Error("Failed to read response header");
-                        }
-
-                        var headerSeq = new ReadOnlySequence<byte>(headerBytes);
-                        Logger.Debug($"Parsing Response Header");
-                        if (!_parser.TryParseResponseHeader(ref headerSeq, out var responseHeader))
-                        {
-                            Logger.Error("Failed to parse response header");
-                        }
-
-                        await writer.WriteAsync(headerBytes);
-
-                        if (responseHeader.Length > 0)
-                        {
-                            var responseBytes = new byte[responseHeader.Length];
-                            var responseBytesRead = await proxyStream.ReadAsync(responseBytes, 0, responseBytes.Length);
-
-                            if (responseHeader.Length != responseBytesRead)
-                            {
-                                Logger.Error(
-                                    $"Read short! Response header length: {responseHeader.Length}, read: {responseBytesRead}");
-                            }
-
-                            Logger.Debug(
-                                $"Response header length: {responseHeader.Length}, buffer read: {responseBytesRead}");
-
-                            //parse what was received from server
-                            var responseSequence = new ReadOnlySequence<byte>(responseBytes);
-                            Logger.Debug($"Parsing Response Body");
-                            if (!_parser.TryParseResponseBody(ref responseSequence))
-                            {
-                                Logger.Error("Failed to parse response body");
-                            }
-                            await writer.WriteAsync(responseBytes);
-                        }
-
-                        //send response to client
-                        await writer.FlushAsync();
-                    } while (ogStream.DataAvailable);
-                }
+                } while (ogStream.DataAvailable);
             }
-            finally
-            {
-                await reader.CompleteAsync();
-            }
+
         }
 
         private byte[] GetCopyOfSequence(ref ReadOnlySequence<byte> requestBuffer)
