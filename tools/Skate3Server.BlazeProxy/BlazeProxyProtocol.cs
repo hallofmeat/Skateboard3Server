@@ -60,9 +60,6 @@ namespace Skate3Server.BlazeProxy
             header.MessageType = (BlazeMessageType)(messageInfo >> 28);
             header.MessageId = messageInfo & 0xFFFFF;
 
-            Logger.Debug(
-               $"Request; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
-
             //Read body
             var payload = input.Slice(reader.Position, header.Length);
             message = new BlazeMessage
@@ -80,10 +77,6 @@ namespace Skate3Server.BlazeProxy
         {
             //Header
             var header = message.Header;
-
-            Logger.Debug(
-                $"Response; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
-
             //Length
             var length = BitConverter.GetBytes(Convert.ToUInt16(message.Payload.Length));
             Array.Reverse(length);//big endian

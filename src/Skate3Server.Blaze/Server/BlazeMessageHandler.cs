@@ -95,7 +95,7 @@ namespace Skate3Server.Blaze.Server
             }
 
             Logger.Error($"Unknown component: {requestHeader.Component} and command: {requestHeader.Command}");
-            _debugParser.TryParseRequestBody(ref requestPayload);
+            _debugParser.TryParseBody(ref requestPayload);
             return null;
         }
     }

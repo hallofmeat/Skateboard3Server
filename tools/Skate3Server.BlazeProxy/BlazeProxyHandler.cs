@@ -34,7 +34,7 @@ namespace Skate3Server.BlazeProxy
             var proxyClient = new TcpClient();
             await proxyClient.ConnectAsync(_proxySettings.RemoteHost, _proxySettings.RemotePort);
 
-            NetworkStream ogStream = proxyClient.GetStream();
+            var ogStream = proxyClient.GetStream();
 
             Stream proxyStream = ogStream;
 
@@ -62,11 +62,13 @@ namespace Skate3Server.BlazeProxy
 
                     if (message != null)
                     {
+                        var header = message.Header;
+                        Logger.Debug(
+                            $"Client -> Proxy; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+
                         var requestPayload = message.Payload;
 
-                        Logger.Debug($"Parsing Request");
-
-                        if (!_parser.TryParseRequestBody(ref requestPayload))
+                        if (!_parser.TryParseBody(ref requestPayload))
                         {
                             Logger.Error("Failed to parse request message");
                         }
@@ -93,11 +95,13 @@ namespace Skate3Server.BlazeProxy
 
                         if (message != null)
                         {
+                            var header = message.Header;
+                            Logger.Debug(
+                                $"Proxy <- Server; Length:{header.Length} Component:{header.Component} Command:{header.Command} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+
                             var responsePayload = message.Payload;
 
-                            Logger.Debug($"Parsing Response");
-
-                            if (!_parser.TryParseResponseBody(ref responsePayload))
+                            if (!_parser.TryParseBody(ref responsePayload))
                             {
                                 Logger.Error("Failed to parse response message");
                             }
@@ -117,14 +121,6 @@ namespace Skate3Server.BlazeProxy
                 } while (ogStream.DataAvailable);
             }
 
-        }
-
-        private byte[] GetCopyOfSequence(ref ReadOnlySequence<byte> requestBuffer)
-        {
-            var array = new byte[requestBuffer.Length];
-            var requestCopy = new Span<byte>(array);
-            requestBuffer.CopyTo(requestCopy);
-            return requestCopy.ToArray();
         }
     }
 }
