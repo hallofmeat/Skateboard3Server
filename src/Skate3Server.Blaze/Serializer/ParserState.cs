@@ -1,4 +1,4 @@
-﻿namespace Skate3Server.Blaze
+﻿namespace Skate3Server.Blaze.Serializer
 {
     public class ParserState
     {

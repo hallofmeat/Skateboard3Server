@@ -10,6 +10,8 @@ namespace Skate3Server.Blaze
     public interface IBlazeDebugParser
     {
         bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition);
+        bool TryParseRequestBody(ref ReadOnlySequence<byte> buffer);
+
         bool TryParseResponseHeader(ref ReadOnlySequence<byte> buffer, out BlazeHeader header);
         bool TryParseResponseBody(ref ReadOnlySequence<byte> buffer);
     }
@@ -24,8 +26,8 @@ namespace Skate3Server.Blaze
 
         public bool TryParseRequest(ref ReadOnlySequence<byte> buffer, out SequencePosition endPosition)
         {
-            var messageHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
-            Logger.Trace($"Request Message: {messageHex}");
+            //var messageHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
+            //Logger.Trace($"Request Message: {messageHex}");
 
             var reader = new SequenceReader<byte>(buffer);
             var header = new BlazeHeader();
@@ -95,7 +97,12 @@ namespace Skate3Server.Blaze
             reader.Advance(header.Length);
             endPosition = reader.Position;
 
-            var payloadReader = new SequenceReader<byte>(payload);
+            return TryParseRequestBody(ref payload);
+        }
+
+        public bool TryParseRequestBody(ref ReadOnlySequence<byte> buffer)
+        {
+            var payloadReader = new SequenceReader<byte>(buffer);
 
             var payloadStringBuilder = new StringBuilder();
 
@@ -122,8 +129,8 @@ namespace Skate3Server.Blaze
 
         public bool TryParseResponseHeader(ref ReadOnlySequence<byte> buffer, out BlazeHeader header)
         {
-            var headerHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
-            Logger.Trace($"Response Header: {headerHex}");
+            //var headerHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
+            //Logger.Trace($"Response Header: {headerHex}");
 
             var reader = new SequenceReader<byte>(buffer);
             header = new BlazeHeader();
@@ -177,8 +184,8 @@ namespace Skate3Server.Blaze
 
         public bool TryParseResponseBody(ref ReadOnlySequence<byte> buffer)
         {
-            var bodyHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
-            Logger.Trace($"Response Body: {bodyHex}");
+            //var bodyHex = BitConverter.ToString(buffer.ToArray()).Replace("-", " ");
+            //Logger.Trace($"Response Body: {bodyHex}");
 
             var payloadReader = new SequenceReader<byte>(buffer);
 

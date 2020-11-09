@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Buffers;
 using System.IO;
-using System.IO.Pipelines;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.Options;
 using NLog;
 using Org.BouncyCastle.Crypto.Tls;
 using Skate3Server.Blaze;
@@ -19,30 +18,26 @@ namespace Skate3Server.BlazeProxy
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly BlazeDebugParser _parser;
-        private readonly string _proxyHost;
-        private readonly int _proxyPort;
-        private readonly bool _proxySecure;
+        private readonly IBlazeDebugParser _parser;
+        private readonly BlazeProxySettings _proxySettings;
 
-        public BlazeProxyHandler(BlazeDebugParser parser, string proxyHost, int proxyPort, bool proxySecure)
+        public BlazeProxyHandler(IBlazeDebugParser parser, IOptions<BlazeProxySettings> proxySettings)
         {
             _parser = parser;
-            _proxyHost = proxyHost;
-            _proxyPort = proxyPort;
-            _proxySecure = proxySecure;
+            _proxySettings = proxySettings.Value;
         }
 
         public override async Task OnConnectedAsync(ConnectionContext connection)
         {
-
+            Logger.Debug($"Connecting to {_proxySettings.RemoteHost}:{_proxySettings.RemotePort}");
             var proxyClient = new TcpClient();
-            await proxyClient.ConnectAsync(_proxyHost, _proxyPort);
+            await proxyClient.ConnectAsync(_proxySettings.RemoteHost, _proxySettings.RemotePort);
 
             NetworkStream ogStream = proxyClient.GetStream();
 
             Stream proxyStream = ogStream;
 
-            if (_proxySecure)
+            if (_proxySettings.Secure)
             {
                 var protocol = new TlsClientProtocol(proxyStream, new Org.BouncyCastle.Security.SecureRandom());
                 protocol.Connect(new BlazeTlsClient());

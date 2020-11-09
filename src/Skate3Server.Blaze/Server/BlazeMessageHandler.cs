@@ -5,11 +5,9 @@ using System.IO;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
-using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Serializer;
-using Skate3Server.Blaze.Server;
 
-namespace Skate3Server.Blaze
+namespace Skate3Server.Blaze.Server
 {
     public interface IBlazeMessageHandler
     {
@@ -22,34 +20,37 @@ namespace Skate3Server.Blaze
         private readonly IBlazeTypeLookup _blazeTypeLookup;
         private readonly IMediator _mediator;
         private readonly IBlazeSerializer _blazeSerializer;
+        private readonly IBlazeDebugParser _debugParser;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public BlazeMessageHandler(IBlazeDeserializer blazeDeserializer, IBlazeTypeLookup blazeTypeLookup, IMediator mediator, IBlazeSerializer blazeSerializer)
+        public BlazeMessageHandler(IBlazeDeserializer blazeDeserializer, IBlazeSerializer blazeSerializer, IBlazeDebugParser debugParser,  IBlazeTypeLookup blazeTypeLookup, IMediator mediator)
         {
             _blazeDeserializer = blazeDeserializer;
             _blazeTypeLookup = blazeTypeLookup;
             _mediator = mediator;
             _blazeSerializer = blazeSerializer;
+            _debugParser = debugParser;
         }
 
         //TODO: change to a connectionhub type way of handling notifications instead of returning a list
         public async Task<IList<BlazeMessage>> ProcessMessage(BlazeMessage requestMessage)
         {
-            var requestMessageHeader = requestMessage.Header;
-            if (_blazeTypeLookup.TryGetRequestType(requestMessageHeader.Component, requestMessageHeader.Command, out var requestType))
+            var requestHeader = requestMessage.Header;
+            var requestPayload = requestMessage.Payload;
+            if (_blazeTypeLookup.TryGetRequestType(requestHeader.Component, requestHeader.Command, out var requestType))
             {
                 try
                 {
-                    var parsedRequest = _blazeDeserializer.Deserialize(requestMessage.Payload, requestType);
+                    var parsedRequest = _blazeDeserializer.Deserialize(ref requestPayload, requestType);
 
                     var response = (BlazeResponse) await _mediator.Send(parsedRequest);
                     var responseHeader = new BlazeHeader
                     {
-                        Component = requestMessageHeader.Component,
-                        Command = requestMessageHeader.Command,
+                        Component = requestHeader.Component,
+                        Command = requestHeader.Command,
                         ErrorCode = 0,
                         MessageType = BlazeMessageType.Reply,
-                        MessageId = requestMessageHeader.MessageId
+                        MessageId = requestHeader.MessageId
                     };
 
                     //TODO: remove stream
@@ -93,7 +94,8 @@ namespace Skate3Server.Blaze
                 }
             }
 
-            Logger.Error($"Unknown component: {requestMessageHeader.Component} and command: {requestMessageHeader.Command}");
+            Logger.Error($"Unknown component: {requestHeader.Component} and command: {requestHeader.Command}");
+            _debugParser.TryParseRequestBody(ref requestPayload);
             return null;
         }
     }

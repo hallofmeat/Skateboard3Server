@@ -3,6 +3,7 @@ using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using NLog;
 using Skate3Server.Blaze;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Host
 {
@@ -31,7 +32,6 @@ namespace Skate3Server.Host
                     var result = await reader.ReadAsync(protocol);
                     var message = result.Message;
 
-                    //TODO: readd debug parser
                     if (message != null)
                     {
                         var responses = await _handler.ProcessMessage(message);

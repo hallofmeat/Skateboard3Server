@@ -8,14 +8,14 @@ namespace Skate3Server.Blaze.Serializer
 {
     public interface IBlazeDeserializer
     {
-        object Deserialize(ReadOnlySequence<byte> payload, Type requestType);
+        object Deserialize(ref ReadOnlySequence<byte> payload, Type requestType);
     }
 
     public class BlazeDeserializer : IBlazeDeserializer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public object Deserialize(ReadOnlySequence<byte> payload, Type requestType)
+        public object Deserialize(ref ReadOnlySequence<byte> payload, Type requestType)
         {
             var request = Activator.CreateInstance(requestType);
 
