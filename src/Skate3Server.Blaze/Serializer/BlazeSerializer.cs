@@ -130,15 +130,28 @@ namespace Skate3Server.Blaze.Serializer
                 var listValues = (ICollection)propertyValue;
                 TdfHelper.WriteLength(output, Convert.ToUInt32(listValues.Count));
 
-                //TODO: I think struct or string will fail here
+                //TODO: double check this works with strings
                 var listValueType = propertyType.GetGenericArguments()[0];
-                var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, null);
-                TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
-                responseSb.AppendLine($"{tdfData.Type} {tdfData.Length} {listValues.Count}");
-
+                var index = 0;
                 foreach (var item in listValues)
                 {
-                    SerializeType(output, listValueType, item, responseSb);
+                    var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, item);
+                    //first value
+                    if (index == 0)
+                    {
+                        TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
+                        responseSb.AppendLine($"{tdfData.Type} {tdfData.Length} {listValues.Count}");
+                        SerializeType(output, listValueType, item, responseSb);
+                    }
+                    else
+                    {
+                        if (tdfData.Type == TdfType.String || tdfData.Type == TdfType.Blob)
+                        {
+                            TdfHelper.WriteLength(output, tdfData.Length);
+                        }
+                        SerializeType(output, listValueType, item, responseSb);
+                    }
+                    index++;
                 }
             }
             else if (propertyType == typeof(byte[])) //Blob
@@ -157,7 +170,6 @@ namespace Skate3Server.Blaze.Serializer
                 var index = 0;
                 foreach (var item in mapValues)
                 {
-                    //TODO: fix getting values
                     var keyValue = item.GetType().GetProperty("Key")?.GetValue(item);
                     var valueValue = item.GetType().GetProperty("Value")?.GetValue(item);
 
@@ -194,14 +206,14 @@ namespace Skate3Server.Blaze.Serializer
                     }
                     else
                     {
-                        if (keyTdfData.Type != TdfType.Struct)
+                        if (keyTdfData.Type == TdfType.String || keyTdfData.Type == TdfType.Blob)
                         {
                             TdfHelper.WriteLength(output, keyTdfData.Length);
                         }
                         responseSb.AppendLine($"{keyTdfData.Type} {keyTdfData.Length}");
                         SerializeType(output, mapKeyType, keyValue, responseSb);
 
-                        if (valueTdfData.Type != TdfType.Struct)
+                        if (valueTdfData.Type == TdfType.String || valueTdfData.Type == TdfType.Blob)
                         {
                             TdfHelper.WriteLength(output, valueTdfData.Length);
                         }

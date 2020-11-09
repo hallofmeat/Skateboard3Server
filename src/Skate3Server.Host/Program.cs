@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
-using Skate3Server.Blaze;
 
 namespace Skate3Server.Host
 {
@@ -45,10 +44,10 @@ namespace Skate3Server.Host
 
                             //gosredirector (Blaze)
                             serverOptions.ListenAnyIP(42100,
-                                options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
+                                options => { options.UseConnectionLogging().UseConnectionHandler<BlazeConnectionHandler>(); });
                             //eadpgs-blapp001 (Blaze)
                             serverOptions.ListenAnyIP(10744,
-                                options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
+                                options => { options.UseConnectionLogging().UseConnectionHandler<BlazeConnectionHandler>(); });
                             //gostelemetry //TODO: no idea when this gets called
                             //serverOptions.ListenAnyIP(9946,
                             //    options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
