@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using Skate3Server.Blaze.Handlers.Redirector.Messages;
-using Skate3Server.Blaze.Responses;
-using Skate3Server.Blaze.Serializer;
-using Xunit;
-
 namespace Skate3Server.Blaze.Tests
 {
     public class UnitTest1

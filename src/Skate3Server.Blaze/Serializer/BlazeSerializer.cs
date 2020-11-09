@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using JetBrains.Annotations;
 using NLog;
 using Skate3Server.Blaze.Serializer.Attributes;
 
@@ -46,7 +47,7 @@ namespace Skate3Server.Blaze.Serializer
             }
         }
 
-        public void SerializeType(Stream output, Type propertyType, object propertyValue, StringBuilder responseSb)
+        public void SerializeType(Stream output, [CanBeNull] Type propertyType, object propertyValue, StringBuilder responseSb)
         {
             //handle enum types
             if (propertyType.IsEnum)

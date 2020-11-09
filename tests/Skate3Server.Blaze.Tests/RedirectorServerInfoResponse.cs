@@ -1,6 +1,6 @@
 ﻿using Skate3Server.Blaze.Serializer.Attributes;
 
-namespace Skate3Server.Blaze.Responses
+namespace Skate3Server.Blaze.Tests
 {
     public class DummyResponse
     {

@@ -2,7 +2,6 @@
 using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using NLog;
-using Skate3Server.Blaze;
 using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Host
