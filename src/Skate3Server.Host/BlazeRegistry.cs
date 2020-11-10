@@ -3,10 +3,10 @@ using MediatR;
 using Skate3Server.Api.Services;
 using Skate3Server.Blaze;
 using Skate3Server.Blaze.Handlers.Authentication;
-using Skate3Server.Blaze.Handlers.Clubs;
 using Skate3Server.Blaze.Handlers.Redirector;
 using Skate3Server.Blaze.Handlers.SkateStats;
 using Skate3Server.Blaze.Handlers.Social;
+using Skate3Server.Blaze.Handlers.Teams;
 using Skate3Server.Blaze.Handlers.UserSession;
 using Skate3Server.Blaze.Handlers.Util;
 using Skate3Server.Blaze.Serializer;
@@ -51,7 +51,7 @@ namespace Skate3Server.Host
             builder.RegisterType<NetworkInfoHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SkateStatsHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<DlcHandler>().AsImplementedInterfaces().InstancePerDependency();
-            builder.RegisterType<ClubMembershipHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<TeamMembershipHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<Unknown640Handler>().AsImplementedInterfaces().InstancePerDependency();
 
             //Soap Services

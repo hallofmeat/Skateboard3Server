@@ -9,7 +9,7 @@
         Redirector = 0x5,
         Stats = 0x7,
         Util = 0x9,
-        Clubs = 0xB, //TODO: not sure if correct
+        Teams = 0xB, //Clubs in other blaze server implementations 
         SkateStats = 0xC, //TODO: not sure if correct
         Social = 0x19,
         UserSession = 0x7802,
@@ -43,9 +43,9 @@
         ClientMetrics = 0x16,
     }
 
-    public enum ClubsCommand : ushort
+    public enum TeamsCommand : ushort
     {
-        ClubMembership = 0xA8C,
+        TeamMembership = 0xA8C,
         Unknown640 = 0x640 //TODO I think this is pending invites
     }
 

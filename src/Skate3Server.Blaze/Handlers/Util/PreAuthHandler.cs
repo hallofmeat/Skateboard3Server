@@ -21,7 +21,7 @@ namespace Skate3Server.Blaze.Handlers.Util
                     (ushort) BlazeComponent.Stats,
                     0x08,
                     (ushort) BlazeComponent.Util,
-                    (ushort) BlazeComponent.Clubs,
+                    (ushort) BlazeComponent.Teams,
                     (ushort) BlazeComponent.SkateStats,
                     0x0F,
                     (ushort) BlazeComponent.Social,
