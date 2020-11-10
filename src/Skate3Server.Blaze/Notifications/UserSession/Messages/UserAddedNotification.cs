@@ -2,7 +2,7 @@
 
 namespace Skate3Server.Blaze.Notifications.UserSession.Messages
 {
-    [BlazeNotification(BlazeComponent.UserSession, 0x2)]
+    [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionCommand.UserAdded)]
     public class UserAddedNotification
     {
         [TdfField("AID")]

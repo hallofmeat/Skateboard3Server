@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.UserSession.Messages
 {
-    [BlazeResponse(BlazeComponent.UserSession, 0x14)]
+    [BlazeResponse(BlazeComponent.UserSession, (ushort)UserSessionCommand.NetworkInfo)]
     public class NetworkInfoResponse : BlazeResponse
     {
     }

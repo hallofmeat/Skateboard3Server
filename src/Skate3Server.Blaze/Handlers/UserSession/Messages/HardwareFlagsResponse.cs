@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.UserSession.Messages
 {
-    [BlazeResponse(BlazeComponent.UserSession, 0x08)]
+    [BlazeResponse(BlazeComponent.UserSession, (ushort)UserSessionCommand.HardwareFlags)]
     public class HardwareFlagsResponse : BlazeResponse
     {
     }

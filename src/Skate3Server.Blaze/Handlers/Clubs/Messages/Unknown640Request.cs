@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Skate3Server.Blaze.Serializer.Attributes;
 
-namespace Skate3Server.Blaze.Handlers.Unknown0B.Messages
+namespace Skate3Server.Blaze.Handlers.Clubs.Messages
 {
-    [BlazeRequest(BlazeComponent.Unknown0B, 0x640)]
-    public class Unknown1600Request : IRequest<Unknown1600Response>
+    [BlazeRequest(BlazeComponent.Clubs, (ushort)ClubsCommand.Unknown640)]
+    public class Unknown640Request : IRequest<Unknown640Response>
     {
         [TdfField("CLID")]
         public uint ClientId { get; set; }

@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.UserSession.Messages
 {
-    [BlazeRequest(BlazeComponent.UserSession, 0x08)]
+    [BlazeRequest(BlazeComponent.UserSession, (ushort)UserSessionCommand.HardwareFlags)]
     public class HardwareFlagsRequest : IRequest<HardwareFlagsResponse>
     {
         [TdfField("HWFG")]

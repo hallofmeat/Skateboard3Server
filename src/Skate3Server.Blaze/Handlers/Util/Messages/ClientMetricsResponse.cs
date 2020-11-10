@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
-    [BlazeResponse(BlazeComponent.Util, 0x16)]
+    [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.ClientMetrics)]
     public class ClientMetricsResponse : BlazeResponse
     {
     }

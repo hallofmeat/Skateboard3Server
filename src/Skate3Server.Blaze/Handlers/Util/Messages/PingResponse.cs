@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
-    [BlazeResponse(BlazeComponent.Util, 0x2)]
+    [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.Ping)]
     public class PingResponse : BlazeResponse
     {
         [TdfField("STIM")]

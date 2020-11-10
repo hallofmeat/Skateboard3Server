@@ -4,7 +4,7 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Notifications.UserSession.Messages
 {
-    [BlazeNotification(BlazeComponent.UserSession, 0x1)]
+    [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionCommand.UserExtendedData)]
     public class UserExtendedDataNotification
     {
         [TdfField("DATA")]

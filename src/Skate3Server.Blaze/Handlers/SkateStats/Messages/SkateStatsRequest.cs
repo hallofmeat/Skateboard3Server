@@ -3,9 +3,9 @@ using MediatR;
 using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Serializer.Attributes;
 
-namespace Skate3Server.Blaze.Handlers.Stats.Messages
+namespace Skate3Server.Blaze.Handlers.SkateStats.Messages
 {
-    [BlazeRequest(BlazeComponent.Stats, 0x2)]
+    [BlazeRequest(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.UpdateStats)]
     public class SkateStatsRequest : IRequest<SkateStatsResponse>
     {
         [TdfField("FNSH")]

@@ -4,7 +4,7 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Redirector.Messages
 {
-    [BlazeRequest(BlazeComponent.Redirector, 0x1)]
+    [BlazeRequest(BlazeComponent.Redirector, (ushort)RedirectorCommand.ServerInfo)]
     public class ServerInfoRequest : IRequest<ServerInfoResponse>
     {
         [TdfField("BSDK")]

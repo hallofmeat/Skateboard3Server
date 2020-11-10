@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 {
-    [BlazeResponse(BlazeComponent.Authentication, 0xE6)]
+    [BlazeResponse(BlazeComponent.Authentication, (ushort)AuthenticationCommand.SessionData)]
     public class SessionDataResponse : BlazeResponse
     {
         [TdfField("BUID")]

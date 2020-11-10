@@ -5,7 +5,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Redirector.Messages
 {
-    [BlazeResponse(BlazeComponent.Redirector, 0x1)]
+    [BlazeResponse(BlazeComponent.Redirector, (ushort)RedirectorCommand.ServerInfo)]
     public class ServerInfoResponse : BlazeResponse
     {
         //Need to be in order

@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
-    [BlazeRequest(BlazeComponent.Util, 0x7)]
+    [BlazeRequest(BlazeComponent.Util, (ushort)UtilCommand.PreAuth)]
     public class PreAuthRequest : IRequest<PreAuthResponse>
     {
         [TdfField("CDAT")]

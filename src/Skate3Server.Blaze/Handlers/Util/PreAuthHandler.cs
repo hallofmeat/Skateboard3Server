@@ -12,21 +12,22 @@ namespace Skate3Server.Blaze.Handlers.Util
         {
             var response = new PreAuthResponse
             {
-                //0x01, 0x04, 0x07, 0x8, 0x09, 0x0B, 0x0C, 0x0F, 0x19, 0x7800, 0x7802, 0x7803
+                //0x01, 0x04, 0x07, 0x08, 0x09, 0x0B, 0x0C, 0x0F, 0x19, 0x7800, 0x7802, 0x7803
+                //We only care about some of these but send all of them just incase we need to handle them
                 ComponentIds = new List<ushort>
                 {
                     (ushort) BlazeComponent.Authentication,
-                    (ushort) BlazeComponent.Unknown04,
-                    (ushort) BlazeComponent.Unknown07,
-                    (ushort) BlazeComponent.Unknown08,
-                    (ushort) BlazeComponent.Util,
-                    (ushort) BlazeComponent.Unknown0B,
+                    (ushort) BlazeComponent.GameManager,
                     (ushort) BlazeComponent.Stats,
-                    (ushort) BlazeComponent.Unknown0F,
+                    0x08,
+                    (ushort) BlazeComponent.Util,
+                    (ushort) BlazeComponent.Clubs,
+                    (ushort) BlazeComponent.SkateStats,
+                    0x0F,
                     (ushort) BlazeComponent.Social,
-                    (ushort) BlazeComponent.Unknown7800,
+                    0x7800,
                     (ushort) BlazeComponent.UserSession,
-                    (ushort) BlazeComponent.Unknown7803
+                    0x7803
                 },
                 ServerConfig = new ServerConfig
                 {

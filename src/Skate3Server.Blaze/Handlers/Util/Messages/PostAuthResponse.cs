@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
-    [BlazeResponse(BlazeComponent.Util, 0x8)]
+    [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.PostAuth)]
     public class PostAuthResponse : BlazeResponse
     {
         [TdfField("TELE")]

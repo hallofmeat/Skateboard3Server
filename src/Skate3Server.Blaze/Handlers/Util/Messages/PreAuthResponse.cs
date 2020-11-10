@@ -4,7 +4,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
-    [BlazeResponse(BlazeComponent.Util, 0x7)]
+    [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.PreAuth)]
     public class PreAuthResponse : BlazeResponse
     {
         [TdfField("CIDS")]

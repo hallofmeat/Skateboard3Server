@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
-    [BlazeRequest(BlazeComponent.Util, 0x16)]
+    [BlazeRequest(BlazeComponent.Util, (ushort)UtilCommand.ClientMetrics)]
     public class ClientMetricsRequest : IRequest<ClientMetricsResponse>
     {
         [TdfField("UDEV")]

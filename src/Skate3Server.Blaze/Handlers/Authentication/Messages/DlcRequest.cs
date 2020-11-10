@@ -4,7 +4,7 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 {
-    [BlazeRequest(BlazeComponent.Authentication, 0x20)]
+    [BlazeRequest(BlazeComponent.Authentication, (ushort)AuthenticationCommand.Dlc)]
     public class DlcRequest : IRequest<DlcResponse>
     {
         [TdfField("BUID")]

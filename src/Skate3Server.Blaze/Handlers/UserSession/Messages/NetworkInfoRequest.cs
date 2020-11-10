@@ -5,7 +5,7 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.UserSession.Messages
 {
-    [BlazeRequest(BlazeComponent.UserSession, 0x14)]
+    [BlazeRequest(BlazeComponent.UserSession, (ushort)UserSessionCommand.NetworkInfo)]
     public class NetworkInfoRequest : IRequest<NetworkInfoResponse>
     {
         [TdfField("ADDR")]

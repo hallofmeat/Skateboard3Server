@@ -4,7 +4,7 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Handlers.Social.Messages
 {
-    [BlazeRequest(BlazeComponent.Social, 0x6)]
+    [BlazeRequest(BlazeComponent.Social, (ushort)SocialCommand.FriendsList)]
     public class FriendsListRequest : IRequest<FriendsListResponse>
     {
         [TdfField("ALST")]

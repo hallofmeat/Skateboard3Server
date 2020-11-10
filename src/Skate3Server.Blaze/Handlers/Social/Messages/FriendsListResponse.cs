@@ -4,7 +4,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Social.Messages
 {
-    [BlazeResponse(BlazeComponent.Social, 0x6)]
+    [BlazeResponse(BlazeComponent.Social, (ushort)SocialCommand.FriendsList)]
     public class FriendsListResponse : BlazeResponse
     {
         [TdfField("ALMP")]

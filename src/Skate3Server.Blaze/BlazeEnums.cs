@@ -5,18 +5,67 @@
     public enum BlazeComponent : ushort
     {
         Authentication = 0x1,
-        Unknown04 = 0x4,
+        GameManager = 0x4,
         Redirector = 0x5,
-        Unknown07 = 0x7,
-        Unknown08 = 0x8,
+        Stats = 0x7,
         Util = 0x9,
-        Unknown0B = 0xB,
-        Stats = 0xC,
-        Unknown0F = 0xF,
-        Social = 0x19, //Might be metadata?
-        Unknown7800 = 0x7800,
+        Clubs = 0xB, //TODO: not sure if correct
+        SkateStats = 0xC, //TODO: not sure if correct
+        Social = 0x19,
         UserSession = 0x7802,
-        Unknown7803 = 0x7803,
+    }
+
+    public enum AuthenticationCommand : ushort
+    {
+        Dlc = 0x20,
+        Login = 0xC8,
+        SessionData = 0xE6
+    }
+
+    public enum GameManagerCommand : ushort
+    {
+    }
+
+    public enum RedirectorCommand : ushort
+    {
+        ServerInfo = 0x1
+    }
+
+    public enum StatsCommand : ushort
+    {
+    }
+
+    public enum UtilCommand : ushort
+    {
+        Ping = 0x2,
+        PreAuth = 0x7,
+        PostAuth = 0x8,
+        ClientMetrics = 0x16,
+    }
+
+    public enum ClubsCommand : ushort
+    {
+        ClubMembership = 0xA8C,
+        Unknown640 = 0x640 //TODO I think this is pending invites
+    }
+
+    public enum SkateStatsCommand : ushort
+    {
+        UpdateStats = 0x2,
+        StatsReport = 0x72 //notification
+    }
+
+    public enum SocialCommand : ushort
+    {
+        FriendsList = 0x6
+    }
+
+    public enum UserSessionCommand : ushort
+    {
+        UserExtendedData = 0x1, //notification
+        UserAdded = 0x2, //notification
+        HardwareFlags = 0x8,
+        NetworkInfo = 0x14
     }
 
     public enum BlazeMessageType

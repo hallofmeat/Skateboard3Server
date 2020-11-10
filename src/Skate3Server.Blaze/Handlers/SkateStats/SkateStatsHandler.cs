@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Skate3Server.Blaze.Handlers.Stats.Messages;
+using Skate3Server.Blaze.Handlers.SkateStats.Messages;
 using Skate3Server.Blaze.Notifications.UserSession.Messages;
 using Skate3Server.Blaze.Server;
 
-namespace Skate3Server.Blaze.Handlers.Stats
+namespace Skate3Server.Blaze.Handlers.SkateStats
 {
     public class SkateStatsHandler : IRequestHandler<SkateStatsRequest, SkateStatsResponse>
     {
@@ -15,7 +15,7 @@ namespace Skate3Server.Blaze.Handlers.Stats
 
             response.Notifications.Add(new BlazeHeader
             {
-                Component = BlazeComponent.Stats,
+                Component = BlazeComponent.SkateStats,
                 Command = 0x72,
                 MessageId = 0,
                 MessageType = BlazeMessageType.Notification,

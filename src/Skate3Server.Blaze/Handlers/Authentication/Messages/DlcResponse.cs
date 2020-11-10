@@ -3,7 +3,7 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 {
-    [BlazeResponse(BlazeComponent.Authentication, 0x20)]
+    [BlazeResponse(BlazeComponent.Authentication, (ushort)AuthenticationCommand.Dlc)]
     public class DlcResponse : BlazeResponse
     {
     }
