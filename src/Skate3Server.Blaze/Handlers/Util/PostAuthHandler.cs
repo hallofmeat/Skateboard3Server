@@ -28,7 +28,7 @@ namespace Skate3Server.Blaze.Handlers.Util
                 {
                     Ip = BlazeConfig.BlazeIp,
                     Port = 8999,
-                    Key = $"{1234},{BlazeConfig.BlazeIp}:8999,skate-2010-ps3,10,50,50,50,50,0,0"
+                    Key = $"{1234},{BlazeConfig.BlazeIp}:8999,skate-2010-ps3,10,50,50,50,50,0,0" //TODO blazeid
                 }
             };
             return response;

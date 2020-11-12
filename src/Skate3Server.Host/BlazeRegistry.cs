@@ -12,6 +12,7 @@ using Skate3Server.Blaze.Handlers.Util;
 using Skate3Server.Blaze.Serializer;
 using Skate3Server.Blaze.Server;
 using Skate3Server.Common.Decoders;
+using Skate3Server.Data;
 
 namespace Skate3Server.Host
 {
@@ -54,8 +55,6 @@ namespace Skate3Server.Host
             builder.RegisterType<TeamMembershipHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<Unknown640Handler>().AsImplementedInterfaces().InstancePerDependency();
 
-            //Soap Services
-            builder.RegisterType<SkateFeedService>().As<ISkateFeedService>().SingleInstance();
 
         }
     }

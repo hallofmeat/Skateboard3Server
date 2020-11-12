@@ -17,7 +17,7 @@ namespace Skate3Server.Blaze.Handlers.Social
                     //TODO: temp, fix later
                     {"friendList", new ResponseList
                     {
-                        Boid = 1234,
+                        Boid = 1234, //TODO
                         Lid = 1,
                         Lms = 100,
                         Name = "friendList",
@@ -26,7 +26,7 @@ namespace Skate3Server.Blaze.Handlers.Social
                     }},
                     {"recentPlayerList", new ResponseList
                     {
-                        Boid = 1234,
+                        Boid = 1234, //TODO
                         Lid = 1,
                         Lms = 100,
                         Name = "recentPlayerList",

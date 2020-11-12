@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Skate3Server.Common\Skate3Server.Common.csproj" />
+    <ProjectReference Include="..\Skate3Server.Data\Skate3Server.Data.csproj" />
   </ItemGroup>
 
 </Project>

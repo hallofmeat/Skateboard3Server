@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Handlers.Util.Messages;
 
 namespace Skate3Server.Blaze.Handlers.Util
@@ -13,8 +14,7 @@ namespace Skate3Server.Blaze.Handlers.Util
 
             var response = new PingResponse
             {
-                //https://stackoverflow.com/a/17632585
-                Timestamp = (uint)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds
+                Timestamp = TimeUtil.GetUnixTimestamp()
             };
             return response;
         }

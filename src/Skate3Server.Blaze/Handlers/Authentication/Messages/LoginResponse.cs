@@ -46,7 +46,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         public LoginProfile Profile { get; set; }
 
         [TdfField("UID")]
-        public long UserId { get; set; }
+        public long AccountId { get; set; }
     }
 
     public class LoginProfile

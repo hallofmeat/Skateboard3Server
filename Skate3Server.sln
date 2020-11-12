@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skate3Server.Data", "src\Skate3Server.Data\Skate3Server.Data.csproj", "{5DB3EF16-A746-4464-9243-09F45C76E8D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB3EF16-A746-4464-9243-09F45C76E8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DB3EF16-A746-4464-9243-09F45C76E8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DB3EF16-A746-4464-9243-09F45C76E8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DB3EF16-A746-4464-9243-09F45C76E8D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{89F2B0DC-4534-48E1-B776-B7149510A67B} = {256096F1-70C9-47C3-827E-EFC3A38C76C1}
 		{C05137AF-F193-4309-A9D1-BE088483A776} = {9587B117-88DE-4ABE-A3F5-F9FF29955BAA}
 		{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9} = {256096F1-70C9-47C3-827E-EFC3A38C76C1}
+		{5DB3EF16-A746-4464-9243-09F45C76E8D0} = {256096F1-70C9-47C3-827E-EFC3A38C76C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F926ECD-AECA-4D03-A918-3E2C493E7CB5}

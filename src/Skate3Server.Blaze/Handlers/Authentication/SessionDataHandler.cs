@@ -18,7 +18,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 Email = "", //nobody@ea.com normally
                 Profile = new SessionDataProfile
                 {
-                    DisplayName = BlazeConfig.Username, //TODO
+                    DisplayName = "", //TODO should be session username
                     LastUsed = 0, //TODO
                     ProfileId = 1234, //TODO,
                     ExternalProfileId = 0, //TODO

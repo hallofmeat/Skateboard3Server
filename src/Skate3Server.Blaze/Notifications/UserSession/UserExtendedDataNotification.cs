@@ -11,7 +11,7 @@ namespace Skate3Server.Blaze.Notifications.UserSession
         public ExtendedData Data { get; set; }
 
         [TdfField("USID")]
-        public uint UserSessionId { get; set; }
+        public uint UserId { get; set; }
     }
 
     public class ExtendedData
