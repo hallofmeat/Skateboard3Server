@@ -1,6 +1,6 @@
 ﻿using Skate3Server.Blaze.Serializer.Attributes;
 
-namespace Skate3Server.Blaze.Notifications.UserSession.Messages
+namespace Skate3Server.Blaze.Notifications.UserSession
 {
     [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionCommand.UserAdded)]
     public class UserAddedNotification

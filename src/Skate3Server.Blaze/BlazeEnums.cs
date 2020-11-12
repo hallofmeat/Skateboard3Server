@@ -11,7 +11,7 @@
         Util = 0x9,
         Teams = 0xB, //Clubs in other blaze server implementations 
         SkateStats = 0xC, //TODO: not sure if correct
-        Social = 0x19,
+        Social = 0x19, //TODO: Metadata?
         UserSession = 0x7802,
     }
 

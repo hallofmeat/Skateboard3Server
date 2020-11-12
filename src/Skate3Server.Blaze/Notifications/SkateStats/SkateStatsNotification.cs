@@ -2,7 +2,7 @@
 using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Serializer.Attributes;
 
-namespace Skate3Server.Blaze.Notifications.UserSession.Messages
+namespace Skate3Server.Blaze.Notifications.SkateStats
 {
     [BlazeNotification(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.StatsReport)]
     public class SkateStatsNotification
