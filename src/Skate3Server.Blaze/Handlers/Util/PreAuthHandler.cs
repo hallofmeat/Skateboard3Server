@@ -2,12 +2,19 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Options;
 using Skate3Server.Blaze.Handlers.Util.Messages;
 
 namespace Skate3Server.Blaze.Handlers.Util
 {
     public class PreAuthHandler : IRequestHandler<PreAuthRequest, PreAuthResponse>
     {
+        private readonly BlazeConfig _blazeConfig;
+
+        public PreAuthHandler(IOptions<BlazeConfig> blazeConfig)
+        {
+            _blazeConfig = blazeConfig.Value;
+        }
         public async Task<PreAuthResponse> Handle(PreAuthRequest request, CancellationToken cancellationToken)
         {
             var response = new PreAuthResponse
@@ -41,9 +48,9 @@ namespace Skate3Server.Blaze.Handlers.Util
                 {
                     BandwidthServer = new QosAddress
                     {
-                        Hostname = BlazeConfig.BlazeHost,
+                        Hostname = _blazeConfig.ListenHost,
                         Port = 17502,
-                        Ip = BlazeConfig.BlazeIp
+                        Ip = _blazeConfig.ListenIp
                     },
                     PingNodeCount = 1, //default is 10
                     PingServers = new Dictionary<string, QosAddress>
@@ -51,9 +58,9 @@ namespace Skate3Server.Blaze.Handlers.Util
                         //default has 3 servers (lets see if it works with just one)
                         { "tst", new QosAddress
                         {
-                            Hostname = BlazeConfig.BlazeHost,
+                            Hostname = _blazeConfig.ListenHost,
                             Port = 17502,
-                            Ip = BlazeConfig.BlazeIp
+                            Ip = _blazeConfig.ListenIp
                         }}
                     },
                     ServerId = 1
