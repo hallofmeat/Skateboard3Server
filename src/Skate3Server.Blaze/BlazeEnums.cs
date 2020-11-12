@@ -52,7 +52,11 @@
     public enum SkateStatsCommand : ushort
     {
         UpdateStats = 0x2,
-        StatsReport = 0x72 //notification
+    }
+
+    public enum SkateStatsNotification : ushort
+    {
+        StatsReport = 0x72
     }
 
     public enum SocialCommand : ushort
@@ -62,10 +66,14 @@
 
     public enum UserSessionCommand : ushort
     {
-        UserExtendedData = 0x1, //notification
-        UserAdded = 0x2, //notification
         HardwareFlags = 0x8,
         NetworkInfo = 0x14
+    }
+
+    public enum UserSessionNotification : ushort
+    {
+        UserExtendedData = 0x1,
+        UserAdded = 0x2,
     }
 
     public enum BlazeMessageType

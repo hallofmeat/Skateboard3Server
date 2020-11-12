@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using FluentAssertions;
 using Skate3Server.Blaze.Serializer;
@@ -9,42 +10,10 @@ namespace Skate3Server.Blaze.Tests.Serializer
 {
     public class BlazeSerializerFacts
     {
-        //[Fact]
-        //public void Generates_header()
-        //{
-        //    var blazeHeader = new BlazeHeader
-        //    {
-        //        Component = BlazeComponent.Redirector,
-        //        Command = 0x1,
-        //        ErrorCode = 0x12,
-        //        MessageType = BlazeMessageType.Reply,
-        //        MessageId = 100,
-        //    };
-
-        //    var serial = new BlazeSerializer();
-        //    var resultStream = new MemoryStream();
-
-        //    //Act
-        //    serial.Serialize(resultStream, new TestEmptyBlaze());
-
-        //    //Assert
-        //    var validHeader = new byte[]
-        //    {
-        //        0x00, 0x00, //Length
-        //        0x00, 0x05, //Component
-        //        0x00, 0x01, //Command
-        //        0x00, 0x12, //Error Code
-        //        0x10, 0x00, 0x00, 0x64 //MessageType/MessageId
-        //    };
-
-        //    resultStream.ToArray().Should().BeEquivalentTo(validHeader);
-        //}
-
-
         [Fact]
         public void Generates_basic_types()
         {
-            var basicTypes = new TestBasicTypesBlaze
+            var input = new TestBasicTypesBlaze
             {
                 StringTest = "testing",
                 BoolTest = true,
@@ -62,10 +31,10 @@ namespace Skate3Server.Blaze.Tests.Serializer
             var resultStream = new MemoryStream();
 
             //Act
-            serial.SerializeObjectProperties(resultStream, basicTypes, new StringBuilder());
+            serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
 
             //Assert
-            var validHeader = new byte[]
+            var validBody = new byte[]
             {
                 0xd3, 0x3d, 0x21, //TSTA
                 0x18, //string, 8
@@ -99,12 +68,254 @@ namespace Skate3Server.Blaze.Tests.Serializer
                 0x00, 0x02, //2
 
             };
+            var result = resultStream.ToArray();
+            result.Should().BeEquivalentTo(validBody);
+        }
 
-            resultStream.ToArray().Should().BeEquivalentTo(validHeader);
+        [Fact]
+        public void Generates_array_strings()
+        {
+            var input = new TestArrayStrings
+            {
+                ListTest = new List<string>
+                {
+                    "Test1",
+                    "areallylongstring",
+                    "testing"
+                }
+            };
+
+            var serial = new BlazeSerializer();
+            var resultStream = new MemoryStream();
+
+            //Act
+            serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+            
+            //Assert
+            var validBody = new byte[]
+            {
+                0xd3, 0x3d, 0x21, //TSTA
+                0xa1,  //array, 1 dimension
+                0x03,  // 3 elements
+                0x16,  // string, length 6
+                0x54, 0x65, 0x73, 0x74, 0x31, 0x00, //Test1
+                0x12, //18 length 
+                0x61, 0x72, 0x65, 0x61, 0x6C, 0x6C, 0x79, 0x6C, 0x6F, 0x6E, 0x67, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67, 0x00, //areallylongstring
+                0x08, //8 length
+                0x74, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x00,
+            };
+            var result = resultStream.ToArray();
+            result.Should().BeEquivalentTo(validBody);
+        }
+
+        [Fact]
+        public void Generates_array_ints()
+        {
+            var input = new TestArrayInts
+            {
+                ListTest = new List<int>
+                {
+                    1234,
+                    10000,
+                }
+            };
+
+            var serial = new BlazeSerializer();
+            var resultStream = new MemoryStream();
+
+            //Act
+            serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+
+            //Assert
+            var validBody = new byte[]
+            {
+                0xd3, 0x3d, 0x21, //TSTA
+                0xa1,  //array, 1 dimension
+                0x02,  // 2 elements
+                0x64,  // int, length 4
+                0x00, 0x00, 0x04, 0xD2, //1234
+                0x00, 0x00, 0x27, 0x10 //10000
+            };
+            var result = resultStream.ToArray();
+            result.Should().BeEquivalentTo(validBody);
+        }
+
+        [Fact]
+        public void Generates_map_strings()
+        {
+            var input = new TestMapStrings
+            {
+                MapTest = new Dictionary<int, string>
+                {
+                    {1, "Test1"},
+                    {2, "areallylongstring"},
+                    {3, "testing"}
+                }
+            };
+
+            var serial = new BlazeSerializer();
+            var resultStream = new MemoryStream();
+
+            //Act
+            serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+
+            //Assert
+            var validBody = new byte[]
+            {
+                0xd3, 0x3d, 0x21, //TSTA
+                0xc3,  //map, 3 elements
+                0x6f, 0x04, //int length 4,
+                0x00, 0x00, 0x00, 0x01,
+                0x1F, 0x06,  // string, length 6
+                0x54, 0x65, 0x73, 0x74, 0x31, 0x00, //Test1
+                0x00, 0x00, 0x00, 0x02,
+                0x12, //18 length 
+                0x61, 0x72, 0x65, 0x61, 0x6C, 0x6C, 0x79, 0x6C, 0x6F, 0x6E, 0x67, 0x73, 0x74, 0x72, 0x69, 0x6E, 0x67, 0x00, //areallylongstring
+                0x00, 0x00, 0x00, 0x03,
+                0x08, //8 length
+                0x74, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x00,
+            };
+            var result = resultStream.ToArray();
+            result.Should().BeEquivalentTo(validBody);
+        }
+
+        [Fact]
+        public void Generates_map_structs()
+        {
+            var input = new TestMapStructs
+            {
+                MapTest = new Dictionary<string, TestStruct>
+                {
+                    {"a", new TestStruct
+                    {
+                        StringTest = "testing1"
+                    }},
+                    {"b", new TestStruct
+                    {
+                        StringTest = "testing2"
+                    }}
+                }
+            };
+
+            var serial = new BlazeSerializer();
+            var resultStream = new MemoryStream();
+
+            //Act
+            serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+
+            //Assert
+            var validBody = new byte[]
+            {
+                0xd3, 0x3d, 0x21, //TSTA
+                0xc2,  //map, 2 elements
+                0x1f, 0x02, //string length 2
+                0x61, 0x00, //a
+                0x00, // struct
+                0xd3, 0x3d, 0x21, //TSTA
+                0x19, //string length 9
+                0x74, 0x65, 0x73, 0x74, 0x69, 0x6E, 0x67, 0x31, 0x00, //testing1
+                0x00, //end struct
+                0x02, //string, length 2
+                0x62, 0x00, //b
+                0xd3, 0x3d, 0x21, //TSTA
+                0x19, //string length 9
+                0x74, 0x65, 0x73, 0x74, 0x69, 0x6E, 0x67, 0x32, 0x00, //testing2
+                0x00, //end struct
+            };
+            var result = resultStream.ToArray();
+            result.Should().BeEquivalentTo(validBody);
+        }
+
+        [Fact]
+        public void Generates_nested_structs()
+        {
+            var input = new TestNestedStructs
+            {
+                NestedStruct = new NestedStruct1
+                {
+                    NestedStruct = new TestStruct
+                    {
+                        StringTest = "testing"
+                    }
+                }
+            };
+
+            var serial = new BlazeSerializer();
+            var resultStream = new MemoryStream();
+
+            //Act
+            serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+
+            //Assert
+            var validBody = new byte[]
+            {
+                0xd3, 0x3d, 0x21, //TSTA
+                0x00, //NestedStruct1
+                0xd3, 0x3d, 0x21, //TSTA
+                0x00, //TestStruct
+                0xd3, 0x3d, 0x21, //TSTA
+                0x18, //string length 8
+                0x74, 0x65, 0x73, 0x74, 0x69, 0x6E, 0x67, 0x00, //testing
+                0x00, //end TestStruct
+                0x00, //end NestedStruct1
+            };
+            var result = resultStream.ToArray();
+            result.Should().BeEquivalentTo(validBody);
+        }
+
+        //TODO: test union (pending refactor)
+        //TODO: test empty struct
+
+        private class TestArrayStrings
+        {
+            [TdfField("TSTA")]
+            public List<string> ListTest { get; set; }
+        }
+
+        private class TestArrayInts
+        {
+            [TdfField("TSTA")]
+            public List<int> ListTest { get; set; }
+        }
+
+        private class TestMapStrings
+        {
+            [TdfField("TSTA")]
+            public Dictionary<int, string> MapTest { get; set; }
+        }
+
+        private class TestMapStructs
+        {
+            [TdfField("TSTA")]
+            public Dictionary<string, TestStruct> MapTest { get; set; }
+        }
+
+        private class TestNestedStructs
+        {
+            [TdfField("TSTA")]
+            public NestedStruct1 NestedStruct { get; set; }
+
+        }
+
+        private class NestedStruct1
+        {
+            [TdfField("TSTA")]
+            public TestStruct NestedStruct { get; set; }
+        }
+
+        private class TestStruct
+        {
+            [TdfField("TSTA")]
+            public string StringTest { get; set; }
         }
 
 
-        public class TestBasicTypesBlaze
+        private class TestBasicTypesBlaze
         {
             [TdfField("TSTA")]
             public string StringTest { get; set; }
@@ -137,12 +348,7 @@ namespace Skate3Server.Blaze.Tests.Serializer
             public TestBlazeEnum EnumTest { get; set; }
         }
 
-
-        public class TestEmptyBlaze
-        {
-        }
-
-        public enum TestBlazeEnum : ushort
+        private enum TestBlazeEnum : ushort
         {
             Hello = 0x1,
             World = 0x2

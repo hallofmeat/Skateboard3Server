@@ -68,7 +68,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
             response.Notifications.Add(new BlazeHeader
             {
                 Component = BlazeComponent.UserSession,
-                Command = 0x2,
+                Command = (ushort)UserSessionNotification.UserAdded,
                 MessageId = 0,
                 MessageType = BlazeMessageType.Notification,
                 ErrorCode = 0
@@ -87,7 +87,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
             response.Notifications.Add(new BlazeHeader
             {
                 Component = BlazeComponent.UserSession,
-                Command = 0x1,
+                Command = (ushort)UserSessionNotification.UserExtendedData,
                 MessageId = 0,
                 MessageType = BlazeMessageType.Notification,
                 ErrorCode = 0

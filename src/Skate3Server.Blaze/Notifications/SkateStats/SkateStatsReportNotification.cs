@@ -4,8 +4,8 @@ using Skate3Server.Blaze.Serializer.Attributes;
 
 namespace Skate3Server.Blaze.Notifications.SkateStats
 {
-    [BlazeNotification(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.StatsReport)]
-    public class SkateStatsNotification
+    [BlazeNotification(BlazeComponent.SkateStats, (ushort)SkateStatsNotification.StatsReport)]
+    public class SkateStatsReportNotification
     {
         [TdfField("EROR")]
         public int Error { get; set; }

@@ -16,11 +16,11 @@ namespace Skate3Server.Blaze.Handlers.SkateStats
             response.Notifications.Add(new BlazeHeader
             {
                 Component = BlazeComponent.SkateStats,
-                Command = 0x72,
+                Command = (ushort)SkateStatsNotification.StatsReport,
                 MessageId = 0,
                 MessageType = BlazeMessageType.Notification,
                 ErrorCode = 0
-            }, new SkateStatsNotification
+            }, new SkateStatsReportNotification
             {
                 Error = 0,
                 Final = false,
