@@ -1,9 +1,10 @@
 ﻿using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Notifications.UserSession
 {
     [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionNotification.UserAdded)]
-    public class UserAddedNotification
+    public class UserAddedNotification : IBlazeNotification
     {
         [TdfField("AID")]
         public long AccountId { get; set; } //TODO

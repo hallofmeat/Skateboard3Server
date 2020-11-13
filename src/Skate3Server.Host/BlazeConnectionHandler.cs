@@ -48,7 +48,7 @@ namespace Skate3Server.Host
 
                         if (message != null)
                         {
-                            var responses = await messageHandler.ProcessMessage(message);
+                            var responses = await messageHandler.ProcessMessage(message, clientContext);
                             if (responses != null)
                             {
                                 foreach (var response in responses)

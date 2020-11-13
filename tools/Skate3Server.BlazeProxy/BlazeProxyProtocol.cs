@@ -7,12 +7,12 @@ using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.BlazeProxy
 {
-    public class BlazeProxyProtocol : IMessageReader<BlazeMessage>, IMessageWriter<BlazeMessage>
+    public class BlazeProxyProtocol : IMessageReader<BlazeMessageData>, IMessageWriter<BlazeMessageData>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public bool TryParseMessage(in ReadOnlySequence<byte> input, ref SequencePosition consumed, ref SequencePosition examined,
-            out BlazeMessage message)
+            out BlazeMessageData messageData)
         {
             var reader = new SequenceReader<byte>(input);
 
@@ -21,7 +21,7 @@ namespace Skate3Server.BlazeProxy
             //Parse header
             if (!reader.TryReadBigEndian(out short messageLength))
             {
-                message = default;
+                messageData = default;
                 return false;
             }
 
@@ -29,7 +29,7 @@ namespace Skate3Server.BlazeProxy
 
             if (!reader.TryReadBigEndian(out short component))
             {
-                message = default;
+                messageData = default;
                 return false;
             }
 
@@ -37,7 +37,7 @@ namespace Skate3Server.BlazeProxy
 
             if (!reader.TryReadBigEndian(out short command))
             {
-                message = default;
+                messageData = default;
                 return false;
             }
 
@@ -45,7 +45,7 @@ namespace Skate3Server.BlazeProxy
 
             if (!reader.TryReadBigEndian(out short errorCode))
             {
-                message = default;
+                messageData = default;
                 return false;
             }
 
@@ -53,7 +53,7 @@ namespace Skate3Server.BlazeProxy
 
             if (!reader.TryReadBigEndian(out int messageInfo))
             {
-                message = default;
+                messageData = default;
                 return false;
             }
 
@@ -63,13 +63,13 @@ namespace Skate3Server.BlazeProxy
             //Not enough data in the buffer
             if (reader.Remaining < header.Length)
             {
-                message = default;
+                messageData = default;
                 return false;
             }
 
             //Read body
             var payload = input.Slice(reader.Position, header.Length);
-            message = new BlazeMessage
+            messageData = new BlazeMessageData
             {
                 Header = header,
                 Payload = payload
@@ -80,7 +80,7 @@ namespace Skate3Server.BlazeProxy
             return true;
         }
 
-        public void WriteMessage(BlazeMessage message, IBufferWriter<byte> output)
+        public void WriteMessage(BlazeMessageData message, IBufferWriter<byte> output)
         {
             //Header
             var header = message.Header;

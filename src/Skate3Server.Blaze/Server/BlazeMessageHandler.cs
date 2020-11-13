@@ -11,7 +11,7 @@ namespace Skate3Server.Blaze.Server
 {
     public interface IBlazeMessageHandler
     {
-        Task<IList<BlazeMessage>> ProcessMessage(BlazeMessage requestMessage);
+        Task<IList<BlazeMessageData>> ProcessMessage(BlazeMessageData requestMessageData, ClientContext clientContext);
     }
 
     public class BlazeMessageHandler : IBlazeMessageHandler
@@ -32,18 +32,17 @@ namespace Skate3Server.Blaze.Server
             _debugParser = debugParser;
         }
 
-        //TODO: change to a connectionhub type way of handling notifications instead of returning a list
-        public async Task<IList<BlazeMessage>> ProcessMessage(BlazeMessage requestMessage)
+        public async Task<IList<BlazeMessageData>> ProcessMessage(BlazeMessageData requestMessageData, ClientContext clientContext)
         {
-            var requestHeader = requestMessage.Header;
-            var requestPayload = requestMessage.Payload;
+            var requestHeader = requestMessageData.Header;
+            var requestPayload = requestMessageData.Payload;
             if (_blazeTypeLookup.TryGetRequestType(requestHeader.Component, requestHeader.Command, out var requestType))
             {
                 try
                 {
                     var parsedRequest = _blazeDeserializer.Deserialize(requestPayload, requestType);
 
-                    var response = (BlazeResponse) await _mediator.Send(parsedRequest);
+                    var response = (IBlazeResponse) await _mediator.Send(parsedRequest);
                     var responseHeader = new BlazeHeader
                     {
                         Component = requestHeader.Component,
@@ -57,33 +56,29 @@ namespace Skate3Server.Blaze.Server
                     var output = new MemoryStream();
                     _blazeSerializer.Serialize(output, response);
 
-                    var responseMessage = new BlazeMessage
+                    var responseMessage = new BlazeMessageData
                     {
                         Header = responseHeader,
                         Payload = new ReadOnlySequence<byte>(output.ToArray())
                     };
 
-                    var responseMessages = new List<BlazeMessage>
+                    var responseMessages = new List<BlazeMessageData>
                     {
                         responseMessage
                     };
 
                     //Send new notifications
-                    //TODO: this is bad but works for now
-                    if (response != null)
+                    foreach (var note in clientContext.Notifications)
                     {
-                        foreach (var note in response.Notifications)
+                        //TODO: remove stream
+                        var notificationOutput = new MemoryStream();
+                        _blazeSerializer.Serialize(notificationOutput, note.Value);
+                        var notification = new BlazeMessageData
                         {
-                            //TODO: remove stream
-                            var notificationOutput = new MemoryStream();
-                            _blazeSerializer.Serialize(notificationOutput, note.Value);
-                            var notification = new BlazeMessage
-                            {
-                                Header = note.Key,
-                                Payload = new ReadOnlySequence<byte>(notificationOutput.ToArray())
-                            };
-                            responseMessages.Add(notification);
-                        }
+                            Header = note.Key,
+                            Payload = new ReadOnlySequence<byte>(notificationOutput.ToArray())
+                        };
+                        responseMessages.Add(notification);
                     }
                     return responseMessages;
                 }

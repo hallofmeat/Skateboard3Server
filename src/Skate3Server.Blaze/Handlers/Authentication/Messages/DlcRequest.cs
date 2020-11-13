@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using MediatR;
 using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 {
     [BlazeRequest(BlazeComponent.Authentication, (ushort)AuthenticationCommand.Dlc)]
-    public class DlcRequest : IRequest<DlcResponse>
+    public class DlcRequest : IRequest<DlcResponse>, IBlazeRequest
     {
         [TdfField("BUID")]
         public uint Buid { get; set; } //TODO

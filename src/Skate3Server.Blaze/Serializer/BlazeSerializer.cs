@@ -7,19 +7,20 @@ using System.Text;
 using JetBrains.Annotations;
 using NLog;
 using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Serializer
 {
     public interface IBlazeSerializer
     {
-        void Serialize(Stream output, object payload);
+        void Serialize(Stream output, IBlazeResponse payload);
     }
 
     public class BlazeSerializer : IBlazeSerializer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public void Serialize(Stream output, object payload)
+        public void Serialize(Stream output, IBlazeResponse payload)
         {
             var responseSb = new StringBuilder();
 

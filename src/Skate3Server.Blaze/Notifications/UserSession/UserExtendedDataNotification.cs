@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Notifications.UserSession
 {
     [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionNotification.UserExtendedData)]
-    public class UserExtendedDataNotification
+    public class UserExtendedDataNotification : IBlazeNotification
     {
         [TdfField("DATA")]
         public ExtendedData Data { get; set; }

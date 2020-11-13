@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using JetBrains.Annotations;
+using NLog;
 
 namespace Skate3Server.Blaze.Server
 {
@@ -17,6 +18,8 @@ namespace Skate3Server.Blaze.Server
         private readonly ConcurrentDictionary<string, ClientContext> _clients =
             new ConcurrentDictionary<string, ClientContext>(StringComparer.Ordinal);
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         [CanBeNull]
         public ClientContext this[string connectionId]
         {
@@ -31,11 +34,27 @@ namespace Skate3Server.Blaze.Server
 
         public void Add(ClientContext client)
         {
+            //TODO: remove
+            Logger.Debug($"Adding client {client.ConnectionId}");
+
+            if (client.ConnectionId == null)
+            {
+                Logger.Warn("Tried to Add ClientContext with null ConnectionId");
+                return;
+            }
             _clients.TryAdd(client.ConnectionId, client);
         }
 
         public void Remove(ClientContext client)
         {
+            //TODO: remove
+            Logger.Debug($"Removing client {client.ConnectionId}");
+
+            if (client.ConnectionId == null)
+            {
+                Logger.Warn("Tried to Remove ClientContext with null ConnectionId");
+                return;
+            }
             _clients.TryRemove(client.ConnectionId, out _);
         }
 

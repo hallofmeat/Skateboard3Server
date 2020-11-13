@@ -4,7 +4,7 @@ using Skate3Server.Blaze.Server;
 namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 {
     [BlazeResponse(BlazeComponent.Authentication, (ushort)AuthenticationCommand.SessionData)]
-    public class SessionDataResponse : BlazeResponse
+    public class SessionDataResponse : IBlazeResponse
     {
         [TdfField("BUID")]
         public uint BlazeId { get; set; }
@@ -25,7 +25,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
         public SessionDataProfile Profile { get; set; }
 
         [TdfField("UID")]
-        public long UserId { get; set; }
+        public long AccountId { get; set; }
     }
 
     public class SessionDataProfile

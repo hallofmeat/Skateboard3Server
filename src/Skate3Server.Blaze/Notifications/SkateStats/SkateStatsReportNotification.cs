@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Notifications.SkateStats
 {
     [BlazeNotification(BlazeComponent.SkateStats, (ushort)SkateStatsNotification.StatsReport)]
-    public class SkateStatsReportNotification
+    public class SkateStatsReportNotification : IBlazeNotification
     {
         [TdfField("EROR")]
         public int Error { get; set; }

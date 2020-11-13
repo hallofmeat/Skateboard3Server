@@ -9,11 +9,18 @@ namespace Skate3Server.Blaze.Handlers.SkateStats
 {
     public class SkateStatsHandler : IRequestHandler<SkateStatsRequest, SkateStatsResponse>
     {
+        private readonly ClientContext _clientContext;
+
+        public SkateStatsHandler(ClientContext clientContext)
+        {
+            _clientContext = clientContext;
+        }
+
         public async Task<SkateStatsResponse> Handle(SkateStatsRequest request, CancellationToken cancellationToken)
         {
             var response = new SkateStatsResponse();
 
-            response.Notifications.Add(new BlazeHeader
+            _clientContext.Notifications.Add(new BlazeHeader
             {
                 Component = BlazeComponent.SkateStats,
                 Command = (ushort)SkateStatsNotification.StatsReport,

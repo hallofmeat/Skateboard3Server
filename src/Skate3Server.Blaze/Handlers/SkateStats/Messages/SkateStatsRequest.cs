@@ -2,11 +2,12 @@
 using MediatR;
 using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.SkateStats.Messages
 {
     [BlazeRequest(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.UpdateStats)]
-    public class SkateStatsRequest : IRequest<SkateStatsResponse>
+    public class SkateStatsRequest : IRequest<SkateStatsResponse>, IBlazeRequest
     {
         [TdfField("FNSH")]
         public bool Finished { get; set; }

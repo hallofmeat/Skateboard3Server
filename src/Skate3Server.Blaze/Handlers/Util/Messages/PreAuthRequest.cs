@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Util.Messages
 {
     [BlazeRequest(BlazeComponent.Util, (ushort)UtilCommand.PreAuth)]
-    public class PreAuthRequest : IRequest<PreAuthResponse>
+    public class PreAuthRequest : IRequest<PreAuthResponse>, IBlazeRequest
     {
         [TdfField("CDAT")]
         public ClientData ClientData { get; set; }

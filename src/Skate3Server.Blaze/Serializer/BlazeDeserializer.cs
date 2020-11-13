@@ -3,19 +3,20 @@ using System.Buffers;
 using System.Reflection;
 using System.Text;
 using NLog;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Serializer
 {
     public interface IBlazeDeserializer
     {
-        object Deserialize(in ReadOnlySequence<byte> payload, Type requestType);
+        IBlazeRequest Deserialize(in ReadOnlySequence<byte> payload, Type requestType);
     }
 
     public class BlazeDeserializer : IBlazeDeserializer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public object Deserialize(in ReadOnlySequence<byte> payload, Type requestType)
+        public IBlazeRequest Deserialize(in ReadOnlySequence<byte> payload, Type requestType)
         {
             var request = Activator.CreateInstance(requestType);
 
@@ -31,7 +32,7 @@ namespace Skate3Server.Blaze.Serializer
 
             Logger.Trace($"Request parsed:{Environment.NewLine}{requestSb}");
 
-            return request;
+            return (IBlazeRequest) request;
         }
 
         private void ParseObject(ref SequenceReader<byte> payloadReader, object target, ParserState state,

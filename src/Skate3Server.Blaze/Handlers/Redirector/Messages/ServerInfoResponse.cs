@@ -6,7 +6,7 @@ using Skate3Server.Blaze.Server;
 namespace Skate3Server.Blaze.Handlers.Redirector.Messages
 {
     [BlazeResponse(BlazeComponent.Redirector, (ushort)RedirectorCommand.ServerInfo)]
-    public class ServerInfoResponse : BlazeResponse
+    public class ServerInfoResponse : IBlazeResponse
     {
         //Need to be in order
         [TdfField("ADDR")]

@@ -4,7 +4,7 @@ using Skate3Server.Blaze.Server;
 namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 {
     [BlazeResponse(BlazeComponent.Authentication, (ushort)AuthenticationCommand.Login)]
-    public class LoginResponse : BlazeResponse
+    public class LoginResponse : IBlazeResponse
     {
         [TdfField("AGUP")]
         public bool Agup { get; set; } //TODO

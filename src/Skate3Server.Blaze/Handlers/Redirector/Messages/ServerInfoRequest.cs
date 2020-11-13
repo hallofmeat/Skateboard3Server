@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using MediatR;
 using Skate3Server.Blaze.Serializer.Attributes;
+using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Blaze.Handlers.Redirector.Messages
 {
     [BlazeRequest(BlazeComponent.Redirector, (ushort)RedirectorCommand.ServerInfo)]
-    public class ServerInfoRequest : IRequest<ServerInfoResponse>
+    public class ServerInfoRequest : IRequest<ServerInfoResponse>, IBlazeRequest
     {
         [TdfField("BSDK")]
         public string BlazeSdk { get; set; }
