@@ -27,11 +27,13 @@ namespace Skate3Server.Host
             builder.RegisterType<BlazeTypeLookup>().As<IBlazeTypeLookup>();
             builder.RegisterType<Ps3TicketDecoder>().As<IPs3TicketDecoder>();
 
+            //Connection Handling
+            builder.RegisterType<BlazeProtocol>().SingleInstance();
+            builder.RegisterType<ClientManager>().As<IClientManager>().SingleInstance(); //manages all clients
+            builder.RegisterType<BlazeClientContext>().As<ClientContext>().InstancePerLifetimeScope(); //each connection gets one
+
             //Mediator
-            builder
-                .RegisterType<Mediator>()
-                .As<IMediator>()
-                .InstancePerLifetimeScope();
+            builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
 
             builder.Register<ServiceFactory>(context =>
             {

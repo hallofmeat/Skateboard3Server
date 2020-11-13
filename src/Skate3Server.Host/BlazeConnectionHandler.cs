@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using Skate3Server.Blaze.Server;
 
@@ -8,50 +9,68 @@ namespace Skate3Server.Host
 {
     public class BlazeConnectionHandler : ConnectionHandler
     {
+        private readonly BlazeProtocol _protocol;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IClientManager _clientManager;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IBlazeMessageHandler _handler;
-
-        public BlazeConnectionHandler(IBlazeMessageHandler handler)
+        public BlazeConnectionHandler(BlazeProtocol protocol, IServiceScopeFactory serviceScopeFactory, IClientManager clientManager)
         {
-            _handler = handler;
+            _protocol = protocol;
+            _serviceScopeFactory = serviceScopeFactory;
+            _clientManager = clientManager;
         }
 
         public override async Task OnConnectedAsync(ConnectionContext connection)
         {
-            //TODO: DI
-            var protocol = new BlazeProtocol();
-            var reader = connection.CreateReader();
-            var writer = connection.CreateWriter();
+            IServiceScope scope = null;
 
-            while (true)
+            try
             {
-                try
-                {
-                    var result = await reader.ReadAsync(protocol);
-                    var message = result.Message;
+                //Create connection scope
+                scope = _serviceScopeFactory.CreateScope();
+                var messageHandler = scope.ServiceProvider.GetRequiredService<IBlazeMessageHandler>();
 
-                    if (message != null)
+                var clientContext = (BlazeClientContext) scope.ServiceProvider.GetRequiredService<ClientContext>();
+                clientContext.ConnectionContext = connection;
+                _clientManager.Add(clientContext);
+
+                var reader = connection.CreateReader();
+                var writer = connection.CreateWriter();
+
+                while (true)
+                {
+                    try
                     {
-                        var responses = await _handler.ProcessMessage(message);
-                        if (responses != null)
+                        var result = await reader.ReadAsync(_protocol);
+                        var message = result.Message;
+
+                        if (message != null)
                         {
-                            foreach (var response in responses)
+                            var responses = await messageHandler.ProcessMessage(message);
+                            if (responses != null)
                             {
-                                await writer.WriteAsync(protocol, response);
+                                foreach (var response in responses)
+                                {
+                                    await writer.WriteAsync(_protocol, response);
+                                }
                             }
                         }
-                    }
 
-                    if (result.IsCompleted)
+                        if (result.IsCompleted)
+                        {
+                            break;
+                        }
+                    }
+                    finally
                     {
-                        break;
+                        reader.Advance();
                     }
                 }
-                finally
-                {
-                    reader.Advance();
-                }
+            }
+            finally
+            {
+                scope?.Dispose();
             }
         }
     }

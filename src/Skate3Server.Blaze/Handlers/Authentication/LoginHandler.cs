@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using Skate3Server.Blaze.Common;
 using Skate3Server.Blaze.Handlers.Authentication.Messages;
 using Skate3Server.Blaze.Notifications.UserSession;
@@ -18,16 +19,22 @@ namespace Skate3Server.Blaze.Handlers.Authentication
     public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     {
         private readonly BlazeContext _context;
+        private readonly ClientContext _clientContext;
         private readonly IPs3TicketDecoder _ticketDecoder;
 
-        public LoginHandler(BlazeContext context, IPs3TicketDecoder ticketDecoder)
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public LoginHandler(BlazeContext context, ClientContext clientContext, IPs3TicketDecoder ticketDecoder)
         {
             _context = context;
+            _clientContext = clientContext;
             _ticketDecoder = ticketDecoder;
         }
 
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
+            Logger.Debug($"LOGIN for {_clientContext.ConnectionId}");
+
             var ticket = _ticketDecoder.DecodeTicket(request.Ticket);
             if (ticket == null)
             {
