@@ -2,7 +2,7 @@
 {
     public class BlazeConfig
     {
-        public string ListenHost { get; set; }
-        public string ListenIp { get; set; }
+        public string PublicHost { get; set; }
+        public string PublicIp { get; set; }
     }
 }

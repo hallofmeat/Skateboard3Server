@@ -48,9 +48,9 @@ namespace Skate3Server.Blaze.Handlers.Util
                 {
                     BandwidthServer = new QosAddress
                     {
-                        Hostname = _blazeConfig.ListenHost,
+                        Hostname = _blazeConfig.PublicHost,
                         Port = 17502,
-                        Ip = _blazeConfig.ListenIp
+                        Ip = _blazeConfig.PublicIp
                     },
                     PingNodeCount = 1, //default is 10
                     PingServers = new Dictionary<string, QosAddress>
@@ -58,9 +58,9 @@ namespace Skate3Server.Blaze.Handlers.Util
                         //default has 3 servers (lets see if it works with just one)
                         { "tst", new QosAddress
                         {
-                            Hostname = _blazeConfig.ListenHost,
+                            Hostname = _blazeConfig.PublicHost,
                             Port = 17502,
-                            Ip = _blazeConfig.ListenIp
+                            Ip = _blazeConfig.PublicIp
                         }}
                     },
                     ServerId = 1

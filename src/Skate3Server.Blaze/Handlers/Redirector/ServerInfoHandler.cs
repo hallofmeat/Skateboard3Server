@@ -24,8 +24,8 @@ namespace Skate3Server.Blaze.Handlers.Redirector
             {
                 Address = new KeyValuePair<NetworkAddressType, ServerNetworkAddress>(NetworkAddressType.Server, new ServerNetworkAddress
                 {
-                    Host = _blazeConfig.ListenHost,
-                    Ip = Convert.ToUInt32(IPAddress.Parse(_blazeConfig.ListenIp).Address),
+                    Host = _blazeConfig.PublicHost,
+                    Ip = Convert.ToUInt32(IPAddress.Parse(_blazeConfig.PublicIp).Address),
                     Port = 10744
                 }),
                 Secure = false,
