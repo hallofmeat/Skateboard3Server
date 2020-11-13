@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Bedrock.Framework;
 using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,14 +25,14 @@ namespace Skate3Server.Host
         public override async Task OnConnectedAsync(ConnectionContext connection)
         {
             IServiceScope scope = null;
-
+            BlazeClientContext clientContext = null;
             try
             {
                 //Create connection scope
                 scope = _serviceScopeFactory.CreateScope();
                 var messageHandler = scope.ServiceProvider.GetRequiredService<IBlazeMessageHandler>();
 
-                var clientContext = (BlazeClientContext) scope.ServiceProvider.GetRequiredService<ClientContext>();
+                clientContext = (BlazeClientContext) scope.ServiceProvider.GetRequiredService<ClientContext>();
                 clientContext.ConnectionContext = connection;
                 _clientManager.Add(clientContext);
 
@@ -70,6 +71,11 @@ namespace Skate3Server.Host
             }
             finally
             {
+                if (clientContext != null)
+                {
+                    _clientManager.Remove(clientContext);
+                }
+             
                 scope?.Dispose();
             }
         }

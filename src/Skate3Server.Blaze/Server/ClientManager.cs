@@ -22,8 +22,8 @@ namespace Skate3Server.Blaze.Server
         {
             get
             {
-                _clients.TryGetValue(connectionId, out var connection);
-                return connection;
+                _clients.TryGetValue(connectionId, out var client);
+                return client;
             }
         }
 
