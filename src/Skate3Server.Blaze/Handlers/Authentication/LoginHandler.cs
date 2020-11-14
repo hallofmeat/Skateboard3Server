@@ -98,7 +98,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 TermsUrl = ""
             };
 
-            _clientContext.Notifications.Add(new BlazeHeader
+            _clientContext.Notifications.Enqueue((new BlazeHeader
             {
                 Component = BlazeComponent.UserSession,
                 Command = (ushort)UserSessionNotification.UserAdded,
@@ -115,9 +115,9 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 Username = user.Username,
                 ExternalId = user.ExternalId,
                 Online = true
-            });
+            }));
 
-            _clientContext.Notifications.Add(new BlazeHeader
+            _clientContext.Notifications.Enqueue((new BlazeHeader
             {
                 Component = BlazeComponent.UserSession,
                 Command = (ushort)UserSessionNotification.UserExtendedData,
@@ -145,7 +145,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                     Uatt = 0
                 },
                 UserId = user.Id
-            });
+            }));
 
             //Update login time
             user.LastLogin = TimeUtil.GetUnixTimestamp();

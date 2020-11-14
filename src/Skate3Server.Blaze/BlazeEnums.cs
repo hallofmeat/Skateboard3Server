@@ -22,6 +22,21 @@
 
     public enum GameManagerCommand : ushort
     {
+        AdvanceGameState = 0x3,
+        GameAttributes = 0x07,
+        StartMatchmaking = 0x0D,
+        ResetServer = 0x19,
+        GameSession = 0x1A,
+    }
+
+    public enum GameManagerNotification : ushort
+    {
+        MatchmakingFailed = 0x0A,
+        MatchmakingStatus = 0x0C,
+        GameSetup = 0x14,
+        GameAttributeChange = 0x50,
+        GameStateChange = 0x64,
+        GameSettingsChange = 0x6E,
     }
 
     public enum RedirectorCommand : ushort
@@ -31,6 +46,7 @@
 
     public enum StatsCommand : ushort
     {
+        //TODO 0x02 UpdateStats?
     }
 
     public enum UtilCommand : ushort

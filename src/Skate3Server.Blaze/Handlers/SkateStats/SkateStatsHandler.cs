@@ -20,7 +20,7 @@ namespace Skate3Server.Blaze.Handlers.SkateStats
         {
             var response = new SkateStatsResponse();
 
-            _clientContext.Notifications.Add(new BlazeHeader
+            _clientContext.Notifications.Enqueue((new BlazeHeader
             {
                 Component = BlazeComponent.SkateStats,
                 Command = (ushort)SkateStatsNotification.StatsReport,
@@ -40,7 +40,7 @@ namespace Skate3Server.Blaze.Handlers.SkateStats
                     Prcs = false,
                     StatsReport = request.StatsReport
                 }
-            });
+            }));
 
             return response;
         }

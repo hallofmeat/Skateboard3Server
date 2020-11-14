@@ -68,17 +68,17 @@ namespace Skate3Server.Blaze.Server
                     };
 
                     //Send new notifications
-                    foreach (var note in clientContext.Notifications)
+                    while (clientContext.Notifications.TryDequeue(out var notification))
                     {
                         //TODO: remove stream
                         var notificationOutput = new MemoryStream();
-                        _blazeSerializer.Serialize(notificationOutput, note.Value);
-                        var notification = new BlazeMessageData
+                        _blazeSerializer.Serialize(notificationOutput, notification.Item2);
+                        var messageData = new BlazeMessageData
                         {
-                            Header = note.Key,
+                            Header = notification.Item1,
                             Payload = new ReadOnlySequence<byte>(notificationOutput.ToArray())
                         };
-                        responseMessages.Add(notification);
+                        responseMessages.Add(messageData);
                     }
                     return responseMessages;
                 }
@@ -89,7 +89,7 @@ namespace Skate3Server.Blaze.Server
                 }
             }
 
-            Logger.Error($"Unknown component: {requestHeader.Component} and command: {requestHeader.Command}");
+            Logger.Error($"Unknown Component: {requestHeader.Component} and Command: 0x{requestHeader.Command:X2}");
             _debugParser.TryParseBody(requestPayload);
             return null;
         }

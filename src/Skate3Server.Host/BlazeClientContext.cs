@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Connections;
 using Skate3Server.Blaze.Server;
@@ -9,7 +10,7 @@ namespace Skate3Server.Host
     {
         public BlazeClientContext()
         {
-            Notifications = new ConcurrentDictionary<BlazeHeader, IBlazeNotification>();
+            Notifications = new ConcurrentQueue<ValueTuple<BlazeHeader, IBlazeNotification>>();
         }
 
         internal ConnectionContext ConnectionContext { get; set; }
@@ -22,6 +23,6 @@ namespace Skate3Server.Host
 
         public override IDictionary<object, object> Items => ConnectionContext?.Items;
 
-        public override IDictionary<BlazeHeader, IBlazeNotification> Notifications { get; }
+        public override ConcurrentQueue<ValueTuple<BlazeHeader, IBlazeNotification>> Notifications { get; }
     }
 }

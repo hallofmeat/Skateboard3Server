@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Skate3Server.Blaze.Server
 {
@@ -11,7 +13,7 @@ namespace Skate3Server.Blaze.Server
 
         public abstract IDictionary<object, object> Items { get; }
 
-        //TODO not sure if this should live here
-        public abstract IDictionary<BlazeHeader, IBlazeNotification> Notifications { get; }
+        //TODO not sure if this should live here, also is this is the right type
+        public abstract ConcurrentQueue<ValueTuple<BlazeHeader, IBlazeNotification>> Notifications { get; }
     }
 }
