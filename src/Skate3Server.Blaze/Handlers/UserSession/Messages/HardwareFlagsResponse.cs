@@ -6,5 +6,6 @@ namespace Skate3Server.Blaze.Handlers.UserSession.Messages
     [BlazeResponse(BlazeComponent.UserSession, (ushort)UserSessionCommand.HardwareFlags)]
     public class HardwareFlagsResponse : IBlazeResponse
     {
+        //Empty
     }
 }

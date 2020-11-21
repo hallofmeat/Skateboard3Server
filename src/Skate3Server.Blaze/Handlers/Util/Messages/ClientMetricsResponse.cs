@@ -6,5 +6,6 @@ namespace Skate3Server.Blaze.Handlers.Util.Messages
     [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.ClientMetrics)]
     public class ClientMetricsResponse : IBlazeResponse
     {
+        //Empty
     }
 }

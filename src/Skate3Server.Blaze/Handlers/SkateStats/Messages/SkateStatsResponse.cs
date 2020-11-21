@@ -6,5 +6,6 @@ namespace Skate3Server.Blaze.Handlers.SkateStats.Messages
     [BlazeResponse(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.UpdateStats)]
     public class SkateStatsResponse : IBlazeResponse
     {
+        //Empty
     }
 }

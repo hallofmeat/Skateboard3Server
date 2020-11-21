@@ -6,5 +6,6 @@ namespace Skate3Server.Blaze.Handlers.Teams.Messages
     [BlazeResponse(BlazeComponent.Teams, (ushort)TeamsCommand.Unknown640)]
     public class Unknown640Response : IBlazeResponse
     {
+        //Empty
     }
 }

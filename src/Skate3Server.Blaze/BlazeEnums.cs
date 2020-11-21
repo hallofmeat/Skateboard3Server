@@ -25,13 +25,14 @@
         AdvanceGameState = 0x3,
         GameAttributes = 0x07,
         StartMatchmaking = 0x0D,
+        FinalizeGameCreation = 0x0F,
         ResetServer = 0x19,
         GameSession = 0x1A,
     }
 
     public enum GameManagerNotification : ushort
     {
-        MatchmakingFailed = 0x0A,
+        MatchmakingFinished = 0x0A,
         MatchmakingStatus = 0x0C,
         GameSetup = 0x14,
         GameAttributeChange = 0x50,
@@ -128,6 +129,8 @@
         Server = 0x0,
         Client = 0x1,
         Pair = 0x2,
+        IpAddress = 0x3,
+        HostnameAddress = 0x4,
         Unset = 0x7F
     }
 
@@ -145,5 +148,22 @@
         Sequential,
         Strict,
         Unknown
+    }
+
+    public enum MatchmakingResult : int
+    {
+        CreatedGame = 0x0,
+        JoinedNewGame = 0x1,
+        JoinedExistingGame = 0x2,
+        TimedOut = 0x3,
+        Cancelled = 0x4,
+        Terminated = 0x5,
+        Error = 0x6
+    }
+
+    public enum GameState : int
+    {
+        Init = 0x1,
+        PreGame = 0x82
     }
 }

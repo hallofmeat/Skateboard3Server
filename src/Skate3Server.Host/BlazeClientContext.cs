@@ -20,6 +20,7 @@ namespace Skate3Server.Host
         public override uint UserId { get; set; }
 
         public override string Username { get; set; }
+        public override ulong ExternalId { get; set; }
 
         public override IDictionary<object, object> Items => ConnectionContext?.Items;
 

@@ -54,7 +54,7 @@ namespace Skate3Server.BlazeProxy
                     .UseSockets(sockets =>
                     {
                         sockets.ListenAnyIP(proxySettings.LocalPort,
-                            builder => builder.UseConnectionLogging(loggingFormatter: LoggingFormatter).UseConnectionHandler<BlazeProxyHandler>());
+                            builder => builder.UseConnectionLogging(loggingFormatter: HexLoggingFormatter).UseConnectionHandler<BlazeProxyHandler>());
                     })
                     .Build();
 
@@ -83,7 +83,7 @@ namespace Skate3Server.BlazeProxy
             }
         }
 
-        private static void LoggingFormatter(Microsoft.Extensions.Logging.ILogger logger, string method, ReadOnlySpan<byte> buffer)
+        private static void HexLoggingFormatter(Microsoft.Extensions.Logging.ILogger logger, string method, ReadOnlySpan<byte> buffer)
         {
             if (!logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
                 return;
@@ -91,9 +91,9 @@ namespace Skate3Server.BlazeProxy
             var builder = new StringBuilder($"{method}[{buffer.Length}] ");
 
             // Write the hex
-            for (int i = 0; i < buffer.Length; i++)
+            foreach (var b in buffer)
             {
-                builder.Append(buffer[i].ToString("X2"));
+                builder.Append(b.ToString("X2"));
                 builder.Append(" ");
             }
 

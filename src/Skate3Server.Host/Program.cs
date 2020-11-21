@@ -1,4 +1,8 @@
+using System;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Autofac.Extensions.DependencyInjection;
+using Bedrock.Framework;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -40,15 +44,21 @@ namespace Skate3Server.Host
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
                         {
-                            //TODO: add connection logging middleware
-
+                            //TODO: 42127 ssl version of gosredirector
                             //gosredirector (Blaze)
                             serverOptions.ListenAnyIP(42100,
-                                options => { options.UseConnectionLogging().UseConnectionHandler<BlazeConnectionHandler>(); });
-                            //eadpgs-blapp001 (Blaze)
+                                options =>
+                                {
+                                    //Force bedrock's connection logger
+                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                        .UseConnectionHandler<BlazeConnectionHandler>();
+                                });
+                            //eadpgs-blapp001 (Blaze) //TODO: should be ssl
                             serverOptions.ListenAnyIP(10744,
-                                options => { options.UseConnectionLogging().UseConnectionHandler<BlazeConnectionHandler>(); });
-                            //gostelemetry //TODO: no idea when this gets called
+                                options => {
+                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                    .UseConnectionHandler<BlazeConnectionHandler>(); });
+                            //gostelemetry //TODO: no idea what format this is in
                             //serverOptions.ListenAnyIP(9946,
                             //    options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
                             //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
@@ -59,6 +69,23 @@ namespace Skate3Server.Host
                         })
                         .UseStartup<Startup>();
                 });
+        }
+
+        private static void HexLoggingFormatter(Microsoft.Extensions.Logging.ILogger logger, string method, ReadOnlySpan<byte> buffer)
+        {
+            if (!logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+                return;
+
+            var builder = new StringBuilder($"{method}[{buffer.Length}] ");
+
+            // Write the hex
+            foreach (var b in buffer)
+            {
+                builder.Append(b.ToString("X2"));
+                builder.Append(" ");
+            }
+
+            logger.LogTrace(builder.ToString());
         }
     }
 }

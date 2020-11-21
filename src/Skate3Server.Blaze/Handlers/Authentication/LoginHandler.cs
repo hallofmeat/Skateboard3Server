@@ -153,6 +153,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
 
             _clientContext.UserId = user.Id;
             _clientContext.Username = user.Username;
+            _clientContext.ExternalId = user.ExternalId;
 
             return response;
         }

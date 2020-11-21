@@ -40,7 +40,7 @@ namespace Skate3Server.Blaze.Handlers.GameManager.Messages
         public int NetworkTopology { get; set; } //TODO enum
 
         [TdfField("PATT")]
-        public Dictionary<string, string> Patt { get; set; } //TODO dlc mask?
+        public Dictionary<string, string> PlayerAttributes { get; set; }
 
         [TdfField("PMAX")]
         public ushort Pmax { get; set; } //TODO peer max?
@@ -78,7 +78,7 @@ namespace Skate3Server.Blaze.Handlers.GameManager.Messages
         [TdfField("RANK")]
         public ThldValueCriteria Rank { get; set; } //TODO
 
-        [TdfField("RLIST")]
+        [TdfField("RLST")]
         public List<MatchmakingRule> Rules { get; set; }
 
         [TdfField("RSZR")]
@@ -134,7 +134,7 @@ namespace Skate3Server.Blaze.Handlers.GameManager.Messages
 
     public class MatchmakingRule
     {
-        [TdfField("Name")]
+        [TdfField("NAME")]
         public string Name { get; set; }
 
         [TdfField("THLD")]

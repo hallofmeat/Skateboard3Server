@@ -6,5 +6,6 @@ namespace Skate3Server.Blaze.Handlers.UserSession.Messages
     [BlazeResponse(BlazeComponent.UserSession, (ushort)UserSessionCommand.NetworkInfo)]
     public class NetworkInfoResponse : IBlazeResponse
     {
+        //Empty
     }
 }

@@ -197,7 +197,12 @@ namespace Skate3Server.Blaze.Serializer
             if (type == typeof(byte[])) //Blob
             {
                 var blobValue = (byte[])value;
-                return (TdfType.Blob, Convert.ToUInt32(blobValue.Length));
+                uint length = 0;
+                if (blobValue != null)
+                {
+                    length = Convert.ToUInt32(blobValue.Length);
+                }
+                return (TdfType.Blob, length);
             }
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>)) //Map
             {

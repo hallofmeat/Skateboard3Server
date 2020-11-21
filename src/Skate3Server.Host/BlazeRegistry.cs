@@ -3,6 +3,7 @@ using MediatR;
 using Skate3Server.Api.Services;
 using Skate3Server.Blaze;
 using Skate3Server.Blaze.Handlers.Authentication;
+using Skate3Server.Blaze.Handlers.GameManager;
 using Skate3Server.Blaze.Handlers.Redirector;
 using Skate3Server.Blaze.Handlers.SkateStats;
 using Skate3Server.Blaze.Handlers.Social;
@@ -56,6 +57,10 @@ namespace Skate3Server.Host
             builder.RegisterType<DlcHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<TeamMembershipHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<Unknown640Handler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<StartMachmakingHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<GameSessionHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<GameAttributesHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<FinalizeGameCreationHandler>().AsImplementedInterfaces().InstancePerDependency();
 
 
         }
