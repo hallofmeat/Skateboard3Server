@@ -1,4 +1,8 @@
 # Skate3Server
-Skate 3 Server
+Custom Skate 3 Server
 
-Very POC right now (does not fully work)
+TODO:
+[x] Login
+[ ] Matchmaking
+[ ] Skate Parks
+[ ] Teams
