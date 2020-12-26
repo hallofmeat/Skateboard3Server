@@ -55,9 +55,11 @@ namespace Skate3Server.Host
                                 });
                             //eadpgs-blapp001 (Blaze) //TODO: should be ssl
                             serverOptions.ListenAnyIP(10744,
-                                options => {
+                                options =>
+                                {
                                     options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                                    .UseConnectionHandler<BlazeConnectionHandler>(); });
+                                    .UseConnectionHandler<BlazeConnectionHandler>();
+                                });
                             //gostelemetry //TODO: no idea what format this is in
                             //serverOptions.ListenAnyIP(9946,
                             //    options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });

@@ -94,8 +94,6 @@ namespace Skate3Server.Blaze.Handlers.GameManager.Messages
         public ThldCriteria Viab { get; set; } //TODO
     }
 
-
-
     public class CustomCriteria
     {
         [TdfField("EXPL")]

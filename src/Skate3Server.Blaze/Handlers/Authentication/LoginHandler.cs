@@ -19,15 +19,17 @@ namespace Skate3Server.Blaze.Handlers.Authentication
     public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     {
         private readonly BlazeContext _context;
+        private readonly IBlazeNotificationHandler _notificationHandler;
         private readonly ClientContext _clientContext;
         private readonly IPs3TicketDecoder _ticketDecoder;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public LoginHandler(BlazeContext context, ClientContext clientContext, IPs3TicketDecoder ticketDecoder)
+        public LoginHandler(BlazeContext context, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder)
         {
             _context = context;
             _clientContext = clientContext;
+            _notificationHandler = notificationHandler;
             _ticketDecoder = ticketDecoder;
         }
 
@@ -72,6 +74,14 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
+            //Update login time
+            user.LastLogin = TimeUtil.GetUnixTimestamp();
+            await _context.SaveChangesAsync(cancellationToken);
+
+            _clientContext.UserId = user.Id;
+            _clientContext.Username = user.Username;
+            _clientContext.ExternalId = user.ExternalId;
+
             var response = new LoginResponse
             {
                 Agup = false,
@@ -98,14 +108,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 TermsUrl = ""
             };
 
-            _clientContext.Notifications.Enqueue((new BlazeHeader
-            {
-                Component = BlazeComponent.UserSession,
-                Command = (ushort)UserSessionNotification.UserAdded,
-                MessageId = 0,
-                MessageType = BlazeMessageType.Notification,
-                ErrorCode = 0
-            }, new UserAddedNotification
+            await _notificationHandler.EnqueueNotification(user.Id, new UserAddedNotification
             {
                 AccountId = user.AccountId,
                 AccountLocale = 1701729619, //enUS //TODO: not hardcode
@@ -115,16 +118,9 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 Username = user.Username,
                 ExternalId = user.ExternalId,
                 Online = true
-            }));
+            });
 
-            _clientContext.Notifications.Enqueue((new BlazeHeader
-            {
-                Component = BlazeComponent.UserSession,
-                Command = (ushort)UserSessionNotification.UserExtendedData,
-                MessageId = 0,
-                MessageType = BlazeMessageType.Notification,
-                ErrorCode = 0
-            }, new UserExtendedDataNotification
+            await _notificationHandler.EnqueueNotification(user.Id, new UserExtendedDataNotification
             {
                 Data = new ExtendedData
                 {
@@ -145,15 +141,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                     Uatt = 0
                 },
                 UserId = user.Id
-            }));
-
-            //Update login time
-            user.LastLogin = TimeUtil.GetUnixTimestamp();
-            await _context.SaveChangesAsync(cancellationToken);
-
-            _clientContext.UserId = user.Id;
-            _clientContext.Username = user.Username;
-            _clientContext.ExternalId = user.ExternalId;
+            });
 
             return response;
         }

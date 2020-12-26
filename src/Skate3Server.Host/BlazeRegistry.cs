@@ -10,6 +10,7 @@ using Skate3Server.Blaze.Handlers.Social;
 using Skate3Server.Blaze.Handlers.Teams;
 using Skate3Server.Blaze.Handlers.UserSession;
 using Skate3Server.Blaze.Handlers.Util;
+using Skate3Server.Blaze.Managers;
 using Skate3Server.Blaze.Serializer;
 using Skate3Server.Blaze.Server;
 using Skate3Server.Common.Decoders;
@@ -32,6 +33,7 @@ namespace Skate3Server.Host
             builder.RegisterType<BlazeProtocol>().SingleInstance();
             builder.RegisterType<ClientManager>().As<IClientManager>().SingleInstance(); //manages all clients
             builder.RegisterType<BlazeClientContext>().As<ClientContext>().InstancePerLifetimeScope(); //each connection gets one
+            builder.RegisterType<BlazeNotificationHandler>().As<IBlazeNotificationHandler>().SingleInstance(); //I think this is correct
 
             //Mediator
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
@@ -61,8 +63,7 @@ namespace Skate3Server.Host
             builder.RegisterType<GameSessionHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<GameAttributesHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<FinalizeGameCreationHandler>().AsImplementedInterfaces().InstancePerDependency();
-
-
+            builder.RegisterType<ResetServerHandler>().AsImplementedInterfaces().InstancePerDependency();
         }
     }
 }

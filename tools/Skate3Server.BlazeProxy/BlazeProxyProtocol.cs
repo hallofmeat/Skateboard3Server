@@ -60,9 +60,13 @@ namespace Skate3Server.BlazeProxy
             header.MessageType = (BlazeMessageType)(messageInfo >> 28);
             header.MessageId = messageInfo & 0xFFFFF;
 
+            Logger.Trace(
+                $"Read header; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+
             //Not enough data in the buffer
             if (reader.Remaining < header.Length)
             {
+                Logger.Warn($"Not enough data in the buffer {reader.Remaining} < {header.Length}");
                 messageData = default;
                 return false;
             }

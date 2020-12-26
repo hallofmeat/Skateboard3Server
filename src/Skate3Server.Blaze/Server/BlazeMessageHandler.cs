@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using MediatR;
 using NLog;
 using Skate3Server.Blaze.Serializer;
@@ -11,7 +12,7 @@ namespace Skate3Server.Blaze.Server
 {
     public interface IBlazeMessageHandler
     {
-        Task<IList<BlazeMessageData>> ProcessMessage(BlazeMessageData requestMessageData, ClientContext clientContext);
+        Task<BlazeMessageData> ProcessMessage(BlazeMessageData requestMessageData);
     }
 
     public class BlazeMessageHandler : IBlazeMessageHandler
@@ -32,7 +33,8 @@ namespace Skate3Server.Blaze.Server
             _debugParser = debugParser;
         }
 
-        public async Task<IList<BlazeMessageData>> ProcessMessage(BlazeMessageData requestMessageData, ClientContext clientContext)
+        [CanBeNull]
+        public async Task<BlazeMessageData> ProcessMessage(BlazeMessageData requestMessageData)
         {
             var requestHeader = requestMessageData.Header;
             var requestPayload = requestMessageData.Payload;
@@ -47,7 +49,7 @@ namespace Skate3Server.Blaze.Server
                     {
                         Component = requestHeader.Component,
                         Command = requestHeader.Command,
-                        ErrorCode = 0,
+                        ErrorCode = 0, //TODO: have a better way to handle error code set by the handlers
                         MessageType = BlazeMessageType.Reply,
                         MessageId = requestHeader.MessageId
                     };
@@ -62,25 +64,7 @@ namespace Skate3Server.Blaze.Server
                         Payload = new ReadOnlySequence<byte>(output.ToArray())
                     };
 
-                    var responseMessages = new List<BlazeMessageData>
-                    {
-                        responseMessage
-                    };
-
-                    //Send new notifications
-                    while (clientContext.Notifications.TryDequeue(out var notification))
-                    {
-                        //TODO: remove stream
-                        var notificationOutput = new MemoryStream();
-                        _blazeSerializer.Serialize(notificationOutput, notification.Item2);
-                        var messageData = new BlazeMessageData
-                        {
-                            Header = notification.Item1,
-                            Payload = new ReadOnlySequence<byte>(notificationOutput.ToArray())
-                        };
-                        responseMessages.Add(messageData);
-                    }
-                    return responseMessages;
+                    return responseMessage;
                 }
                 catch (Exception e)
                 {

@@ -10,24 +10,19 @@ namespace Skate3Server.Blaze.Handlers.SkateStats
     public class SkateStatsHandler : IRequestHandler<SkateStatsRequest, SkateStatsResponse>
     {
         private readonly ClientContext _clientContext;
+        private readonly IBlazeNotificationHandler _notificationHandler;
 
-        public SkateStatsHandler(ClientContext clientContext)
+        public SkateStatsHandler(ClientContext clientContext, IBlazeNotificationHandler notificationHandler)
         {
             _clientContext = clientContext;
+            _notificationHandler = notificationHandler;
         }
 
         public async Task<SkateStatsResponse> Handle(SkateStatsRequest request, CancellationToken cancellationToken)
         {
             var response = new SkateStatsResponse();
 
-            _clientContext.Notifications.Enqueue((new BlazeHeader
-            {
-                Component = BlazeComponent.SkateStats,
-                Command = (ushort)SkateStatsNotification.StatsReport,
-                MessageId = 0,
-                MessageType = BlazeMessageType.Notification,
-                ErrorCode = 0
-            }, new SkateStatsReportNotification
+            await _notificationHandler.EnqueueNotification(_clientContext.UserId, new SkateStatsReportNotification
             {
                 Error = 0,
                 Final = false,
@@ -40,7 +35,7 @@ namespace Skate3Server.Blaze.Handlers.SkateStats
                     Prcs = false,
                     StatsReport = request.StatsReport
                 }
-            }));
+            });
 
             return response;
         }

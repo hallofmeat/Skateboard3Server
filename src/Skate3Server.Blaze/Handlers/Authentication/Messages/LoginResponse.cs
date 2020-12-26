@@ -23,6 +23,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication.Messages
 
         [TdfField("TURI")]
         public string TermsUrl { get; set; }
+
     }
 
     public class LoginSession

@@ -11,6 +11,7 @@ namespace Skate3Server.Blaze.Server
         int Count { get; }
         void Add(ClientContext client);
         void Remove(ClientContext client);
+        ClientContext GetByUserId(uint userId);
     }
 
     public class ClientManager : IClientManager
@@ -56,6 +57,20 @@ namespace Skate3Server.Blaze.Server
                 return;
             }
             _clients.TryRemove(client.ConnectionId, out _);
+        }
+
+        public ClientContext GetByUserId(uint userId)
+        {
+            //TODO: this isnt great
+            foreach (var (_, client) in _clients)
+            {
+                if (client.UserId == userId)
+                {
+                    return client;
+                }
+            }
+
+            return null;
         }
 
     }

@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Buffers;
+using System.IO;
+using System.Threading.Tasks;
 using Bedrock.Framework;
 using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
+using Skate3Server.Blaze.Managers;
 using Skate3Server.Blaze.Server;
 
 namespace Skate3Server.Host
@@ -34,27 +37,29 @@ namespace Skate3Server.Host
 
                 clientContext = (BlazeClientContext) scope.ServiceProvider.GetRequiredService<ClientContext>();
                 clientContext.ConnectionContext = connection;
-                _clientManager.Add(clientContext);
+                clientContext.Reader = connection.CreateReader();
+                clientContext.Writer = connection.CreateWriter();
 
-                var reader = connection.CreateReader();
-                var writer = connection.CreateWriter();
+                _clientManager.Add(clientContext);
 
                 while (true)
                 {
                     try
                     {
-                        var result = await reader.ReadAsync(_protocol);
+                        var result = await clientContext.Reader.ReadAsync(_protocol);
                         var message = result.Message;
 
                         if (message != null)
                         {
-                            var responses = await messageHandler.ProcessMessage(message, clientContext);
-                            if (responses != null)
+                            var response = await messageHandler.ProcessMessage(message);
+                            if (response != null)
                             {
-                                foreach (var response in responses)
-                                {
-                                    await writer.WriteAsync(_protocol, response);
-                                }
+                                await clientContext.Writer.WriteAsync(_protocol, response);
+                            }
+                            //Send new notifications
+                            while (clientContext.PendingNotifications.TryDequeue(out var notification))
+                            {
+                                await clientContext.Writer.WriteAsync(_protocol, notification);
                             }
                         }
 
@@ -65,7 +70,7 @@ namespace Skate3Server.Host
                     }
                     finally
                     {
-                        reader.Advance();
+                        clientContext.Reader.Advance();
                     }
                 }
             }

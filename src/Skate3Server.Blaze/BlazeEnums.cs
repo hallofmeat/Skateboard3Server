@@ -26,7 +26,7 @@
         GameAttributes = 0x07,
         StartMatchmaking = 0x0D,
         FinalizeGameCreation = 0x0F,
-        ResetServer = 0x19,
+        ResetServer = 0x19, //TODO is this create server?
         GameSession = 0x1A,
     }
 
@@ -60,7 +60,7 @@
 
     public enum TeamsCommand : ushort
     {
-        TeamMembership = 0xA8C,
+        TeamMembership = 0xA8C, //TODO: I dont think this is right
         Unknown640 = 0x640 //TODO I think this is pending invites
     }
 

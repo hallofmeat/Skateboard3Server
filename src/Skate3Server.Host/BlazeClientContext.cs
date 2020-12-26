@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using Skate3Server.Blaze.Server;
 
@@ -10,10 +11,13 @@ namespace Skate3Server.Host
     {
         public BlazeClientContext()
         {
-            Notifications = new ConcurrentQueue<ValueTuple<BlazeHeader, IBlazeNotification>>();
+            PendingNotifications = new ConcurrentQueue<BlazeMessageData>();
         }
 
         internal ConnectionContext ConnectionContext { get; set; }
+        internal ProtocolWriter Writer { get; set; }
+        internal ProtocolReader Reader { get; set; }
+        internal ConcurrentQueue<BlazeMessageData> PendingNotifications { get; }
 
         public override string ConnectionId => ConnectionContext?.ConnectionId;
 
@@ -24,6 +28,5 @@ namespace Skate3Server.Host
 
         public override IDictionary<object, object> Items => ConnectionContext?.Items;
 
-        public override ConcurrentQueue<ValueTuple<BlazeHeader, IBlazeNotification>> Notifications { get; }
     }
 }
