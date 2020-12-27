@@ -1,6 +1,5 @@
 using Autofac;
 using MediatR;
-using Skate3Server.Api.Services;
 using Skate3Server.Blaze;
 using Skate3Server.Blaze.Handlers.Authentication;
 using Skate3Server.Blaze.Handlers.GameManager;

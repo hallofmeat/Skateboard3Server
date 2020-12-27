@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.2" />
-    <PackageReference Include="SoapCore" Version="1.1.0.2" />
   </ItemGroup>
 
   <ItemGroup>

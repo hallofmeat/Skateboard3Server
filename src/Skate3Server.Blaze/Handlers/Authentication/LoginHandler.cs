@@ -62,7 +62,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
                 {
                     ExternalId = ticket.Body.UserId,
                     ExternalBlob = externalBlob.ToArray(),
-                    ExternalIdType = UserExternalIdType.PS3,
+                    ExternalIdType = UserExternalIdType.PS3, //TODO: add subtype (Emulator/Console)
                     Username = ticket.Body.Username,
                 };
                 await _context.Users.AddAsync(user, cancellationToken);
