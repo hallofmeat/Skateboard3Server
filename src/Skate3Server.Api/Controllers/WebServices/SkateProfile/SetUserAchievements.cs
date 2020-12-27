@@ -2,10 +2,10 @@
 
 namespace Skate3Server.Api.Controllers.WebServices.SkateProfile
 {
-    public class SetUserDlc
+    public class SetUserAchievements
     {
         public PlatformType PlatformId { get; set; }
         public long UserId { get; set; }
-        public string OfferIds { get; set; }
+        public string AchievementIds { get; set; }
     }
 }

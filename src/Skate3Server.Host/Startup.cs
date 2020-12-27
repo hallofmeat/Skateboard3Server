@@ -1,3 +1,5 @@
+using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Autofac;
@@ -84,13 +86,14 @@ namespace Skate3Server.Host
 
     public class WcfXmlSerializerOutputFormatter : XmlSerializerOutputFormatter
     {
-        public WcfXmlSerializerOutputFormatter() : base(new XmlWriterSettings
+        public override XmlWriter CreateXmlWriter(TextWriter writer, XmlWriterSettings xmlWriterSettings)
         {
-            OmitXmlDeclaration = false,
-            CloseOutput = false,
-            CheckCharacters = false
-        })
-        {
+            xmlWriterSettings.OmitXmlDeclaration = false;
+            xmlWriterSettings.CloseOutput = false;
+            xmlWriterSettings.CheckCharacters = false;
+            xmlWriterSettings.Indent = true;
+
+            return base.CreateXmlWriter(writer, xmlWriterSettings);
         }
 
         protected override void Serialize(XmlSerializer xmlSerializer, XmlWriter xmlWriter, object value)
