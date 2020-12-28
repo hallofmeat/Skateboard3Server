@@ -18,7 +18,7 @@ namespace Skate3Server.Blaze.Notifications.UserSession
     public class ExtendedData
     {
         [TdfField("ADDR")]
-        public KeyValuePair<NetworkAddressType, string> Address { get; set; } //TODO this can also be an address pair
+        public KeyValuePair<NetworkAddressType, NetworkAddress> Address { get; set; }
 
         [TdfField("BPS")]
         public string Bps { get; set; } //TODO bits per second?
@@ -32,8 +32,14 @@ namespace Skate3Server.Blaze.Notifications.UserSession
         [TdfField("HWFG")]
         public uint HardwareFlags { get; set; }
 
+        [TdfField("PSLM")]
+        public List<int> Pslm { get; set; } //TODO: enum? 
+
         [TdfField("QDAT")]
         public QosNetworkData NetworkData { get; set; }
+
+        [TdfField("ULST")]
+        public List<ulong> Ulst { get; set; }
 
         [TdfField("UATT")]
         public ulong Uatt { get; set; } //TODO

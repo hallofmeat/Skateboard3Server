@@ -124,7 +124,7 @@ namespace Skate3Server.Blaze.Handlers.Authentication
             {
                 Data = new ExtendedData
                 {
-                    Address = new KeyValuePair<NetworkAddressType, string>(NetworkAddressType.Unset, null),
+                    Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Unset, null),
                     Bps = "",
                     Cty = "",
                     Dmap = new Dictionary<uint, int>

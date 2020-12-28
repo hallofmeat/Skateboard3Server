@@ -49,7 +49,6 @@ namespace Skate3Server.Host
                             serverOptions.ListenAnyIP(42100,
                                 options =>
                                 {
-                                    //Force bedrock's connection logger
                                     options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
                                         .UseConnectionHandler<BlazeConnectionHandler>();
                                 });
@@ -61,8 +60,12 @@ namespace Skate3Server.Host
                                     .UseConnectionHandler<BlazeConnectionHandler>();
                                 });
                             //gostelemetry //TODO: no idea what format this is in
-                            //serverOptions.ListenAnyIP(9946,
-                            //    options => { options.UseConnectionHandler<BlazeConnectionHandler>(); });
+                            serverOptions.ListenAnyIP(9946,
+                                options =>
+                                {
+                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                        .UseConnectionHandler<DummyConnectionHandler>();
+                                });
                             //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
                             serverOptions.ListenAnyIP(17502);
                             //TODO qos UDP 17499

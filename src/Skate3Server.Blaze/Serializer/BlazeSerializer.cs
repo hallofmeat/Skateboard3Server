@@ -129,30 +129,40 @@ namespace Skate3Server.Blaze.Serializer
             else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(List<>)) //Array
             {
                 var listValues = (ICollection)propertyValue;
-                TdfHelper.WriteLength(output, Convert.ToUInt32(listValues.Count));
-
-                //TODO: double check this works with strings
-                var listValueType = propertyType.GetGenericArguments()[0];
-                var index = 0;
-                foreach (var item in listValues)
+                //TODO: tag shouldnt be written at all if null
+                if (listValues == null)
                 {
-                    var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, item);
-                    //first value
-                    if (index == 0)
+                    TdfHelper.WriteLength(output, Convert.ToUInt32(0));
+                }
+                else
+                {
+                    TdfHelper.WriteLength(output, Convert.ToUInt32(listValues.Count));
+
+                    //TODO: double check this works with strings
+                    var listValueType = propertyType.GetGenericArguments()[0];
+                    var index = 0;
+                    foreach (var item in listValues)
                     {
-                        TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
-                        responseSb.AppendLine($"{tdfData.Type} {tdfData.Length} {listValues.Count}");
-                        SerializeType(output, listValueType, item, responseSb);
-                    }
-                    else
-                    {
-                        if (tdfData.Type == TdfType.String || tdfData.Type == TdfType.Blob)
+                        var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, item);
+                        //first value
+                        if (index == 0)
                         {
-                            TdfHelper.WriteLength(output, tdfData.Length);
+                            TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
+                            responseSb.AppendLine($"{tdfData.Type} {tdfData.Length} {listValues.Count}");
+                            SerializeType(output, listValueType, item, responseSb);
                         }
-                        SerializeType(output, listValueType, item, responseSb);
+                        else
+                        {
+                            if (tdfData.Type == TdfType.String || tdfData.Type == TdfType.Blob)
+                            {
+                                TdfHelper.WriteLength(output, tdfData.Length);
+                            }
+
+                            SerializeType(output, listValueType, item, responseSb);
+                        }
+
+                        index++;
                     }
-                    index++;
                 }
             }
             else if (propertyType == typeof(byte[])) //Blob
@@ -163,6 +173,7 @@ namespace Skate3Server.Blaze.Serializer
             }
             else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Dictionary<,>)) //Map
             {
+                //TODO: tag shouldnt be written at all if null
                 var mapKeyType = propertyType.GetGenericArguments()[0];
                 var mapValueType = propertyType.GetGenericArguments()[1];
 
