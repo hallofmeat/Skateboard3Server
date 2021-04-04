@@ -1,0 +1,66 @@
+using Autofac;
+using MediatR;
+using Skateboard3Server.Blaze;
+using Skateboard3Server.Blaze.Handlers.Authentication;
+using Skateboard3Server.Blaze.Handlers.GameManager;
+using Skateboard3Server.Blaze.Handlers.Redirector;
+using Skateboard3Server.Blaze.Handlers.SkateStats;
+using Skateboard3Server.Blaze.Handlers.Social;
+using Skateboard3Server.Blaze.Handlers.Teams;
+using Skateboard3Server.Blaze.Handlers.UserSession;
+using Skateboard3Server.Blaze.Handlers.Util;
+using Skateboard3Server.Blaze.Serializer;
+using Skateboard3Server.Blaze.Server;
+using Skateboard3Server.Common.Decoders;
+
+namespace Skateboard3Server.Host
+{
+    public class BlazeRegistry : Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            builder.RegisterType<BlazeMessageHandler>().As<IBlazeMessageHandler>();
+            builder.RegisterType<BlazeSerializer>().As<IBlazeSerializer>();
+            builder.RegisterType<BlazeDeserializer>().As<IBlazeDeserializer>();
+            builder.RegisterType<BlazeDebugParser>().As<IBlazeDebugParser>();
+            builder.RegisterType<BlazeTypeLookup>().As<IBlazeTypeLookup>();
+            builder.RegisterType<Ps3TicketDecoder>().As<IPs3TicketDecoder>();
+
+            //Connection Handling
+            builder.RegisterType<BlazeProtocol>().SingleInstance();
+            builder.RegisterType<ClientManager>().As<IClientManager>().SingleInstance(); //manages all clients
+            builder.RegisterType<BlazeClientContext>().As<ClientContext>().InstancePerLifetimeScope(); //each connection gets one
+            builder.RegisterType<BlazeNotificationHandler>().As<IBlazeNotificationHandler>().SingleInstance(); //I think this is correct
+
+            //Mediator
+            builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
+
+            builder.Register<ServiceFactory>(context =>
+            {
+                var c = context.Resolve<IComponentContext>();
+                return t => c.Resolve(t);
+            });
+
+            //Blaze Message Handlers
+            builder.RegisterType<ServerInfoHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<PreAuthHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<PingHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<LoginHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<PostAuthHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<ClientMetricsHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<SessionDataHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<HardwareFlagsHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<FriendsListHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<NetworkInfoHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<SkateStatsHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<DlcHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<TeamMembershipHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<Unknown640Handler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<StartMachmakingHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<GameSessionHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<GameAttributesHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<FinalizeGameCreationHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<ResetServerHandler>().AsImplementedInterfaces().InstancePerDependency();
+        }
+    }
+}

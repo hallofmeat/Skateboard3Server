@@ -1,6 +1,6 @@
-# Skate3Server
-Custom Skate 3 Server
-
+# Skateboard3Server
+ Custom Server compatible with Skate 3
+ 
 ## TODO
 
 - [x] Login

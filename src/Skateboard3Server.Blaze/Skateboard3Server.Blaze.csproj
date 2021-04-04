@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    
+    <PackageReference Include="NLog" Version="4.7.2" />
+    <PackageReference Include="MediatR" Version="8.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Skateboard3Server.Common\Skateboard3Server.Common.csproj" />
+    <ProjectReference Include="..\Skateboard3Server.Data\Skateboard3Server.Data.csproj" />
+  </ItemGroup>
+
+</Project>
