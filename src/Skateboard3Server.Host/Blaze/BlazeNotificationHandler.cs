@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze;
 using Skateboard3Server.Blaze.Serializer;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Host
+namespace Skateboard3Server.Host.Blaze
 {
     public class BlazeNotificationHandler : IBlazeNotificationHandler
     {

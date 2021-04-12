@@ -9,7 +9,7 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.0.1" />
     <PackageReference Include="System.IO.Pipelines" Version="4.7.2" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.8.8" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
     <PackageReference Include="Bedrock.Framework" Version="0.1.62-alpha.g8a965bbcba" />
   </ItemGroup>
 

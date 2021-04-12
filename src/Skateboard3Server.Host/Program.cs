@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
+using Skateboard3Server.Host.Blaze;
 
 namespace Skateboard3Server.Host
 {
@@ -57,7 +58,8 @@ namespace Skateboard3Server.Host
                                 options =>
                                 {
                                     options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                                    .UseConnectionHandler<BlazeConnectionHandler>();
+                                        .UseConnectionHandler<BlazeConnectionHandler>();
+
                                 });
                             //gostelemetry //TODO: no idea what format this is in
                             serverOptions.ListenAnyIP(9946,
@@ -76,6 +78,8 @@ namespace Skateboard3Server.Host
                 });
         }
 
+
+
         private static void HexLoggingFormatter(Microsoft.Extensions.Logging.ILogger logger, string method, ReadOnlySpan<byte> buffer)
         {
             if (!logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
@@ -91,6 +95,19 @@ namespace Skateboard3Server.Host
             }
 
             logger.LogTrace(builder.ToString());
+        }
+    }
+
+    public static class ConnectionBuilderExtensions
+    {
+        public static TBuilder UseBlazeServerSsl<TBuilder>(this TBuilder builder, BlazeTlsOptions options) where TBuilder : IConnectionBuilder
+        {
+            builder.Use(next =>
+            {
+                var middleware = new BlazeSslServerMiddleware(next, options);
+                return middleware.OnConnectionAsync;
+            });
+            return builder;
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Host
+namespace Skateboard3Server.Host.Blaze
 {
     public class BlazeConnectionHandler : ConnectionHandler
     {

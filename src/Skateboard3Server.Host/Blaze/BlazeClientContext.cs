@@ -4,7 +4,7 @@ using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Host
+namespace Skateboard3Server.Host.Blaze
 {
     public class BlazeClientContext : ClientContext
     {
