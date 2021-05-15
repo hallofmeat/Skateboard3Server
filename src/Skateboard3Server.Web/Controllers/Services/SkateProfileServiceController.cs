@@ -8,7 +8,7 @@ namespace Skateboard3Server.Web.Controllers.Services
     [Consumes("application/x-www-form-urlencoded")]
     [Produces("text/xml")]
     [ApiController]
-    public class SkateProfileController : ControllerBase
+    public class SkateProfileServiceController : ControllerBase
     {
 
         [HttpPost("StartLoginProcess")]

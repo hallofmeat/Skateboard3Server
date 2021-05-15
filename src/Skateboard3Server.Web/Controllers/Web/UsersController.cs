@@ -3,7 +3,7 @@
 namespace Skateboard3Server.Web.Controllers.Web
 {
     [Route("/skate3/webkit/PS3/English/i/Users")]
-    public class WebUsersController : Controller
+    public class UsersController : Controller
     {
         [HttpGet("Show/{userId}")]
         public IActionResult Show(string userId)

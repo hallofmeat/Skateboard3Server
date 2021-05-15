@@ -8,7 +8,7 @@ namespace Skateboard3Server.Web.Controllers.Services
     [Consumes("application/x-www-form-urlencoded")]
     [Produces("text/xml")]
     [ApiController]
-    public class SkateFeedController : ControllerBase
+    public class SkateFeedServiceController : ControllerBase
     {
         [HttpPost("PlayerSignedIntoEANation")]
         public IntegerContainer PlayerSignedIntoEaNation([FromForm] PlayerSignedIntoEaNation data)

@@ -3,12 +3,12 @@
 namespace Skateboard3Server.Web.Controllers.Web
 {
     [Route("/skate3/webkit/PS3/English/i/SkateFeed")]
-    public class WebSkateFeedController : Controller
+    public class SkateFeedController : Controller
     {
-        public string Index()
+        public IActionResult Index()
         {
             //TODO auth
-            return "SkateFeed";
+            return View();
         }
     }
 }
