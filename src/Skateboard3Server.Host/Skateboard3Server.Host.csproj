@@ -15,8 +15,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Skateboard3Server.Api\Skateboard3Server.Api.csproj" />
     <ProjectReference Include="..\Skateboard3Server.Blaze\Skateboard3Server.Blaze.csproj" />
+    <ProjectReference Include="..\Skateboard3Server.Web\Skateboard3Server.Web.csproj" />
   </ItemGroup>
 
 </Project>

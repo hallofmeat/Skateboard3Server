@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // ReSharper disable InconsistentNaming
 
-namespace Skateboard3Server.Api.Controllers
+namespace Skateboard3Server.Web.Controllers
 {
     [Route("/skate3/config")]
     [ApiController]

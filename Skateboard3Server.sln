@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skateboard3Server.Common", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skateboard3Server.Common.Tests", "tests\Skateboard3Server.Common.Tests\Skateboard3Server.Common.Tests.csproj", "{C05137AF-F193-4309-A9D1-BE088483A776}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skateboard3Server.Api", "src\Skateboard3Server.Api\Skateboard3Server.Api.csproj", "{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skateboard3Server.Web", "src\Skateboard3Server.Web\Skateboard3Server.Web.csproj", "{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{04FBEF02-E598-4030-A094-7DB8EC3F31C4}"
 	ProjectSection(SolutionItems) = preProject

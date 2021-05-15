@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
-using Skateboard3Server.Api.Controllers.WebServices.Common;
+using Skateboard3Server.Web.WebServices.Common;
 
-namespace Skateboard3Server.Api.Controllers.WebServices.SkateProfile
+namespace Skateboard3Server.Web.WebServices.SkateProfile
 {
     [DataContract]
     public class SetUserAchievements

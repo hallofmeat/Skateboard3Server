@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Skateboard3Server.Api.Controllers.WebServices.Common;
-using Skateboard3Server.Api.Controllers.WebServices.SkateFeed;
+using Skateboard3Server.Web.WebServices.Common;
+using Skateboard3Server.Web.WebServices.SkateFeed;
 
-namespace Skateboard3Server.Api.Controllers.WebServices
+namespace Skateboard3Server.Web.Controllers
 {
     [Route("/skate3/ws/SkateFeed.asmx")]
     [ApiController]

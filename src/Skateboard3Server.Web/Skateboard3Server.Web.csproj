@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.7.2" />
-    <PackageReference Include="CoreWCF.Http" Version="0.1.0" />
   </ItemGroup>
 
   <ItemGroup>

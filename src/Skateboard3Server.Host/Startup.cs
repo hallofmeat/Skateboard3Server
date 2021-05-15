@@ -2,8 +2,6 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using Autofac;
-using CoreWCF;
-using CoreWCF.Configuration;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,10 +12,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
-using Skateboard3Server.Api.Controllers;
-using Skateboard3Server.Api.Controllers.WebServices;
 using Skateboard3Server.Blaze;
 using Skateboard3Server.Data;
+using Skateboard3Server.Web.Controllers;
 
 namespace Skateboard3Server.Host
 {
@@ -37,7 +34,7 @@ namespace Skateboard3Server.Host
         {
             services.Configure<BlazeConfig>(Configuration.GetSection("Blaze"));
 
-            services.AddServiceModelServices();
+            //services.AddServiceModelServices();
 
             var assembly = typeof(ConfigController).Assembly;
             //services.AddMvc(options => options.OutputFormatters.Insert(0, new WcfXmlSerializerOutputFormatter()))
@@ -67,13 +64,13 @@ namespace Skateboard3Server.Host
 
             app.UseRouting();
 
-            app.UseServiceModel(builder =>
-            {
-                builder
-                    .AddService<SkateProfileService>()
-                    .AddServiceEndpoint<SkateProfileService, ISkateProfileService>(new BasicHttpBinding(),
-                        "/skate3/ws/SkateProfile.asmx");
-            });
+            //app.UseServiceModel(builder =>
+            //{
+            //    builder
+            //        .AddService<SkateProfileService>()
+            //        .AddServiceEndpoint<SkateProfileService, ISkateProfileService>(new BasicHttpBinding(),
+            //            "/skate3/ws/SkateProfile.asmx");
+            //});
 
             //TODO auth
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

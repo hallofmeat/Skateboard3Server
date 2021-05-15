@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace Skateboard3Server.Api.Controllers.WebServices.SkateProfile
+namespace Skateboard3Server.Web.WebServices.SkateProfile
 {
     [XmlRoot(ElementName = "LoginInfoContainer")]
     public class StartLoginProcessResponse
