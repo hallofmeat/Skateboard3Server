@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace Skateboard3Server.Web.WebServices.Common
+namespace Skateboard3Server.Web.Models.Common
 {
     public class BoolContainer
     {

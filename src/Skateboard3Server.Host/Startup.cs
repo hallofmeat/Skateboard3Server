@@ -1,20 +1,21 @@
-using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Reflection;
 using Autofac;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using Skateboard3Server.Blaze;
 using Skateboard3Server.Data;
 using Skateboard3Server.Web.Controllers;
+using Skateboard3Server.Web.Formatter;
 
 namespace Skateboard3Server.Host
 {
@@ -34,13 +35,20 @@ namespace Skateboard3Server.Host
         {
             services.Configure<BlazeConfig>(Configuration.GetSection("Blaze"));
 
-            //services.AddServiceModelServices();
+            //Load controllers and custom xml output formatter from Skateboard3Server.Web
+            var webAssembly = typeof(ConfigController).GetTypeInfo().Assembly;
+            services.AddMvc(options => options.OutputFormatters.Add(new PoxOutputFormatter()))
+                .AddApplicationPart(webAssembly);
 
-            var assembly = typeof(ConfigController).Assembly;
-            //services.AddMvc(options => options.OutputFormatters.Insert(0, new WcfXmlSerializerOutputFormatter()))
-            services.AddMvc()
-                .AddApplicationPart(assembly)
-                .AddXmlSerializerFormatters();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
+
+            //Allow loading of views from Skateboard3Server.Web
+            services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+            {
+                options.FileProviders.Add(
+                    new EmbeddedFileProvider(webAssembly));
+            });
 
             services.AddDbContext<BlazeContext>(options => options.UseSqlite("Data Source=skateboard3server.db"));
         }
@@ -64,14 +72,6 @@ namespace Skateboard3Server.Host
 
             app.UseRouting();
 
-            //app.UseServiceModel(builder =>
-            //{
-            //    builder
-            //        .AddService<SkateProfileService>()
-            //        .AddServiceEndpoint<SkateProfileService, ISkateProfileService>(new BasicHttpBinding(),
-            //            "/skate3/ws/SkateProfile.asmx");
-            //});
-
             //TODO auth
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
@@ -92,24 +92,5 @@ namespace Skateboard3Server.Host
         }
     }
 
-    public class WcfXmlSerializerOutputFormatter : XmlSerializerOutputFormatter
-    {
-        public override XmlWriter CreateXmlWriter(TextWriter writer, XmlWriterSettings xmlWriterSettings)
-        {
-            xmlWriterSettings.OmitXmlDeclaration = false;
-            xmlWriterSettings.CloseOutput = false;
-            xmlWriterSettings.CheckCharacters = false;
-            xmlWriterSettings.Indent = true;
 
-            return base.CreateXmlWriter(writer, xmlWriterSettings);
-        }
-
-        protected override void Serialize(XmlSerializer xmlSerializer, XmlWriter xmlWriter, object value)
-        {
-            var namespaces = new XmlSerializerNamespaces();
-            namespaces.Add("", "");
-
-            xmlSerializer.Serialize(xmlWriter, value, namespaces);
-        }
-    }
 }

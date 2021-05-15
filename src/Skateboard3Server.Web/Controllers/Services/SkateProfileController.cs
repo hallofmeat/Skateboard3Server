@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Skateboard3Server.Web.WebServices.Common;
-using Skateboard3Server.Web.WebServices.SkateProfile;
+using Skateboard3Server.Web.Models.Common;
+using Skateboard3Server.Web.Models.SkateProfile;
 
-namespace Skateboard3Server.Web.Controllers
+namespace Skateboard3Server.Web.Controllers.Services
 {
     [Route("/skate3/ws/SkateProfile.asmx")]
-    [ApiController]
+    [Consumes("application/x-www-form-urlencoded")]
     [Produces("text/xml")]
+    [ApiController]
     public class SkateProfileController : ControllerBase
     {
+
         [HttpPost("StartLoginProcess")]
-        [Consumes("application/x-www-form-urlencoded")]
         public StartLoginProcessResponse StartLoginProcess([FromForm] StartLoginProcess data)
         {
             return new StartLoginProcessResponse
@@ -25,15 +26,14 @@ namespace Skateboard3Server.Web.Controllers
             };
         }
 
+
         [HttpPost("SetUserDLC")]
-        [Consumes("application/x-www-form-urlencoded")]
         public BoolContainer SetUserDlc([FromForm] SetUserDlc data)
         {
             return new BoolContainer(true);
         }
 
         [HttpPost("SetUserAchievements")]
-        [Consumes("application/x-www-form-urlencoded")]
         public IntegerContainer SetUserAchievements([FromForm] SetUserAchievements data)
         {
             return new IntegerContainer(0);
