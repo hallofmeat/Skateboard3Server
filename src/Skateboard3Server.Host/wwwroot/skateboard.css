@@ -1,4 +1,5 @@
 body {
+    background-color: darkgray;
     padding: 0 215px 0 215px;
     font-family: "Futura Std Medium";
     font-weight: 700;
@@ -7,14 +8,14 @@ body {
     letter-spacing: 1pt;
 }
 
-#container {
+.container {
     background-color: black;
     width: 810px;
     height: 612px;
     padding: 54px 20px;
 }
 
-#content {
+.content {
     display: block;
     width: 810px;
     height: 530px;
