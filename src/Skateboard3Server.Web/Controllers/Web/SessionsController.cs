@@ -2,6 +2,9 @@
 
 namespace Skateboard3Server.Web.Controllers.Web
 {
+    /// <summary>
+    /// These are the entrypoints for the web browser from here auth is done, cookies set, and redirected
+    /// </summary>
     [Route("/skate3/webkit/PS3/English/i/Sessions")]
     public class SessionsController : ControllerBase
     {
@@ -10,6 +13,13 @@ namespace Skateboard3Server.Web.Controllers.Web
         {
             //TODO do logic here to auth and set cookies and junk
             return Redirect("/skate3/webkit/PS3/English/i/SkateFeed");
+        }
+
+        [HttpGet("GameLogin/{blazeId}/skatefeed")]
+        public IActionResult SkateFeed(string blazeId)
+        {
+            //TODO do logic here to auth and set cookies and junk
+            return Redirect($"/skate3/webkit/PS3/English/i/SkateFeed");
         }
 
         [HttpGet("GameLogin/{blazeId}/playerprofile")]

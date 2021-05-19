@@ -35,12 +35,10 @@ namespace Skateboard3Server.Host
         {
             services.Configure<BlazeConfig>(Configuration.GetSection("Blaze"));
 
-            //Load controllers and custom xml output formatter from Skateboard3Server.Web
+            //Load controllers/views and custom xml output formatter from Skateboard3Server.Web
             var webAssembly = typeof(ConfigController).GetTypeInfo().Assembly;
-            services.AddMvc(options => options.OutputFormatters.Add(new PoxOutputFormatter()))
-                .AddApplicationPart(webAssembly);
-
-            services.AddRazorPages()
+            services.AddControllersWithViews(options => options.OutputFormatters.Add(new PoxOutputFormatter()))
+                .AddApplicationPart(webAssembly)
                 .AddRazorRuntimeCompilation();
 
             //Allow loading of views from Skateboard3Server.Web
@@ -71,6 +69,8 @@ namespace Skateboard3Server.Host
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseRouting();
+
+            app.UseStaticFiles();
 
             //TODO auth
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
