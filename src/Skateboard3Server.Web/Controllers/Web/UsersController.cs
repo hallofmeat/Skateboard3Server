@@ -8,7 +8,12 @@ namespace Skateboard3Server.Web.Controllers.Web
         [HttpGet("Show/{userId}")]
         public IActionResult Show(string userId)
         {
-            ViewData["Message"] = $"Users Show {userId}";
+            return View();
+        }
+
+        [HttpGet("Invitations/{userId}")]
+        public IActionResult Invitations(string userId)
+        {
             return View();
         }
     }
