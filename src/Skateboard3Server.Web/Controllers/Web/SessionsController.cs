@@ -29,6 +29,15 @@ namespace Skateboard3Server.Web.Controllers.Web
             return Redirect($"/skate3/webkit/PS3/English/i/Users/Show/{12345}"); //TODO lookup real user
         }
 
+        [HttpGet("GameLogin/{blazeId}/playerprofile{profileId}")]
+        public IActionResult OtherPlayerProfile(string blazeId, string profileId)
+        {
+            //Used from recent players/friends view profile
+            //TODO do logic here to auth and set cookies and junk
+            return Redirect(
+                $"/skate3/webkit/PS3/English/i/Users/Show/{profileId}"); //TODO: ensure no open redirect issue
+        }
+
         [HttpGet("GameLogin/{blazeId}/leaderboards")]
         public IActionResult Leaderboards(string blazeId)
         {
@@ -56,4 +65,5 @@ namespace Skateboard3Server.Web.Controllers.Web
             //TODO do logic here to auth and set cookies and junk
             return Redirect($"/skate3/webkit/PS3/English/i/Users/Invitations/{12345}"); //TODO lookup real user
         }
+    }
 }
