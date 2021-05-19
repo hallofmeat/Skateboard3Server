@@ -44,31 +44,32 @@ namespace Skateboard3Server.Host
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
                         {
+                            serverOptions.AllowSynchronousIO = true; //For CoreWCF
                             //TODO: 42127 ssl version of gosredirector
                             //gosredirector (Blaze)
-                            //serverOptions.ListenAnyIP(42100,
-                            //    options =>
-                            //    {
-                            //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                            //            .UseConnectionHandler<BlazeConnectionHandler>();
-                            //    });
-                            ////eadpgs-blapp001 (Blaze) //TODO: should be ssl
-                            //serverOptions.ListenAnyIP(10744,
-                            //    options =>
-                            //    {
-                            //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                            //            .UseConnectionHandler<BlazeConnectionHandler>();
+                            serverOptions.ListenAnyIP(42100,
+                                options =>
+                                {
+                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                        .UseConnectionHandler<BlazeConnectionHandler>();
+                                });
+                            //eadpgs-blapp001 (Blaze) //TODO: should be ssl
+                            serverOptions.ListenAnyIP(10744,
+                                options =>
+                                {
+                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                        .UseConnectionHandler<BlazeConnectionHandler>();
 
-                            //    });
-                            ////gostelemetry //TODO: no idea what format this is in
-                            //serverOptions.ListenAnyIP(9946,
-                            //    options =>
-                            //    {
-                            //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                            //            .UseConnectionHandler<DummyConnectionHandler>();
-                            //    });
-                            ////qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
-                            //serverOptions.ListenAnyIP(17502);
+                                });
+                            //gostelemetry //TODO: no idea what format this is in
+                            serverOptions.ListenAnyIP(9946,
+                                options =>
+                                {
+                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                        .UseConnectionHandler<DummyConnectionHandler>();
+                                });
+                            //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
+                            serverOptions.ListenAnyIP(17502);
                             //TODO qos UDP 17499
                             //downloads.skate.online (HTTP)
                             serverOptions.ListenAnyIP(80);
