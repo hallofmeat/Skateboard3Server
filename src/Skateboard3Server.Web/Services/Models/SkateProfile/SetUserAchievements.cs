@@ -1,6 +1,6 @@
-﻿using Skateboard3Server.Web.Models.Common;
+﻿using Skateboard3Server.Web.Services.Models.Common;
 
-namespace Skateboard3Server.Web.Models.SkateProfile
+namespace Skateboard3Server.Web.Services.Models.SkateProfile
 {
     public class SetUserAchievements
     {

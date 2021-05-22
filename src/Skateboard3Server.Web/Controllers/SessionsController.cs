@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Skateboard3Server.Web.Controllers.Web
+namespace Skateboard3Server.Web.Controllers
 {
     /// <summary>
     /// These are the entrypoints for the web browser from here auth is done, cookies set, and redirected

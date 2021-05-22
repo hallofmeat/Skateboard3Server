@@ -1,4 +1,4 @@
-﻿namespace Skateboard3Server.Web.Models.SkateFeed
+﻿namespace Skateboard3Server.Web.Services.Models.SkateFeed
 {
     public class PlayerSignedIntoEaNation
     {

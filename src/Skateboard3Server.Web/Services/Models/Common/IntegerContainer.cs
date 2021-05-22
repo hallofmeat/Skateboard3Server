@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace Skateboard3Server.Web.Models.Common
+namespace Skateboard3Server.Web.Services.Models.Common
 {
     public class IntegerContainer
     {

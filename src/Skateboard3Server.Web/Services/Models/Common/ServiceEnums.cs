@@ -1,7 +1,7 @@
 ﻿
 
 // ReSharper disable InconsistentNaming
-namespace Skateboard3Server.Web.Models.Common
+namespace Skateboard3Server.Web.Services.Models.Common
 {
     public enum PlatformType
     {
