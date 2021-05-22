@@ -6,6 +6,7 @@ using MediatR;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 using Skateboard3Server.Blaze.Notifications.GameManager;
+using Skateboard3Server.Blaze.Notifications.UserSession;
 using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager
@@ -28,6 +29,49 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             {
                 GameId = gameId
             };
+
+            await _notificationHandler.SendNotification(_clientContext.UserId, new UserExtendedDataNotification
+            {
+                Data = new ExtendedData
+                {
+                    Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair, new PairNetworkAddress
+                    {
+                        ExternalIp = new ClientNetworkAddress
+                        {
+                            Ip = 2130706433,
+                            Port = 10000
+                        },
+                        InternalIp = new ClientNetworkAddress
+                        {
+                            Ip = 2130706433,
+                            Port = 10000
+                        },
+                    }),
+                    Bps = "tst",
+                    Cty = "",
+                    Dmap = new Dictionary<uint, int>
+                    {
+                        { 0x00070047 , 0 }
+                    },
+                    HardwareFlags = 0,
+                    Pslm = new List<int> //maps to NLMP
+                    {
+                        100,
+                    },
+                    NetworkData = new QosNetworkData
+                    {
+                        DownstreamBitsPerSecond = 100,
+                        NatType = NatType.Open,
+                        UpstreamBitsPerSecond = 100
+                    },
+                    Uatt = 0,
+                    Ulst = new List<ulong>
+                    {
+                        1 //TODO: figure out what this is
+                    }
+                },
+                UserId = _clientContext.UserId
+            });
 
             await _notificationHandler.EnqueueNotification(_clientContext.UserId, new GameSetupNotification
             {

@@ -59,7 +59,7 @@ namespace Skateboard3Server.Host
             builder.RegisterType<Unknown640Handler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<StartMachmakingHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<GameSessionHandler>().AsImplementedInterfaces().InstancePerDependency();
-            builder.RegisterType<GameAttributesHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<SetGameAttributesHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<FinalizeGameCreationHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<CreateGameHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SetGameStateHandler>().AsImplementedInterfaces().InstancePerDependency();

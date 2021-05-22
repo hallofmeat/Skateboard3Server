@@ -3,8 +3,8 @@ using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
 {
-    [BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.GameAttributes)]
-    public class GameAttributesResponse : IBlazeResponse
+    [BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.SetGameAttributes)]
+    public class SetGameAttributesResponse : IBlazeResponse
     {
         //Empty
     }

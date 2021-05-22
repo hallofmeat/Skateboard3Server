@@ -24,7 +24,7 @@
     {
         SetGameState = 0x03,
         SetGameSettings = 0x04,
-        GameAttributes = 0x07,
+        SetGameAttributes = 0x07,
         StartMatchmaking = 0x0D,
         FinalizeGameCreation = 0x0F,
         CreateGame = 0x19,
