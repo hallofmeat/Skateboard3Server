@@ -44,7 +44,6 @@ namespace Skateboard3Server.Host
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
                         {
-                            serverOptions.AllowSynchronousIO = true; //For CoreWCF
                             //TODO: 42127 ssl version of gosredirector
                             //gosredirector (Blaze)
                             serverOptions.ListenAnyIP(42100,

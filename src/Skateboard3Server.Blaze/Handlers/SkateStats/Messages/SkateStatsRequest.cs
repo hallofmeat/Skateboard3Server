@@ -16,7 +16,7 @@ namespace Skateboard3Server.Blaze.Handlers.SkateStats.Messages
         public uint Grid { get; set; } //TODO
 
         [TdfField("GTYP")]
-        public uint GType { get; set; } //TODO
+        public uint GameType { get; set; }
 
         [TdfField("PRCS")]
         public bool Prcs { get; set; } //TODO

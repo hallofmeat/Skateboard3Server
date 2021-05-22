@@ -30,7 +30,7 @@ namespace Skateboard3Server.Blaze.Notifications.SkateStats
         public uint Grid { get; set; } //TODO
 
         [TdfField("GTYP")]
-        public uint GType { get; set; } //TODO
+        public uint GameType { get; set; }
 
         [TdfField("PRCS")]
         public bool Prcs { get; set; } //TODO

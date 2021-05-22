@@ -22,11 +22,12 @@
 
     public enum GameManagerCommand : ushort
     {
-        AdvanceGameState = 0x3,
+        SetGameState = 0x03,
+        SetGameSettings = 0x04,
         GameAttributes = 0x07,
         StartMatchmaking = 0x0D,
         FinalizeGameCreation = 0x0F,
-        ResetServer = 0x19, //TODO is this create server?
+        CreateGame = 0x19,
         GameSession = 0x1A,
     }
 
@@ -163,7 +164,7 @@
 
     public enum GameState : int
     {
-        Init = 0x1,
-        PreGame = 0x82
+        Init = 0x1, //newState?
+        PreGame = 0x82 //130 preGame, ingame?
     }
 }

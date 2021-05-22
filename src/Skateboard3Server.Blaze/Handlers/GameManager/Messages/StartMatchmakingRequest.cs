@@ -22,13 +22,13 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public uint Dur { get; set; } //TODO
 
         [TdfField("GNAM")]
-        public string Gnam { get; set; } //TODO
+        public string GameName { get; set; }
 
         [TdfField("GSET")]
-        public uint Gset { get; set; } //TODO
+        public uint GameSettings { get; set; }
 
         [TdfField("GVER")]
-        public string Gver { get; set; } //TODO
+        public string Gver { get; set; } //TODO gameVersion?
 
         [TdfField("IGNO")]
         public bool Igno { get; set; } //TODO
@@ -67,7 +67,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public ThldCriteria Geo { get; set; } //TODO
 
         [TdfField("GVER")]
-        public int Gver { get; set; } //TODO enum?
+        public int Gver { get; set; } //TODO enum? gameVersion?
 
         [TdfField("NAT")]
         public ThldCriteria Nat { get; set; } //TODO

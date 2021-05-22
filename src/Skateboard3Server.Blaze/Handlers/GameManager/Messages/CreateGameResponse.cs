@@ -3,8 +3,8 @@ using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
 {
-    [BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.StartMatchmaking)]
-    public class ResetServerResponse : IBlazeResponse
+    [BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.CreateGame)]
+    public class CreateGameResponse : IBlazeResponse
     {
         [TdfField("GID")]
         public uint GameId { get; set; } //TODO

@@ -6,8 +6,8 @@ using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
 {
-    [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.ResetServer)]
-    public class ResetServerRequest : IRequest<ResetServerResponse>, IBlazeRequest
+    [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.CreateGame)]
+    public class CreateGameRequest : IRequest<CreateGameResponse>, IBlazeRequest
     {
         [TdfField("ATTR")]
         public Dictionary<string, string> Attributes { get; set; }
@@ -19,16 +19,16 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public string Gctr { get; set; } //TODO
 
         [TdfField("GNAM")]
-        public string Gnam { get; set; } //TODO
+        public string GameName { get; set; }
 
         [TdfField("GSET")]
-        public uint Gset { get; set; } //TODO
+        public uint GameSettings { get; set; }
 
         [TdfField("GURL")]
-        public string Gurl { get; set; } //TODO
+        public string Gurl { get; set; } //TODO gameUrl?
 
         [TdfField("GVER")]
-        public int Gver { get; set; } //TODO: enum
+        public int Gver { get; set; } //TODO: enum gameVersion?
 
         [TdfField("HNET")]
         public List<KeyValuePair<NetworkAddressType, PairNetworkAddress>> Hnet { get; set; }

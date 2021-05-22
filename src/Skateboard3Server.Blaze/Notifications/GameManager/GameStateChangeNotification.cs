@@ -10,7 +10,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public uint GameId { get; set; }
 
         [TdfField("GSTA")]
-        public GameState State { get; set; }
+        public GameState GameState { get; set; }
 
     }
 }

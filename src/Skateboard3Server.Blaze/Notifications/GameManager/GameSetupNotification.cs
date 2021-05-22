@@ -36,28 +36,28 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public uint GameId { get; set; }
 
         [TdfField("GNAM")]
-        public string Gnam { get; set; } //TODO
+        public string GameName { get; set; }
 
         [TdfField("GPVH")]
         public ulong Gpvh { get; set; } //TODO
 
         [TdfField("GSET")]
-        public uint Gset { get; set; } //TODO
+        public uint GameSettings { get; set; }
 
         [TdfField("GSID")]
-        public uint Gsid { get; set; } //TODO
+        public uint Gsid { get; set; } //TODO gameSessionId?
 
         [TdfField("GSTA")]
         public GameState GameState { get; set; }
 
         [TdfField("GVER")]
-        public int Gver { get; set; } //TODO: enum
+        public int Gver { get; set; } //TODO: enum gameVersion?
 
         [TdfField("HNET")]
         public List<KeyValuePair<NetworkAddressType, ClientNetworkAddress>> Hnet { get; set; }
 
         [TdfField("HSES")]
-        public uint Hses { get; set; } //TODO
+        public uint Hses { get; set; } //TODO hostSession?
 
         [TdfField("IGNO")]
         public bool Igno { get; set; } //TODO
