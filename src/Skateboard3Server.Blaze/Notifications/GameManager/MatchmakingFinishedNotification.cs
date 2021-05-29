@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.GameManager
 {
     [BlazeNotification(BlazeComponent.GameManager, (ushort)GameManagerNotification.MatchmakingFinished)]
-    public class MatchmakingFinishedNotification : IBlazeNotification
+    public class MatchmakingFinishedNotification : BlazeNotification
     {
         [TdfField("FIT")]
         public uint Fit { get; set; } //TODO

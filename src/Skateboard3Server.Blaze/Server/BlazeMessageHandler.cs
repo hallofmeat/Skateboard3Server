@@ -43,13 +43,19 @@ namespace Skateboard3Server.Blaze.Server
                 {
                     var parsedRequest = _blazeDeserializer.Deserialize(requestPayload, requestType);
 
-                    var response = (IBlazeResponse) await _mediator.Send(parsedRequest);
+                    var response = (BlazeResponse) await _mediator.Send(parsedRequest);
+                    if (response == null)
+                    {
+                        Logger.Warn($"Response was null for request {requestType}");
+                        return null;
+                    }
+                    var messageType = response.BlazeErrorCode > 0 ? BlazeMessageType.ErrorReply : BlazeMessageType.Reply;
                     var responseHeader = new BlazeHeader
                     {
                         Component = requestHeader.Component,
                         Command = requestHeader.Command,
-                        ErrorCode = 0, //TODO: have a better way to handle error code set by the handlers
-                        MessageType = BlazeMessageType.Reply,
+                        ErrorCode = response.BlazeErrorCode, //TODO: have a better way to handle error code set by the handlers
+                        MessageType = messageType,
                         MessageId = requestHeader.MessageId
                     };
 

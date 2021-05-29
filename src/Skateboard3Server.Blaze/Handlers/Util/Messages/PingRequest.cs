@@ -5,7 +5,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Util.Messages
 {
     [BlazeRequest(BlazeComponent.Util, (ushort)UtilCommand.Ping)]
-    public class PingRequest : IRequest<PingResponse>, IBlazeRequest
+    public class PingRequest : BlazeRequest, IRequest<PingResponse>
     {
     }
 }

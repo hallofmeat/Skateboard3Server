@@ -5,7 +5,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
 {
     [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.FinalizeGameCreation)]
-    public class FinalizeGameCreationRequest : IRequest<FinalizeGameCreationResponse>, IBlazeRequest
+    public class FinalizeGameCreationRequest : BlazeRequest, IRequest<FinalizeGameCreationResponse>
     {
         [TdfField("GID")]
         public uint GameId { get; set; }

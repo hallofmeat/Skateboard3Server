@@ -7,7 +7,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
 {
     [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.CreateGame)]
-    public class CreateGameRequest : IRequest<CreateGameResponse>, IBlazeRequest
+    public class CreateGameRequest : BlazeRequest, IRequest<CreateGameResponse>
     {
         [TdfField("ATTR")]
         public Dictionary<string, string> Attributes { get; set; }

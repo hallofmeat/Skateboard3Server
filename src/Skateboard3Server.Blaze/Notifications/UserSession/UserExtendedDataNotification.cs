@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.UserSession
 {
     [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionNotification.UserExtendedData)]
-    public class UserExtendedDataNotification : IBlazeNotification
+    public class UserExtendedDataNotification : BlazeNotification
     {
         [TdfField("DATA")]
         public ExtendedData Data { get; set; }

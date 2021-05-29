@@ -5,7 +5,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.GameManager
 {
     [BlazeNotification(BlazeComponent.GameManager, (ushort)GameManagerNotification.MatchmakingStatus)]
-    public class MatchmakingStatusNotification : IBlazeNotification
+    public class MatchmakingStatusNotification : BlazeNotification
     {
         [TdfField("ASIL")]
         public List<AsilData> Asil { get; set; } //TODO

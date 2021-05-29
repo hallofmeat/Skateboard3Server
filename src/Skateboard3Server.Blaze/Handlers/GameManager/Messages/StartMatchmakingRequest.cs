@@ -7,7 +7,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
 {
     [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.StartMatchmaking)]
-    public class StartMatchmakingRequest : IRequest<StartMatchmakingResponse>, IBlazeRequest
+    public class StartMatchmakingRequest : BlazeRequest, IRequest<StartMatchmakingResponse>
     {
         [TdfField("ATTR")]
         public Dictionary<string, string> Attributes { get; set; }

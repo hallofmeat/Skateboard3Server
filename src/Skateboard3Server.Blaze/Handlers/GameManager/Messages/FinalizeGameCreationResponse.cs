@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
 {
     [BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.FinalizeGameCreation)]
-    public class FinalizeGameCreationResponse : IBlazeResponse
+    public class FinalizeGameCreationResponse : BlazeResponse
     {
         //Empty
     }

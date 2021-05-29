@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
 {
     [BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.StartMatchmaking)]
-    public class StartMatchmakingResponse : IBlazeResponse
+    public class StartMatchmakingResponse : BlazeResponse
     {
         [TdfField("MSID")]
         public uint Msid { get; set; } //TODO matchmaking search id?

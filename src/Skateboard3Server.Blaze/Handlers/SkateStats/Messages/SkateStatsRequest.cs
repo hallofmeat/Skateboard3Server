@@ -7,7 +7,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.SkateStats.Messages
 {
     [BlazeRequest(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.UpdateStats)]
-    public class SkateStatsRequest : IRequest<SkateStatsResponse>, IBlazeRequest
+    public class SkateStatsRequest : BlazeRequest, IRequest<SkateStatsResponse>
     {
         [TdfField("FNSH")]
         public bool Finished { get; set; }

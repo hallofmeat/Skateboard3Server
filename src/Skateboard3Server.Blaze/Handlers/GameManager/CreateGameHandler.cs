@@ -25,53 +25,54 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
         public async Task<CreateGameResponse> Handle(CreateGameRequest request, CancellationToken cancellationToken)
         {
             uint gameId = 12345; //TODO
+            uint gameSessionId = 54321; //TODO right name?
             var response = new CreateGameResponse
             {
                 GameId = gameId
             };
 
-            await _notificationHandler.SendNotification(_clientContext.UserId, new UserExtendedDataNotification
-            {
-                Data = new ExtendedData
-                {
-                    Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair, new PairNetworkAddress
-                    {
-                        ExternalIp = new ClientNetworkAddress
-                        {
-                            Ip = 2130706433,
-                            Port = 10000
-                        },
-                        InternalIp = new ClientNetworkAddress
-                        {
-                            Ip = 2130706433,
-                            Port = 10000
-                        },
-                    }),
-                    Bps = "tst",
-                    Cty = "",
-                    Dmap = new Dictionary<uint, int>
-                    {
-                        { 0x00070047 , 0 }
-                    },
-                    HardwareFlags = 0,
-                    Pslm = new List<int> //maps to NLMP
-                    {
-                        100,
-                    },
-                    NetworkData = new QosNetworkData
-                    {
-                        DownstreamBitsPerSecond = 100,
-                        NatType = NatType.Open,
-                        UpstreamBitsPerSecond = 100
-                    },
-                    Uatt = 0,
-                    Ulst = new List<ulong>
-                    {
-                        1 //TODO: figure out what this is
-                    }
-                },
-                UserId = _clientContext.UserId
-            });
+            //await _notificationHandler.SendNotification(_clientContext.UserId, new UserExtendedDataNotification
+            //{
+            //    Data = new ExtendedData
+            //    {
+            //        Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair, new PairNetworkAddress
+            //        {
+            //            ExternalIp = new ClientNetworkAddress
+            //            {
+            //                Ip = 2130706433, //127.0.0.1
+            //                Port = 10000
+            //            },
+            //            InternalIp = new ClientNetworkAddress
+            //            {
+            //                Ip = 2130706433, //127.0.0.1
+            //                Port = 10000
+            //            },
+            //        }),
+            //        Bps = "tst",
+            //        Cty = "",
+            //        Dmap = new Dictionary<uint, int>
+            //        {
+            //            { 0x00070047 , 0 }
+            //        },
+            //        HardwareFlags = 0,
+            //        Pslm = new List<int> //maps to NLMP
+            //        {
+            //            100,
+            //        },
+            //        NetworkData = new QosNetworkData
+            //        {
+            //            DownstreamBitsPerSecond = 100,
+            //            NatType = NatType.Open,
+            //            UpstreamBitsPerSecond = 100
+            //        },
+            //        Uatt = 0,
+            //        Ulst = new List<ulong>
+            //        {
+            //            1 //TODO: figure out what this is
+            //        }
+            //    },
+            //    UserId = _clientContext.UserId
+            //});
 
             await _notificationHandler.EnqueueNotification(_clientContext.UserId, new GameSetupNotification
             {
@@ -83,9 +84,9 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Cap = new List<ushort> { 6, 0 },
                     GameId = gameId,
                     GameName = request.GameName,
-                    Gpvh = 1000000000,
+                    Gpvh = 1000000000, //TODO?
                     GameSettings = request.GameSettings,
-                    Gsid = gameId,
+                    Gsid = gameSessionId,
                     GameState = GameState.Init,
                     Gver = 1,
                     Hnet = new List<KeyValuePair<NetworkAddressType, ClientNetworkAddress>>
@@ -93,23 +94,23 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         new KeyValuePair<NetworkAddressType, ClientNetworkAddress>(NetworkAddressType.IpAddress,
                             new ClientNetworkAddress
                             {
-                                Ip = 2130706433,
-                                Port = 10000
+                                Ip = 2130706433, //127.0.0.1
+                                Port = 9033 //TODO
                             })
                     },
                     Hses = 1234567,
-                    Igno = true,
+                    Ignore = false,
                     Matr = new Dictionary<string, string>
                     {
                         {"tprt", "0"},
-                        {"vprt", "11030"}
+                        //{"vprt", "9041"} //TODO? voice port?
                     },
                     Mcap = 30,
                     NetworkData = new QosNetworkData(),
                     Ntop = 132,
                     Pgid = "",
                     Pgsr = null,
-                    Phst = new HstData
+                    Phst = new HstData //Phst vs Thst?
                     {
                         Hpid = _clientContext.UserId,
                         Hslt = 1
@@ -123,7 +124,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         Hslt = 0
                     },
                     Uuid = Guid.NewGuid().ToString(),
-                    Voip = 1,
+                    Voip = 0,
                     VersionString = "Skate3-1",
                     Xnnc = null,
                     Xses = null
@@ -141,7 +142,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         NetworkData = new QosNetworkData(),
                         PlayerAttributes = new Dictionary<string, string>
                         {
-                            {"dlc_mask", "1"}
+                            {"dlc_mask", "483"} //matches start matchmaking MASK
                         },
                         Pid = _clientContext.UserId, //TODO should be ProfileId
                         PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(
@@ -149,12 +150,12 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                             {
                                 ExternalIp = new ClientNetworkAddress
                                 {
-                                    Ip = 2130706433,
+                                    Ip = 2130706433, //127.0.0.1
                                     Port = 10000
                                 },
                                 InternalIp = new ClientNetworkAddress
                                 {
-                                    Ip = 2130706433,
+                                    Ip = 2130706433, //127.0.0.1
                                     Port = 10000
                                 },
                             }),
@@ -163,7 +164,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         Stat = 4,
                         Team = 65535,
                         Tidx = 65535,
-                        Time = 10000000,
+                        Time = DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000, //microseconds
                         Uid = _clientContext.UserId
                     }
                 }

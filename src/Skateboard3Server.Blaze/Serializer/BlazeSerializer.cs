@@ -13,14 +13,14 @@ namespace Skateboard3Server.Blaze.Serializer
 {
     public interface IBlazeSerializer
     {
-        void Serialize(Stream output, IBlazeResponse payload);
+        void Serialize(Stream output, BlazeResponse payload);
     }
 
     public class BlazeSerializer : IBlazeSerializer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public void Serialize(Stream output, IBlazeResponse payload)
+        public void Serialize(Stream output, BlazeResponse payload)
         {
             var responseSb = new StringBuilder();
 

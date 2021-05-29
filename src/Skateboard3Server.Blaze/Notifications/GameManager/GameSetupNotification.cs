@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.GameManager
 {
     [BlazeNotification(BlazeComponent.GameManager, (ushort)GameManagerNotification.GameSetup)]
-    public class GameSetupNotification : IBlazeNotification
+    public class GameSetupNotification : BlazeNotification
     {
         [TdfField("ERR")]
         public uint Error { get; set; }
@@ -54,13 +54,13 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public int Gver { get; set; } //TODO: enum gameVersion?
 
         [TdfField("HNET")]
-        public List<KeyValuePair<NetworkAddressType, ClientNetworkAddress>> Hnet { get; set; }
+        public List<KeyValuePair<NetworkAddressType, ClientNetworkAddress>> Hnet { get; set; } //TODO hostNetwork?
 
         [TdfField("HSES")]
         public uint Hses { get; set; } //TODO hostSession?
 
         [TdfField("IGNO")]
-        public bool Igno { get; set; } //TODO
+        public bool Ignore { get; set; }
 
         [TdfField("MATR")]
         public Dictionary<string, string> Matr { get; set; } //TODO
@@ -81,7 +81,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public byte[] Pgsr { get; set; } //TODO
 
         [TdfField("PHST")]
-        public HstData Phst { get; set; } //TODO
+        public HstData Phst { get; set; } //TODO platformHost?
 
         [TdfField("PSAS")]
         public string Psas { get; set; } //TODO

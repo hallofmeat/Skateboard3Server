@@ -28,7 +28,7 @@ namespace Skateboard3Server.Host.Blaze
 
         //TODO: add self? (notifications to the current user)
 
-        public async Task EnqueueNotification(uint userId, IBlazeNotification notification, ushort errorCode = 0)
+        public async Task EnqueueNotification(uint userId, BlazeNotification notification)
         {
             var userContext = _clientManager.GetByUserId(userId) as BlazeClientContext;
             if (userContext == null)
@@ -37,12 +37,12 @@ namespace Skateboard3Server.Host.Blaze
                 return;
             }
 
-            var messageData = EncodeNotification(notification, errorCode);
+            var messageData = EncodeNotification(notification);
 
             userContext.PendingNotifications.Enqueue(messageData);
         }
 
-        public async Task SendNotification(uint userId, IBlazeNotification notification, ushort errorCode = 0)
+        public async Task SendNotification(uint userId, BlazeNotification notification)
         {
             var userContext = _clientManager.GetByUserId(userId) as BlazeClientContext;
             if (userContext == null)
@@ -51,7 +51,7 @@ namespace Skateboard3Server.Host.Blaze
                 return;
             }
 
-            var messageData = EncodeNotification(notification, errorCode);
+            var messageData = EncodeNotification(notification);
 
             if (userContext.Writer != null)
             {
@@ -59,7 +59,7 @@ namespace Skateboard3Server.Host.Blaze
             }
         }
 
-        private BlazeMessageData EncodeNotification(IBlazeNotification notification, ushort errorCode)
+        private BlazeMessageData EncodeNotification(BlazeNotification notification)
         {
             _blazeTypeLookup.TryGetResponseComponentCommand(notification.GetType(), out var component, out var command);
 
@@ -69,7 +69,7 @@ namespace Skateboard3Server.Host.Blaze
                 Command = command,
                 MessageId = 0, //always 0
                 MessageType = BlazeMessageType.Notification,
-                ErrorCode = errorCode
+                ErrorCode = notification.BlazeErrorCode
             };
 
             //TODO: remove stream

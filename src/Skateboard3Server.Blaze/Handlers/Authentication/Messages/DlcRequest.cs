@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages
 {
     [BlazeRequest(BlazeComponent.Authentication, (ushort)AuthenticationCommand.Dlc)]
-    public class DlcRequest : IRequest<DlcResponse>, IBlazeRequest
+    public class DlcRequest : BlazeRequest, IRequest<DlcResponse>
     {
         [TdfField("BUID")]
         public uint Buid { get; set; } //TODO

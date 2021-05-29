@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.GameManager
 {
     [BlazeNotification(BlazeComponent.GameManager, (ushort)GameManagerNotification.GameStateChange)]
-    public class GameStateChangeNotification : IBlazeNotification
+    public class GameStateChangeNotification : BlazeNotification
     {
         [TdfField("GID")]
         public uint GameId { get; set; }

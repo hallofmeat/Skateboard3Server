@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Util.Messages
 {
     [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.PostAuth)]
-    public class PostAuthResponse : IBlazeResponse
+    public class PostAuthResponse : BlazeResponse
     {
         [TdfField("TELE")]
         public TelemetryServer TelemetryServer { get; set; }

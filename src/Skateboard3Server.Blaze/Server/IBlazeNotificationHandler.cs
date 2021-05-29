@@ -11,7 +11,7 @@ namespace Skateboard3Server.Blaze.Server
         /// <param name="notification"></param>
         /// <param name="errorCode"></param>
         /// <returns></returns>
-        Task EnqueueNotification(uint userId, IBlazeNotification notification, ushort errorCode = 0);
+        Task EnqueueNotification(uint userId, BlazeNotification notification);
 
         /// <summary>
         /// Sends a notification right now
@@ -20,6 +20,6 @@ namespace Skateboard3Server.Blaze.Server
         /// <param name="notification"></param>
         /// <param name="errorCode"></param>
         /// <returns></returns>
-        Task SendNotification(uint userId, IBlazeNotification notification, ushort errorCode = 0);
+        Task SendNotification(uint userId, BlazeNotification notification);
     }
 }

@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Redirector.Messages
 {
     [BlazeRequest(BlazeComponent.Redirector, (ushort)RedirectorCommand.ServerInfo)]
-    public class ServerInfoRequest : IRequest<ServerInfoResponse>, IBlazeRequest
+    public class ServerInfoRequest : BlazeRequest, IRequest<ServerInfoResponse>
     {
         [TdfField("BSDK")]
         public string BlazeSdk { get; set; }

@@ -5,7 +5,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Util.Messages
 {
     [BlazeRequest(BlazeComponent.Util, (ushort)UtilCommand.PreAuth)]
-    public class PreAuthRequest : IRequest<PreAuthResponse>, IBlazeRequest
+    public class PreAuthRequest : BlazeRequest, IRequest<PreAuthResponse>
     {
         [TdfField("CDAT")]
         public ClientData ClientData { get; set; }

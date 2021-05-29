@@ -5,7 +5,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages
 {
     [BlazeRequest(BlazeComponent.Authentication, (ushort)AuthenticationCommand.Login)]
-    public class LoginRequest : IRequest<LoginResponse>, IBlazeRequest
+    public class LoginRequest : BlazeRequest, IRequest<LoginResponse>
     {
         [TdfField("MAIL")]
         public string Email { get; set; }

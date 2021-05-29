@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Social.Messages
 {
     [BlazeRequest(BlazeComponent.Social, (ushort)SocialCommand.FriendsList)]
-    public class FriendsListRequest : IRequest<FriendsListResponse>, IBlazeRequest
+    public class FriendsListRequest : BlazeRequest, IRequest<FriendsListResponse>
     {
         [TdfField("ALST")]
         public List<RequestList> RequestLists { get; set; } //TODO

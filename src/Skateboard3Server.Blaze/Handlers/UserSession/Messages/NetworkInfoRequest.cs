@@ -7,7 +7,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.UserSession.Messages
 {
     [BlazeRequest(BlazeComponent.UserSession, (ushort)UserSessionCommand.NetworkInfo)]
-    public class NetworkInfoRequest : IRequest<NetworkInfoResponse>, IBlazeRequest
+    public class NetworkInfoRequest : BlazeRequest, IRequest<NetworkInfoResponse>
     {
         [TdfField("ADDR")]
         public KeyValuePair<NetworkAddressType, PairNetworkAddress> Address { get; set; }
