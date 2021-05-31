@@ -145,7 +145,7 @@ namespace Skateboard3Server.Blaze.Serializer
             output.WriteByte((byte)(((uint)type << 4) | 0xF));
         }
 
-        public static (TdfType Type, uint Length) GetTdfTypeAndLength(Type type, object value)
+        public static (TdfType Type, uint Length)? GetTdfTypeAndLength(Type type, object value)
         {
             //Convert enum to base type (ushort/int etc)
             if (type.IsEnum)
@@ -192,6 +192,11 @@ namespace Skateboard3Server.Blaze.Serializer
             }
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) //Array
             {
+                //TODO figure out if this should be empty or not written when value is null
+                if (value == null)
+                {
+                    return null; //Dont generate a tag/array for this
+                }
                 return (TdfType.Array, 0x1); //1 dimension, TODO: handle multidimensional
             }
             if (type == typeof(byte[])) //Blob
@@ -206,15 +211,24 @@ namespace Skateboard3Server.Blaze.Serializer
             }
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>)) //Map
             {
+                if (value == null)
+                {
+                    return null; //Dont generate a tag/array for this
+                }
                 var mapValue = (ICollection)value;
                 return (TdfType.Map, Convert.ToUInt32(mapValue.Count));
             }
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)) //Union
             {
+                if (value == null)
+                {
+                    return null; //Dont generate a tag/array for this
+                }
                 return (TdfType.Union, 0x0);
             }
             if (type.IsClass) //Struct?
             {
+                //TODO figure out if this should be empty or not written when value is null
                 return (TdfType.Struct, 0x0);
             }
 

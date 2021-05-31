@@ -78,7 +78,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
     public class ExpsData //TODO: name
     {
         [TdfField("MASK")]
-        public ulong Mask { get; set; } //TODO
+        public ulong Mask { get; set; } //TODO DLC mask?
     }
 
     public class DnfsData //TODO: name
@@ -114,10 +114,10 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
     public class GsrdData //TODO: name
     {
         [TdfField("PMAX")]
-        public uint Pmax { get; set; } //TODO
+        public uint Pmax { get; set; } //TODO Player Max?
 
         [TdfField("PMIN")]
-        public uint Pmin { get; set; } //TODO
+        public uint Pmin { get; set; } //TODO Player Min?
     }
 
     public class HbrdData //TODO: name

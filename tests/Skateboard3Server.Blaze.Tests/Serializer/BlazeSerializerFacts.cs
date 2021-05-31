@@ -110,6 +110,25 @@ namespace Skateboard3Server.Blaze.Tests.Serializer
         }
 
         [Fact]
+        public void Generate_array_null_serialize_empty()
+        {
+            var input = new TestArrayStrings
+            {
+                ListTest = null
+            };
+            var serial = new BlazeSerializer();
+            var resultStream = new MemoryStream();
+
+            //Act
+            serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+
+            //Assert
+            var result = resultStream.ToArray();
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
         public void Generates_array_ints()
         {
             var input = new TestArrayInts
@@ -180,6 +199,26 @@ namespace Skateboard3Server.Blaze.Tests.Serializer
             };
             var result = resultStream.ToArray();
             result.Should().BeEquivalentTo(validBody);
+        }
+
+        [Fact]
+        public void Generate_map_null_serialize_empty()
+        {
+            var input = new TestMapStrings
+            {
+                MapTest = null
+            };
+
+            var serial = new BlazeSerializer();
+            var resultStream = new MemoryStream();
+
+            //Act
+            serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+
+            //Assert
+            var result = resultStream.ToArray();
+            result.Should().BeEmpty();
         }
 
         [Fact]

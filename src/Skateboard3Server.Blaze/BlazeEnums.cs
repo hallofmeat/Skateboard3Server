@@ -164,7 +164,27 @@
 
     public enum GameState : int
     {
-        Init = 0x1, //newState?
-        PreGame = 0x82 //130 preGame, ingame?
+        Init = 0x1,
+        InGame = 0x82
+    }
+
+    public enum PlayerState : int
+    {
+        Connecting = 0x2,
+        Connected = 0x4,
+    }
+
+    public enum VoipTopology : int
+    {
+        Disabled = 0x0,
+        Host = 0x1, //TODO: dirtybot relay?
+        PeerToPeer = 0x2,
+    }
+
+    public enum NetworkTopology : int //TODO nat type?
+    {
+        PeerToPeerFullMesh = 0x82, //TODO: is this the right name?
+        PeerToPeerPartialMesh = 0x83, //TODO: is this the right name?
+        PeerToPeerDirtyCastFailover = 0x84 //TODO: is this the right name?
     }
 }

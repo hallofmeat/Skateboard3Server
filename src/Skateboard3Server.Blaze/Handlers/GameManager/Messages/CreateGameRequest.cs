@@ -34,16 +34,16 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public List<KeyValuePair<NetworkAddressType, PairNetworkAddress>> Hnet { get; set; }
 
         [TdfField("IGNO")]
-        public bool Igno { get; set; } //TODO
+        public bool Ignore { get; set; }
 
         [TdfField("NTOP")]
-        public int NetworkTopology { get; set; } //TODO enum
+        public NetworkTopology NetworkTopology { get; set; }
 
         [TdfField("PATT")]
         public Dictionary<string, string> PlayerAttributes { get; set; }
 
         [TdfField("PCAP")]
-        public List<ushort> Pcap { get; set; } //TODO
+        public List<ushort> PlayerCapacity { get; set; }
 
         [TdfField("PGID")]
         public string Pgid { get; set; } //TODO
@@ -52,10 +52,10 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public byte[] Pgsc { get; set; } //TODO
 
         [TdfField("PMAX")]
-        public ushort Pmax { get; set; } //TODO peer max?
+        public ushort PlayerMax { get; set; }
 
         [TdfField("QCAP")]
-        public ushort Qcap { get; set; } //TODO
+        public ushort QueueCapacity { get; set; }
 
         [TdfField("RGID")]
         public uint Rgid { get; set; } //TODO
@@ -67,7 +67,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public ushort Team { get; set; } //TODO
 
         [TdfField("VOIP")]
-        public int Voip { get; set; } //TODO enum
+        public VoipTopology VoipTopology { get; set; }
 
         [TdfField("VSTR")]
         public string VersionString { get; set; }

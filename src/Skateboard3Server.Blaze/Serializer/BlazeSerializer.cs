@@ -37,12 +37,16 @@ namespace Skateboard3Server.Blaze.Serializer
                 var propertyType = meta.Property.PropertyType;
                 var propertyValue = meta.Property.GetValue(target);
                 var tdfData = TdfHelper.GetTdfTypeAndLength(propertyType, propertyValue);
-
+                if (!tdfData.HasValue)
+                {
+                    responseSb.AppendLine($"{meta.Attribute.Tag} null");
+                    continue;
+                }
 
                 TdfHelper.WriteLabel(output, meta.Attribute.Tag);
-                TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
+                TdfHelper.WriteTypeAndLength(output, tdfData.Value.Type, tdfData.Value.Length);
 
-                responseSb.AppendLine($"{meta.Attribute.Tag} {tdfData.Type} {tdfData.Length}");
+                responseSb.AppendLine($"{meta.Attribute.Tag} {tdfData.Value.Type} {tdfData.Value.Length}");
 
                 SerializeType(output, propertyType, propertyValue, responseSb);
             }
@@ -144,18 +148,22 @@ namespace Skateboard3Server.Blaze.Serializer
                     foreach (var item in listValues)
                     {
                         var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, item);
+                        if (!tdfData.HasValue)
+                        {
+                            continue;
+                        }
                         //first value
                         if (index == 0)
                         {
-                            TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
-                            responseSb.AppendLine($"{tdfData.Type} {tdfData.Length} {listValues.Count}");
+                            TdfHelper.WriteTypeAndLength(output, tdfData.Value.Type, tdfData.Value.Length);
+                            responseSb.AppendLine($"{tdfData.Value.Type} {tdfData.Value.Length} {listValues.Count}");
                             SerializeType(output, listValueType, item, responseSb);
                         }
                         else
                         {
-                            if (tdfData.Type == TdfType.String || tdfData.Type == TdfType.Blob)
+                            if (tdfData.Value.Type == TdfType.String || tdfData.Value.Type == TdfType.Blob)
                             {
-                                TdfHelper.WriteLength(output, tdfData.Length);
+                                TdfHelper.WriteLength(output, tdfData.Value.Length);
                             }
 
                             SerializeType(output, listValueType, item, responseSb);
@@ -188,48 +196,53 @@ namespace Skateboard3Server.Blaze.Serializer
                     var keyTdfData = TdfHelper.GetTdfTypeAndLength(mapKeyType, keyValue);
                     var valueTdfData = TdfHelper.GetTdfTypeAndLength(mapValueType, valueValue);
 
+                    if (!keyTdfData.HasValue || !valueTdfData.HasValue)
+                    {
+                        continue;
+                    }
+
                     //first value
                     if (index == 0)
                     {
                         //1F 06
-                        if (keyTdfData.Type != TdfType.Struct)
+                        if (keyTdfData.Value.Type != TdfType.Struct)
                         {
-                            TdfHelper.WriteType(output, keyTdfData.Type);
-                            TdfHelper.WriteLength(output, keyTdfData.Length);
+                            TdfHelper.WriteType(output, keyTdfData.Value.Type);
+                            TdfHelper.WriteLength(output, keyTdfData.Value.Length);
                         }
                         else
                         {
-                            TdfHelper.WriteTypeAndLength(output, keyTdfData.Type, keyTdfData.Length);
+                            TdfHelper.WriteTypeAndLength(output, keyTdfData.Value.Type, keyTdfData.Value.Length);
                         }
-                        responseSb.AppendLine($"{keyTdfData.Type} {keyTdfData.Length}");
+                        responseSb.AppendLine($"{keyTdfData.Value.Type} {keyTdfData.Value.Length}");
                         SerializeType(output, mapKeyType, keyValue, responseSb);
 
-                        if (valueTdfData.Type != TdfType.Struct)
+                        if (valueTdfData.Value.Type != TdfType.Struct)
                         {
-                            TdfHelper.WriteType(output, valueTdfData.Type);
-                            TdfHelper.WriteLength(output, valueTdfData.Length);
+                            TdfHelper.WriteType(output, valueTdfData.Value.Type);
+                            TdfHelper.WriteLength(output, valueTdfData.Value.Length);
                         }
                         else
                         {
-                            TdfHelper.WriteTypeAndLength(output, valueTdfData.Type, valueTdfData.Length);
+                            TdfHelper.WriteTypeAndLength(output, valueTdfData.Value.Type, valueTdfData.Value.Length);
                         }
-                        responseSb.AppendLine($"{valueTdfData.Type} {valueTdfData.Length}");
+                        responseSb.AppendLine($"{valueTdfData.Value.Type} {valueTdfData.Value.Length}");
                         SerializeType(output, mapValueType, valueValue, responseSb);
                     }
                     else
                     {
-                        if (keyTdfData.Type == TdfType.String || keyTdfData.Type == TdfType.Blob)
+                        if (keyTdfData.Value.Type == TdfType.String || keyTdfData.Value.Type == TdfType.Blob)
                         {
-                            TdfHelper.WriteLength(output, keyTdfData.Length);
+                            TdfHelper.WriteLength(output, keyTdfData.Value.Length);
                         }
-                        responseSb.AppendLine($"{keyTdfData.Type} {keyTdfData.Length}");
+                        responseSb.AppendLine($"{keyTdfData.Value.Type} {keyTdfData.Value.Length}");
                         SerializeType(output, mapKeyType, keyValue, responseSb);
 
-                        if (valueTdfData.Type == TdfType.String || valueTdfData.Type == TdfType.Blob)
+                        if (valueTdfData.Value.Type == TdfType.String || valueTdfData.Value.Type == TdfType.Blob)
                         {
-                            TdfHelper.WriteLength(output, valueTdfData.Length);
+                            TdfHelper.WriteLength(output, valueTdfData.Value.Length);
                         }
-                        responseSb.AppendLine($"{valueTdfData.Type} {valueTdfData.Length}");
+                        responseSb.AppendLine($"{valueTdfData.Value.Type} {valueTdfData.Value.Length}");
                         SerializeType(output, mapValueType, valueValue, responseSb);
                     }
                     index++;
@@ -246,9 +259,13 @@ namespace Skateboard3Server.Blaze.Serializer
                 {
                     var unionValueType = propertyType.GetGenericArguments()[1];
                     var tdfData = TdfHelper.GetTdfTypeAndLength(unionValueType, valueValue);
+                    if (!tdfData.HasValue)
+                    {
+                        return;
+                    }
                     TdfHelper.WriteLabel(output, "VALU");
-                    TdfHelper.WriteTypeAndLength(output, tdfData.Type, tdfData.Length);
-                    responseSb.AppendLine($"{tdfData.Type} {tdfData.Length}");
+                    TdfHelper.WriteTypeAndLength(output, tdfData.Value.Type, tdfData.Value.Length);
+                    responseSb.AppendLine($"{tdfData.Value.Type} {tdfData.Value.Length}");
 
                     SerializeType(output, unionValueType, valueValue, responseSb);
                 }

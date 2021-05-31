@@ -43,10 +43,10 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public Dictionary<string, string> PlayerAttributes { get; set; }
 
         [TdfField("PMAX")]
-        public ushort Pmax { get; set; } //TODO peer max?
+        public ushort PlayerMax { get; set; }
 
         [TdfField("PNET")]
-        public KeyValuePair<NetworkAddressType, PairNetworkAddress> PeerNetwork { get; set; }
+        public KeyValuePair<NetworkAddressType, PairNetworkAddress> PlayerNetwork { get; set; }
 
         [TdfField("QCAP")]
         public ushort Qcap { get; set; } //TODO
