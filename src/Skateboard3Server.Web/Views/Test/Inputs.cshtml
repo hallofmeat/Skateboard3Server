@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Input Test";
+}
+<script>
+    function changeText(idElement) {
+        var element = document.getElementById(idElement);
+        element.innerHTML = 'Pressed';
+    }
+</script>
+
+<div class="content">
+    <p>Input Test Page</p>
+    <ul>
+        <li>dpad_up_button: <img src="/images/buttons/PS3/PS3_Dpad_Up.png" width="40" height="30" /><a id="dpad_up_button" onClick="javascript:changeText('dpad_up_button');"> UnPressed </a></li>
+        <li>dpad_down_button: <img src="/images/buttons/PS3/PS3_Dpad_Down.png" width="40" height="30" /><a id="dpad_down_button" onClick="javascript:changeText('dpad_down_button');"> UnPressed </a></li>
+        <li>dpad_left_button: <img src="/images/buttons/PS3/PS3_Dpad_Left.png" width="40" height="30" /><a id="dpad_left_button" onClick="javascript:changeText('dpad_left_button');"> UnPressed </a></li>
+        <li>dpad_right_button: <img src="/images/buttons/PS3/PS3_Dpad_Right.png" width="40" height="30" /><a id="dpad_right_button" onClick="javascript:changeText('dpad_right_button');"> UnPressed </a></li>
+        <li>start_button: <img src="/images/buttons/PS3/PS3_Start.png" width="40" height="30" /><a id="start_button" onClick="javascript:changeText('start_button');"> UnPressed </a></li>
+        <li>select_button: <img src="/images/buttons/PS3/PS3_Select.png" width="40" height="30" /><a id="select_button" onClick="javascript:changeText('select_button');"> UnPressed </a></li>
+        <li>cross_button: <img src="/images/buttons/PS3/PS3_Cross.png" width="40" height="30" /><a id="cross_button" onClick="javascript:changeText('cross_button');"> UnPressed </a></li>
+        <li>triangle_button: <img src="/images/buttons/PS3/PS3_Triangle.png" width="40" height="30" /><a id="triangle_button" onClick="javascript:changeText('triangle_button');"> UnPressed </a></li>
+        <li>square_button: <img src="/images/buttons/PS3/PS3_Square.png" width="40" height="30" /><a id="square_button" onClick="javascript:changeText('square_button');"> UnPressed </a></li>
+        <li>circle_button: <img src="/images/buttons/PS3/PS3_Circle.png" width="40" height="30" /><a id="circle_button" onClick="javascript:changeText('circle_button');"> UnPressed </a></li>
+        <li>l1_button: <img src="/images/buttons/PS3/PS3_L1.png" width="40" height="30" /><a id="l1_button" onClick="javascript:changeText('l1_button');"> UnPressed </a></li>
+        <li>r1_button: <img src="/images/buttons/PS3/PS3_R1.png" width="40" height="30" /><a id="r1_button" onClick="javascript:changeText('r1_button');"> UnPressed </a></li>
+        <li>r2_button: <img src="/images/buttons/PS3/PS3_R2.png" width="40" height="30" /><a id="r2_button" onClick="javascript:changeText('r2_button');"> UnPressed </a></li>
+        <li>l2_button: <img src="/images/buttons/PS3/PS3_L2.png" width="40" height="30" /><a id="l2_button" onClick="javascript:changeText('l2_button');"> UnPressed </a></li>
+    </ul>
+</div>
