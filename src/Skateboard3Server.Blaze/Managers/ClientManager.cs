@@ -2,8 +2,9 @@
 using System.Collections.Concurrent;
 using JetBrains.Annotations;
 using NLog;
+using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Blaze.Server
+namespace Skateboard3Server.Blaze.Managers
 {
     public interface IClientManager
     {
@@ -16,10 +17,17 @@ namespace Skateboard3Server.Blaze.Server
 
     public class ClientManager : IClientManager
     {
+        private readonly IUserSessionManager _userSessionManager;
+
         private readonly ConcurrentDictionary<string, ClientContext> _clients =
             new ConcurrentDictionary<string, ClientContext>(StringComparer.Ordinal);
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public ClientManager(IUserSessionManager userSessionManager)
+        {
+            _userSessionManager = userSessionManager;
+        }
 
         [CanBeNull]
         public ClientContext this[string connectionId]
@@ -56,6 +64,12 @@ namespace Skateboard3Server.Blaze.Server
                 Logger.Warn("Tried to Remove ClientContext with null ConnectionId");
                 return;
             }
+
+            if (client.UserSessionId != null)
+            {
+                _userSessionManager.RemoveSession(client.UserSessionId.Value);
+            }
+
             _clients.TryRemove(client.ConnectionId, out _);
         }
 

@@ -35,7 +35,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages
         public bool FirstLogin { get; set; }
 
         [TdfField("KEY")]
-        public string BlazeKey { get; set; }
+        public string SessionKey { get; set; }
 
         [TdfField("LLOG")]
         public long LastLoginTime { get; set; }

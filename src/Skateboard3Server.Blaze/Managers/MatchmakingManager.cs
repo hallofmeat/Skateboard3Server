@@ -1,6 +1,13 @@
 ﻿namespace Skateboard3Server.Blaze.Managers
 {
-    public class MatchmakingManager
+    public interface IMatchmakingManager
+    {
+    }
+
+    /// <summary>
+    /// Manages matchmaking with people
+    /// </summary>
+    public class MatchmakingManager : IMatchmakingManager
     {
     }
 }

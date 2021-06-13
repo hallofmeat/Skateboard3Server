@@ -23,14 +23,21 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
         }
         public async Task<StartMatchmakingResponse> Handle(StartMatchmakingRequest request, CancellationToken cancellationToken)
         {
+            if (_clientContext.UserId == null || _clientContext.UserSessionId == null)
+            {
+                throw new Exception("UserId/UserSessionId not on context");
+            }
+            var currentUserId = _clientContext.UserId.Value;
+            var currentSessionId = _clientContext.UserSessionId.Value;
+
             uint gameId = 12345; //TODO
-            uint msid = 123; //TODO
+            uint matchmakingId = 123; //TODO
             var response = new StartMatchmakingResponse
             {
-                Msid = msid //TODO
+                MatchmakingSessionId = matchmakingId //TODO
             };
 
-            await _notificationHandler.EnqueueNotification(_clientContext.UserId, new MatchmakingStatusNotification
+            await _notificationHandler.EnqueueNotification(currentUserId, new MatchmakingStatusNotification
             {
                 Asil = new List<AsilData>
                 {
@@ -94,18 +101,18 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         Tsrs = new TsrsData(),
                     }
                 },
-                Msid = msid,
-                Usid = _clientContext.UserId
+                MatchmakingSessionId = matchmakingId,
+                UserSessionId = currentSessionId
             });
 
-            await _notificationHandler.EnqueueNotification(_clientContext.UserId, new MatchmakingFinishedNotification
+            await _notificationHandler.EnqueueNotification(currentUserId, new MatchmakingFinishedNotification
             {
                 Fit = 0,
                 GameId = 0,
                 Maxf = 0,
-                Msid = msid,
+                MatchmakingSessionId = matchmakingId,
                 Result = MatchmakingResult.TimedOut, //TimeOut will result in GameManager 0x19 message
-                Usid = _clientContext.UserId
+                UserSessionId = currentSessionId
             });
 
 

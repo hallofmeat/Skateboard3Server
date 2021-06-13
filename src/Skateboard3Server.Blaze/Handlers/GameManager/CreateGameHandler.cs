@@ -23,6 +23,14 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
 
         public async Task<CreateGameResponse> Handle(CreateGameRequest request, CancellationToken cancellationToken)
         {
+            if (_clientContext.UserId == null || _clientContext.ExternalId == null)
+            {
+                throw new Exception("UserId/ExternalId not on context");
+            }
+
+            var currentUserId = _clientContext.UserId.Value;
+            var currentExternalId = _clientContext.ExternalId.Value;
+
             uint gameId = 12345; //TODO
             uint gameSessionId = 54321; //TODO right name?
             var response = new CreateGameResponse
@@ -30,12 +38,12 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                 GameId = gameId
             };
 
-            await _notificationHandler.EnqueueNotification(_clientContext.UserId, new GameSetupNotification
+            await _notificationHandler.EnqueueNotification(currentUserId, new GameSetupNotification
             {
                 Error = 0,
                 GameData = new GameData
                 {
-                    Admins = new List<uint> { _clientContext.UserId },
+                    Admins = new List<uint> { currentUserId },
                     Attributes = request.Attributes,
                     Cap = new List<ushort> { 6, 0 },
                     GameId = gameId,
@@ -77,7 +85,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Pgsr = null,
                     Phst = new HstData //Phst vs Thst?
                     {
-                        Hpid = _clientContext.UserId,
+                        Hpid = currentUserId,
                         Hslt = 0
                     },
                     Psas = "",
@@ -85,7 +93,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Seed = 12345678, //TODO: random?
                     Thst = new HstData
                     {
-                        Hpid = _clientContext.UserId,
+                        Hpid = currentUserId,
                         Hslt = 0
                     },
                     Uuid = Guid.NewGuid().ToString(),
@@ -100,7 +108,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     new PlayerData
                     {
                         Blob = null,
-                        ExternalId = _clientContext.ExternalId,
+                        ExternalId = currentExternalId,
                         Gid = gameId,
                         Locale = 1701729619, //enUS
                         Username = _clientContext.Username,
@@ -109,7 +117,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         {
                             {"dlc_mask", "483"} //matches start matchmaking MASK?
                         },
-                        Pid = _clientContext.UserId, //TODO should be ProfileId
+                        Pid = currentUserId, //TODO should be ProfileId
                         PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(
                             NetworkAddressType.Pair, new PairNetworkAddress
                             {
@@ -130,7 +138,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         Team = 65535,
                         Tidx = 65535,
                         Time = 0, //DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000, //microseconds
-                        Uid = _clientContext.UserId
+                        Uid = currentUserId
                     }
                 }
             });

@@ -16,12 +16,12 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public uint Maxf { get; set; } //TODO
 
         [TdfField("MSID")]
-        public uint Msid { get; set; } //TODO
+        public uint MatchmakingSessionId { get; set; }
 
         [TdfField("RSLT")]
         public MatchmakingResult Result { get; set; }
 
         [TdfField("USID")]
-        public uint Usid { get; set; } //TODO
+        public uint UserSessionId { get; set; }
     }
 }

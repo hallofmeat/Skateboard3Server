@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Handlers.Authentication.Messages;
+using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Notifications.UserSession;
 using Skateboard3Server.Blaze.Server;
 using Skateboard3Server.Common.Decoders;
@@ -22,15 +24,17 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
         private readonly IBlazeNotificationHandler _notificationHandler;
         private readonly ClientContext _clientContext;
         private readonly IPs3TicketDecoder _ticketDecoder;
+        private readonly IUserSessionManager _userSessionManager;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public LoginHandler(BlazeContext context, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder)
+        
+        public LoginHandler(BlazeContext context, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder, IUserSessionManager userSessionManager)
         {
             _context = context;
             _clientContext = clientContext;
             _notificationHandler = notificationHandler;
             _ticketDecoder = ticketDecoder;
+            _userSessionManager = userSessionManager;
         }
 
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
@@ -62,7 +66,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 {
                     ExternalId = ticket.Body.UserId,
                     ExternalBlob = externalBlob.ToArray(),
-                    ExternalIdType = UserExternalIdType.PS3, //TODO: add subtype (Emulator/Console)
+                    ExternalIdType = ticket.Body.IssuerId == 100 ? UserExternalIdType.PS3 : UserExternalIdType.Rpcs3, //100 is retail issuerId
                     Username = ticket.Body.Username,
                 };
                 await _context.Users.AddAsync(user, cancellationToken);
@@ -74,11 +78,15 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
+            //Create session
+            var userSession = _userSessionManager.CreateSession(user.Id);
+
             //Update login time
             user.LastLogin = TimeUtil.GetUnixTimestamp();
             await _context.SaveChangesAsync(cancellationToken);
 
             _clientContext.UserId = user.Id;
+            _clientContext.UserSessionId = userSession.Id;
             _clientContext.Username = user.Username;
             _clientContext.ExternalId = user.ExternalId;
 
@@ -90,7 +98,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 {
                     BlazeId = user.Id,
                     FirstLogin = false, //TODO
-                    BlazeKey = "12345678_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", //TODO
+                    SessionKey = userSession.SessionKey,
                     LastLoginTime = user.LastLogin,
                     Email = "",
                     Profile = new LoginProfile

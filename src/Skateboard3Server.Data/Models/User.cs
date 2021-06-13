@@ -29,12 +29,13 @@ namespace Skateboard3Server.Data.Models
 
     }
 
-    //Should match ExternalProfileType
     public enum UserExternalIdType
     {
         Unknown,
         Xbox,
         PS3,
+        Xenia,
+        Rpcs3
     }
 
 }

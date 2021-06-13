@@ -7,6 +7,6 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
     public class StartMatchmakingResponse : BlazeResponse
     {
         [TdfField("MSID")]
-        public uint Msid { get; set; } //TODO matchmaking search id?
+        public uint MatchmakingSessionId { get; set; }
     }
 }

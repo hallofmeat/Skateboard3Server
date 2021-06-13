@@ -1,6 +1,7 @@
 using System.Reflection;
 using Autofac;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -41,6 +42,10 @@ namespace Skateboard3Server.Host
                 .AddApplicationPart(webAssembly)
                 .AddRazorRuntimeCompilation();
 
+            //Auth from sessions controller
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
+
             //Allow loading of views from Skateboard3Server.Web
             services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
             {
@@ -72,7 +77,10 @@ namespace Skateboard3Server.Host
 
             app.UseStaticFiles();
 
-            //TODO auth
+            app.UseAuthentication();
+            
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             //Help find the endpoints we havent made yet

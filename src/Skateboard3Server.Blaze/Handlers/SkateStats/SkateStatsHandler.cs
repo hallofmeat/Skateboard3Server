@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Skateboard3Server.Blaze.Handlers.SkateStats.Messages;
@@ -20,9 +21,15 @@ namespace Skateboard3Server.Blaze.Handlers.SkateStats
 
         public async Task<SkateStatsResponse> Handle(SkateStatsRequest request, CancellationToken cancellationToken)
         {
+            if (_clientContext.UserId == null)
+            {
+                throw new Exception("UserId not on context");
+            }
+            var currentUserId = _clientContext.UserId.Value;
+
             var response = new SkateStatsResponse();
 
-            await _notificationHandler.EnqueueNotification(_clientContext.UserId, new SkateStatsReportNotification
+            await _notificationHandler.EnqueueNotification(currentUserId, new SkateStatsReportNotification
             {
                 Error = 0,
                 Final = false,

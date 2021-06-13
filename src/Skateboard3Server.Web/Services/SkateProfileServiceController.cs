@@ -28,8 +28,6 @@ namespace Skateboard3Server.Web.Services
         }
 
         [HttpGet("GetSchema")]
-        //[Consumes("application/x-www-form-urlencoded")]
-        //[Produces("application/octet-stream")]
         public IActionResult GetSchema(PlatformType platformId, long userId) //Note this is not authed on the real version
         {
             //TODO returns 404 if schema doesnt exist otherwise returns octet stream of schema
