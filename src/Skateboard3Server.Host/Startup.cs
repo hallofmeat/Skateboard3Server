@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using NLog;
 using Skateboard3Server.Blaze;
 using Skateboard3Server.Data;
+using Skateboard3Server.Web;
 using Skateboard3Server.Web.Controllers;
 using Skateboard3Server.Web.Formatter;
 
@@ -34,7 +34,12 @@ namespace Skateboard3Server.Host
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<BlazeConfig>(Configuration.GetSection("Blaze"));
+            var skateboardConfigSection = Configuration.GetSection("Skateboard");
+            if (skateboardConfigSection != null)
+            {
+                services.Configure<BlazeConfig>(skateboardConfigSection.GetSection("Blaze"));
+                services.Configure<WebConfig>(skateboardConfigSection.GetSection("Web"));
+            }
 
             //Load controllers/views and custom xml output formatter from Skateboard3Server.Web
             var webAssembly = typeof(ConfigController).GetTypeInfo().Assembly;
@@ -53,17 +58,18 @@ namespace Skateboard3Server.Host
                     new EmbeddedFileProvider(webAssembly));
             });
 
-            services.AddDbContext<BlazeContext>(options => options.UseSqlite("Data Source=skateboard3server.db"));
+            services.AddDbContext<Skateboard3Context>(options => options.UseSqlite(Configuration.GetConnectionString("SkateboardConnectionSqlite")));
         }
 
         [UsedImplicitly]
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterModule(new BlazeRegistry());
+            builder.RegisterModule(new WebRegistry());
 
             //EfCore
             builder
-                .RegisterType<BlazeContext>()
+                .RegisterType<Skateboard3Context>()
                 .InstancePerLifetimeScope();
         }
 
@@ -96,7 +102,7 @@ namespace Skateboard3Server.Host
         private void InitializeDatabase(IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
-            scope.ServiceProvider.GetRequiredService<BlazeContext>().Database.Migrate();
+            scope.ServiceProvider.GetRequiredService<Skateboard3Context>().Database.Migrate();
         }
     }
 

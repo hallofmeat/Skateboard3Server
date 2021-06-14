@@ -20,7 +20,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
 {
     public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     {
-        private readonly BlazeContext _context;
+        private readonly Skateboard3Context _context;
         private readonly IBlazeNotificationHandler _notificationHandler;
         private readonly ClientContext _clientContext;
         private readonly IPs3TicketDecoder _ticketDecoder;
@@ -28,7 +28,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
-        public LoginHandler(BlazeContext context, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder, IUserSessionManager userSessionManager)
+        public LoginHandler(Skateboard3Context context, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder, IUserSessionManager userSessionManager)
         {
             _context = context;
             _clientContext = clientContext;

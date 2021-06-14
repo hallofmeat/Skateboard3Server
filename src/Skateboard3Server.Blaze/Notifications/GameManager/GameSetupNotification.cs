@@ -114,7 +114,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
     public class HstData //TODO: better name
     {
         [TdfField("HPID")]
-        public uint Hpid { get; set; } //TODO
+        public uint Hpid { get; set; } //TODO host playerid?
 
         [TdfField("HSLT")]
         public byte Hslt { get; set; } //TODO
@@ -144,7 +144,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public Dictionary<string, string> PlayerAttributes { get; set; }
 
         [TdfField("PID")]
-        public uint Pid { get; set; } //TODO
+        public uint PlayerId { get; set; }
 
         [TdfField("PNET")]
         public KeyValuePair<NetworkAddressType, PairNetworkAddress> PlayerNetwork { get; set; }

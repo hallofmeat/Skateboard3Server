@@ -25,6 +25,7 @@ namespace Skateboard3Server.BlazeProxy
                     .SetBasePath(System.IO.Directory
                         .GetCurrentDirectory()) //From NuGet Package Microsoft.Extensions.Configuration.Json
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables()
                     .Build();
 
                 //Services

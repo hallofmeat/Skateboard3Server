@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Skateboard3Server.Web.Services.Models.Common;
 using Skateboard3Server.Web.Services.Models.SkateProfile;
+using Skateboard3Server.Web.Storage;
 
 namespace Skateboard3Server.Web.Services
 {
@@ -9,6 +12,12 @@ namespace Skateboard3Server.Web.Services
     [ApiController]
     public class SkateProfileServiceController : ControllerBase
     {
+        private readonly IBlobStorage _blobStorage;
+
+        public SkateProfileServiceController(IBlobStorage blobStorage)
+        {
+            _blobStorage = blobStorage;
+        }
 
         [HttpPost("StartLoginProcess")]
         [Consumes("application/x-www-form-urlencoded")]
@@ -28,20 +37,36 @@ namespace Skateboard3Server.Web.Services
         }
 
         [HttpGet("GetSchema")]
-        public IActionResult GetSchema(PlatformType platformId, long userId) //Note this is not authed on the real version
+        public async Task<IActionResult> GetSchema(PlatformType platformId, uint userId) //Note this is not authed on the real version
         {
-            //TODO returns 404 if schema doesnt exist otherwise returns octet stream of schema
-            var bytes = System.IO.File.ReadAllBytes("testuserschema.bin"); //gross
+            var objectKey = $"{platformId}/{userId}";
+            if (!_blobStorage.ObjectExists("user-schema", objectKey))
+            {
+                return NotFound();
+            }
+            var bytes = await _blobStorage.GetObject("user-schema", objectKey);
+            if (bytes == null)
+            {
+                return NotFound();
+            }
             return File(bytes, "application/octet-stream");
         }
 
         [HttpPost("UploadSchema")]
         [Consumes("multipart/form-data")]
         [Produces("text/xml")]
-        public LongContainer UploadSchema([FromForm] UploadSchema data)
+        public async Task<LongContainer> UploadSchema([FromForm] UploadSchema data)
         {
-            //TODO save schema to user
-            return new LongContainer(1); //TODO no idea if this number is right
+            if (data.Schema != null)
+            {
+                using (var stream = new MemoryStream()) //hack
+                {
+                    await data.Schema.CopyToAsync(stream);
+                    await _blobStorage.PutObject("user-schema", $"{data.PlatformId}/{data.UserId}", stream.ToArray());
+                }
+                return new LongContainer(1); //TODO no idea if this number is right
+            }
+            return new LongContainer(0); //TODO no idea if this number is right
         }
 
         [HttpPost("UploadAIProfile")]

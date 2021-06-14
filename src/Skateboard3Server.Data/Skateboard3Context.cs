@@ -3,9 +3,9 @@ using Skateboard3Server.Data.Models;
 
 namespace Skateboard3Server.Data
 {
-    public class BlazeContext : DbContext
+    public class Skateboard3Context : DbContext
     {
-        public BlazeContext(DbContextOptions<BlazeContext> options)
+        public Skateboard3Context(DbContextOptions<Skateboard3Context> options)
             : base(options)
         {
 

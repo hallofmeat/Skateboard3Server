@@ -117,7 +117,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         {
                             {"dlc_mask", "483"} //matches start matchmaking MASK?
                         },
-                        Pid = currentUserId, //TODO should be ProfileId
+                        PlayerId = currentUserId, //TODO should be PlayerId?
                         PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(
                             NetworkAddressType.Pair, new PairNetworkAddress
                             {

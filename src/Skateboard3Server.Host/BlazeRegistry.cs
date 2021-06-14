@@ -37,7 +37,6 @@ namespace Skateboard3Server.Host
 
             //Mediator
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
-
             builder.Register<ServiceFactory>(context =>
             {
                 var c = context.Resolve<IComponentContext>();
@@ -66,6 +65,7 @@ namespace Skateboard3Server.Host
             builder.RegisterType<CreateGameHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SetGameStateHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SetGameSettingsHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<RemovePlayerHandler>().AsImplementedInterfaces().InstancePerDependency();
         }
     }
 }

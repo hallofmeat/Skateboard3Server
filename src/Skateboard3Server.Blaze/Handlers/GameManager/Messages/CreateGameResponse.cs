@@ -7,6 +7,6 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
     public class CreateGameResponse : BlazeResponse
     {
         [TdfField("GID")]
-        public uint GameId { get; set; } //TODO
+        public uint GameId { get; set; }
     }
 }

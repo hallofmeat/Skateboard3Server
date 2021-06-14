@@ -12,13 +12,13 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
 {
     public class SessionDataHandler : IRequestHandler<SessionDataRequest, SessionDataResponse>
     {
-        private readonly BlazeContext _blazeContext;
+        private readonly Skateboard3Context _skateboard3Context;
         private readonly ClientContext _clientContext;
         private readonly IUserSessionManager _userSessionManager;
 
-        public SessionDataHandler(BlazeContext blazeContext, ClientContext clientContext, IUserSessionManager userSessionManager)
+        public SessionDataHandler(Skateboard3Context skateboard3Context, ClientContext clientContext, IUserSessionManager userSessionManager)
         {
-            _blazeContext = blazeContext;
+            _skateboard3Context = skateboard3Context;
             _clientContext = clientContext;
             _userSessionManager = userSessionManager;
         }
@@ -32,7 +32,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
             var currentUserId = _clientContext.UserId.Value;
             var currentSessionId = _clientContext.UserSessionId.Value;
 
-            var user = await _blazeContext.Users.SingleOrDefaultAsync(x => x.Id == currentUserId, cancellationToken);
+            var user = await _skateboard3Context.Users.SingleOrDefaultAsync(x => x.Id == currentUserId, cancellationToken);
 
             if (user == null)
             {

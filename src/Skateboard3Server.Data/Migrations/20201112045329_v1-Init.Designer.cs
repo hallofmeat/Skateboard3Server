@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Skateboard3Server.Data.Migrations
 {
-    [DbContext(typeof(BlazeContext))]
+    [DbContext(typeof(Skateboard3Context))]
     [Migration("20201112045329_v1-Init")]
     partial class v1Init
     {

@@ -19,9 +19,9 @@ namespace Skateboard3Server.Web.Services.Models.SkateProfile
     public class TeamInfo
     {
         [XmlElement(ElementName = "teamId")]
-        public long TeamId { get; set; } //TODO: long correct type?
+        public uint TeamId { get; set; } //TODO: long correct type?
 
         [XmlElement(ElementName = "numMembers")]
-        public long NumMembers { get; set; } //TODO: long correct type?
+        public uint NumMembers { get; set; } //TODO: long correct type?
     }
 }

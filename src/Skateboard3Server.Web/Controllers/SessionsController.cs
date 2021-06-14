@@ -17,13 +17,13 @@ namespace Skateboard3Server.Web.Controllers
     [Route("/skate3/webkit/PS3/English/i/Sessions")]
     public class SessionsController : ControllerBase
     {
-        private readonly BlazeContext _dbContext;
+        private readonly Skateboard3Context _dbContext;
         private readonly IUserSessionManager _userSessionManager;
 
-        public SessionsController(BlazeContext dbContext, IUserSessionManager userSessionManager)
+        public SessionsController(Skateboard3Context dbContext, IUserSessionManager userSessionManager)
         {
             _dbContext = dbContext;
-            _userSessionManager = userSessionManager;
+            _userSessionManager = userSessionManager; //TODO handle usersessionmanager depend better
         }
 
         [HttpGet("GameLogin/{sessionKey}/bootflow")]

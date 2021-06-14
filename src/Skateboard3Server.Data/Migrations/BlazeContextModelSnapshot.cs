@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Skateboard3Server.Data.Migrations
 {
-    [DbContext(typeof(BlazeContext))]
+    [DbContext(typeof(Skateboard3Context))]
     partial class BlazeContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
