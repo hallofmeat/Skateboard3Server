@@ -54,6 +54,8 @@ namespace Skateboard3Server.BlazeProxy
                 var server = new ServerBuilder(serviceProvider)
                     .UseSockets(sockets =>
                     {
+                        sockets.ListenAnyIP(42100,
+                            builder => builder.UseConnectionLogging(loggingFormatter: HexLoggingFormatter).UseConnectionHandler<BlazeProxyRedirectHandler>());
                         sockets.ListenAnyIP(proxySettings.LocalPort,
                             builder => builder.UseConnectionLogging(loggingFormatter: HexLoggingFormatter).UseConnectionHandler<BlazeProxyHandler>());
                     })

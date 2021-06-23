@@ -58,7 +58,7 @@ namespace Skateboard3Server.Host
                     new EmbeddedFileProvider(webAssembly));
             });
 
-            services.AddDbContext<Skateboard3Context>(options => options.UseSqlite(Configuration.GetConnectionString("SkateboardConnectionSqlite")));
+            services.AddDbContext<Skateboard3Context>(options => options.UseSqlite(Configuration.GetConnectionString(nameof(Skateboard3Context))));
         }
 
         [UsedImplicitly]

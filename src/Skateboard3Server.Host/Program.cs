@@ -67,7 +67,7 @@ namespace Skateboard3Server.Host
                                     options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
                                         .UseConnectionHandler<DummyConnectionHandler>();
                                 });
-                            //matchmaking host? //TODO: no idea what format this is in
+                            //matchmaking host? //TODO: no idea what format this is in, udp?
                             //serverOptions.ListenAnyIP(9033,
                             //    options =>
                             //    {
