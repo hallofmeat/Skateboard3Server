@@ -92,6 +92,7 @@
     {
         UserExtendedData = 0x1,
         UserAdded = 0x2,
+        UserRemoved = 0x3,
     }
 
     public enum BlazeMessageType

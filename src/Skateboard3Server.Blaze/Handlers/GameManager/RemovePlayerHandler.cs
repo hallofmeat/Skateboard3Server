@@ -19,7 +19,6 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
 
         public async Task<RemovePlayerResponse> Handle(RemovePlayerRequest request, CancellationToken cancellationToken)
         {
-            //TODO: currently does not let you leave the session
             //TODO do logic with game manager
             var response = new RemovePlayerResponse();
             //TODO: notify all players

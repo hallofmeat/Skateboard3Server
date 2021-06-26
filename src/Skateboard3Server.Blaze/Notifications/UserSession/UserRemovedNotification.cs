@@ -3,8 +3,8 @@ using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Notifications.UserSession
 {
-    [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionNotification.UserAdded)]
-    public class UserAddedNotification : BlazeNotification
+    [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionNotification.UserRemoved)]
+    public class UserRemovedNotification : BlazeNotification
     {
         [TdfField("AID")]
         public long AccountId { get; set; }
