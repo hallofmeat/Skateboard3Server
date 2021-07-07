@@ -16,7 +16,7 @@ namespace Skateboard3Server.Data.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.10");
 
-            modelBuilder.Entity("Skate3Server.Data.Models.User", b =>
+            modelBuilder.Entity("Skateboard3Server.Data.Models.User", b =>
                 {
                     b.Property<uint>("Id")
                         .ValueGeneratedOnAdd()

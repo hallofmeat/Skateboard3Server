@@ -74,9 +74,6 @@ namespace Skateboard3Server.Host
                             //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
                             //            .UseConnectionHandler<DummyConnectionHandler>();
                             //    });
-                            //qos servers [gosgvaprod-qos01, gosiadprod-qos01, gossjcprod-qos01] (HTTP)
-                            serverOptions.ListenAnyIP(17502);
-                            //TODO qos UDP 17499
                             //downloads.skate.online (HTTP)
                             serverOptions.ListenAnyIP(80);
                         })

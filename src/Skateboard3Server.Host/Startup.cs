@@ -77,7 +77,10 @@ namespace Skateboard3Server.Host
         {
             InitializeDatabase(app);
 
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseRouting();
 
