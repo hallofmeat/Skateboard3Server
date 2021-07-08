@@ -72,9 +72,9 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 await _context.Users.AddAsync(user, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                //For now just use the blazeid for both AccountId and ProfileId (this is so the rest of the logic can use those values where they are supposed to)
+                //For now just use the blazeid for both AccountId and PersonaId (this is so the rest of the logic can use those values where they are supposed to)
                 user.AccountId = user.Id;
-                user.ProfileId = user.Id;
+                user.PersonaId = user.Id;
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
@@ -101,13 +101,13 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                     SessionKey = userSession.SessionKey,
                     LastLoginTime = user.LastLogin,
                     Email = "",
-                    Profile = new LoginProfile
+                    Persona = new LoginPersona
                     {
                         DisplayName = user.Username,
                         LastUsed = user.LastLogin,
-                        ProfileId = user.ProfileId,
-                        ExternalProfileId = user.ExternalId,
-                        ExternalProfileType = ExternalProfileType.PS3,
+                        PersonaId = user.PersonaId,
+                        ExternalId = user.ExternalId,
+                        ExternalIdType = ExternalIdType.PS3,
                     },
                     AccountId = user.AccountId,
                 },
@@ -122,7 +122,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 AccountLocale = 1701729619, //enUS //TODO: not hardcode
                 ExternalBlob = user.ExternalBlob,
                 Id = user.Id,
-                ProfileId = user.ProfileId,
+                PersonaId = user.PersonaId,
                 Username = user.Username,
                 ExternalId = user.ExternalId,
                 Online = true

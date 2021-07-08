@@ -92,7 +92,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         },
                         Psrs = new PsrsData
                         {
-                            Values = new List<string> { "tst" } //qos servers
+                            Values = new List<string> { "q1" } //qos servers TODO: pull from config
                         },
                         Rrda = new RrdaData
                         {
@@ -125,7 +125,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             //    Id = 99999,
             //    Username = "@test",
             //    Online = true,
-            //    ProfileId = 99999
+            //    PersonaId = 99999
             //});
 
             //await _notificationHandler.SendNotification(_clientContext.UserId, new UserExtendedDataNotification
@@ -218,7 +218,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             //            {
             //                {"dlc_mask", "1"}
             //            },
-            //            Pid = _clientContext.UserId, //TODO should be ProfileId
+            //            Pid = _clientContext.UserId, //TODO should be PersonaId
             //            PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(
             //                NetworkAddressType.Pair, new PairNetworkAddress
             //                {
@@ -372,7 +372,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             //            {
             //                {"dlc_mask", "1"}
             //            },
-            //            Pid = _clientContext.UserId, //TODO should be ProfileId
+            //            Pid = _clientContext.UserId, //TODO should be PersonaId
             //            PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(
             //                NetworkAddressType.Pair, new PairNetworkAddress
             //                {

@@ -32,10 +32,10 @@ namespace Skateboard3Server.Blaze.Handlers.Util.Messages
         public QosAddress BandwidthServer { get; set; }
 
         [TdfField("LNP")]
-        public ushort PingNodeCount { get; set; }
+        public ushort LatencyPingCount { get; set; }
 
         [TdfField("LTPS")]
-        public Dictionary<string, QosAddress> PingServers { get; set; }
+        public Dictionary<string, QosAddress> LatencyPingServers { get; set; }
 
         [TdfField("SVID")]
         public uint ServerId { get; set; }

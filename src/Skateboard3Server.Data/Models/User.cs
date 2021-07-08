@@ -13,7 +13,7 @@ namespace Skateboard3Server.Data.Models
         
         //public uint AccountLocale { get; set; }
 
-        public long ProfileId { get; set; }
+        public long PersonaId { get; set; }
 
         [Required]
         public string Username { get; set; }

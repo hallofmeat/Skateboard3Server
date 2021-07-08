@@ -13,7 +13,7 @@ namespace Skateboard3Server.Data.Migrations
                     Id = table.Column<uint>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AccountId = table.Column<long>(nullable: false),
-                    ProfileId = table.Column<long>(nullable: false),
+                    PersonaId = table.Column<long>(nullable: false),
                     Username = table.Column<string>(nullable: false),
                     ExternalId = table.Column<ulong>(nullable: false),
                     ExternalIdType = table.Column<int>(nullable: false),

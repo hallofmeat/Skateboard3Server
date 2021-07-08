@@ -44,13 +44,13 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages
         public string Email { get; set; }
 
         [TdfField("PDTL")]
-        public LoginProfile Profile { get; set; }
+        public LoginPersona Persona { get; set; }
 
         [TdfField("UID")]
         public long AccountId { get; set; }
     }
 
-    public class LoginProfile
+    public class LoginPersona
     {
         [TdfField("DSNM")]
         public string DisplayName { get; set; }
@@ -59,12 +59,12 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages
         public uint LastUsed { get; set; }
 
         [TdfField("PID")]
-        public long ProfileId { get; set; }
+        public long PersonaId { get; set; }
 
         [TdfField("XREF")]
-        public ulong ExternalProfileId { get; set; }
+        public ulong ExternalId { get; set; }
 
         [TdfField("XTYP")]
-        public ExternalProfileType ExternalProfileType { get; set; }
+        public ExternalIdType ExternalIdType { get; set; }
     }
 }

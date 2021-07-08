@@ -48,13 +48,13 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 SessionKey = userSessionKey,
                 LastLoginTime = 0, 
                 Email = "", //nobody@ea.com normally
-                Profile = new SessionDataProfile
+                Persona = new SessionDataPersona
                 {
                     DisplayName = user.Username,
                     LastUsed = 0,
-                    ProfileId = user.ProfileId,
-                    ExternalProfileId = 0,
-                    ExternalProfileType = ExternalProfileType.Unknown,
+                    PersonaId = user.PersonaId,
+                    ExternalId = 0,
+                    ExternalIdType = ExternalIdType.Unknown,
                 },
                 AccountId = user.AccountId,
             };

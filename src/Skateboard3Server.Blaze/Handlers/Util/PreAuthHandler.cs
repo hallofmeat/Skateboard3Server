@@ -46,17 +46,17 @@ namespace Skateboard3Server.Blaze.Handlers.Util
                 },
                 QosConfig = new QosConfig
                 {
-                    BandwidthServer = new QosAddress
+                    BandwidthServer = new QosAddress //TODO: pull from config
                     {
                         Hostname = _blazeConfig.PublicHost,
                         Port = 17502,
                         Ip = _blazeConfig.PublicIp
                     },
-                    PingNodeCount = 1, //default is 10
-                    PingServers = new Dictionary<string, QosAddress>
+                    LatencyPingCount = 10,
+                    LatencyPingServers = new Dictionary<string, QosAddress>
                     {
-                        //default has 3 servers (lets see if it works with just one)
-                        { "tst", new QosAddress
+                        //default has 3 servers (we can get away with less)
+                        { "q1", new QosAddress //TODO: pull from config
                         {
                             Hostname = _blazeConfig.PublicHost,
                             Port = 17502,

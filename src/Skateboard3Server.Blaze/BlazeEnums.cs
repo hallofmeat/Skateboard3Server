@@ -138,7 +138,7 @@
         Unset = 0x7F
     }
 
-    public enum ExternalProfileType : int
+    public enum ExternalIdType : int
     {
         Unknown = 0x0,
         Xbox = 0x1,

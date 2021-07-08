@@ -28,7 +28,7 @@ namespace Skateboard3Server.Blaze.Notifications.UserSession
         public bool Online { get; set; }
 
         [TdfField("PID")]
-        public long ProfileId { get; set; }
+        public long PersonaId { get; set; }
 
     }
 }
