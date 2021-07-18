@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Skateboard3Server.Blaze\Skateboard3Server.Blaze.csproj" />
     <ProjectReference Include="..\Skateboard3Server.Common\Skateboard3Server.Common.csproj" />
   </ItemGroup>
