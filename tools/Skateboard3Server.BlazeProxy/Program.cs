@@ -22,8 +22,7 @@ namespace Skateboard3Server.BlazeProxy
             {
                 //Config
                 var config = new ConfigurationBuilder()
-                    .SetBasePath(System.IO.Directory
-                        .GetCurrentDirectory()) //From NuGet Package Microsoft.Extensions.Configuration.Json
+                    .SetBasePath(System.IO.Directory.GetCurrentDirectory()) //From NuGet Package Microsoft.Extensions.Configuration.Json
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                     .AddEnvironmentVariables()
                     .Build();
