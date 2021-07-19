@@ -21,4 +21,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY_URL }}/hallofmeat-skateboard3server:latest
+          tags: ${{ secrets.DOCKER_REGISTRY_URL }}/hom-skateboard3server:latest
