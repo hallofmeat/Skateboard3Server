@@ -38,8 +38,6 @@ EXPOSE 42100
 EXPOSE 10744
 # telemetry
 EXPOSE 9946
-# qos-web
-EXPOSE 17502
 # web
 EXPOSE 80
 

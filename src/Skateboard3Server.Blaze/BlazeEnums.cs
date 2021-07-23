@@ -184,9 +184,9 @@
         PeerToPeer = 0x2,
     }
 
-    public enum NetworkTopology : int //TODO nat type?
+    public enum NetworkTopology : int //TODO nat type? figure out what the maps to on the qos endpoint
     {
-        PeerToPeerFullMesh = 0x82, //TODO: is this the right name?
+        PeerToPeerFullMesh = 0x82, //TODO: is this the right name? 
         PeerToPeerPartialMesh = 0x83, //TODO: is this the right name?
         PeerToPeerDirtyCastFailover = 0x84 //TODO: is this the right name?
     }
