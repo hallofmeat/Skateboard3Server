@@ -25,7 +25,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             await _notificationHandler.EnqueueNotification(request.PlayerId, new RemovePlayerNotification
             {
                 BlazeErrorCode = 0,
-                Cntx = request.Cntx,
+                Cntx = request.Cntx, //always 0
                 GameId = request.GameId,
                 PlayerId = request.PlayerId,
                 Reason = request.Reason

@@ -33,11 +33,11 @@ namespace Skateboard3Server.Blaze.Handlers.SkateStats
             {
                 Error = 0,
                 Final = false,
-                Grid = 0,
+                Grid = 0, //always 0
                 RequestReport = new RequestReport
                 {   //TODO: figure out what these do
                     Finished = true,
-                    Grid = 0,
+                    Grid = 0, //always 0
                     GameType = 1,
                     Prcs = false,
                     StatsReport = request.StatsReport

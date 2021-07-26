@@ -117,7 +117,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public uint Hpid { get; set; } //TODO host playerid?
 
         [TdfField("HSLT")]
-        public byte Hslt { get; set; } //TODO
+        public byte Hslt { get; set; } //TODO host slot?
     }
 
     public class PlayerData

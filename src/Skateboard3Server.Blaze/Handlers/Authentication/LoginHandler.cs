@@ -133,7 +133,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 Data = new ExtendedData
                 {
                     Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Unset, null),
-                    Bps = "",
+                    BandwidthServer = "",
                     Cty = "",
                     Dmap = new Dictionary<uint, int>
                     {
@@ -146,7 +146,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                         NatType = NatType.Open,
                         UpstreamBitsPerSecond = 0
                     },
-                    Uatt = 0
+                    Uatt = 0 //always 0
                 },
                 UserId = user.Id
             });

@@ -46,25 +46,24 @@ namespace Skateboard3Server.Blaze.Handlers.Util
                 },
                 QosConfig = new QosConfig
                 {
-                    BandwidthServer = new QosAddress //TODO: pull from config
+                    BandwidthServer = new QosAddress //Also used for firewall detection?
                     {
-                        Hostname = _blazeConfig.PublicHost,
-                        Port = 17502,
-                        Ip = _blazeConfig.PublicIp
+                        Hostname = _blazeConfig.Qos.BandwidthHost,
+                        Ip = _blazeConfig.Qos.BandwidthIp,
+                        Port = _blazeConfig.Qos.BandwidthPort //default 17502
                     },
-                    LatencyPingCount = 10,
-                    LatencyPingServers = new Dictionary<string, QosAddress>
+                    PingCount = 10,
+                    PingServers = new Dictionary<string, QosAddress>
                     {
                         //default has 3 servers (we can get away with less)
-                        { "q1", new QosAddress //TODO: pull from config
+                        { "qs1", new QosAddress
                         {
-                            Hostname = _blazeConfig.PublicHost,
-                            Port = 17502,
-                            Ip = _blazeConfig.PublicIp
+                            Hostname = _blazeConfig.Qos.PingHost,
+                            Ip = _blazeConfig.Qos.PingIp,
+                            Port = _blazeConfig.Qos.PingPort //default 17502
                         }}
                     },
                     ServerId = 1
-
                 },
                 ServerVersion = "Skateboard3Server 0.0.1"
             };

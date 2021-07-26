@@ -21,25 +21,25 @@ namespace Skateboard3Server.Blaze.Notifications.UserSession
         public KeyValuePair<NetworkAddressType, NetworkAddress> Address { get; set; }
 
         [TdfField("BPS")]
-        public string Bps { get; set; } //TODO bits per second?
+        public string BandwidthServer { get; set; } //maps to qos bandwidth server name
 
         [TdfField("CTY")]
         public string Cty { get; set; } //TODO city?
 
         [TdfField("DMAP")]
-        public Dictionary<uint, int> Dmap { get; set; } //TODO destination map?
+        public Dictionary<uint, int> Dmap { get; set; } //TODO data map?
 
         [TdfField("HWFG")]
         public uint HardwareFlags { get; set; }
 
         [TdfField("PSLM")]
-        public List<int> Pslm { get; set; } //TODO: enum? 
+        public List<int> Pings { get; set; } //One entry for each qos ping server
 
         [TdfField("QDAT")]
         public QosNetworkData NetworkData { get; set; }
 
         [TdfField("ULST")]
-        public List<ulong> Ulst { get; set; }
+        public List<ulong> Ulst { get; set; } //TODO: session list? (short 04, short 01, int gameid)
 
         [TdfField("UATT")]
         public ulong Uatt { get; set; } //TODO

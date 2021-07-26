@@ -33,7 +33,7 @@ namespace Skateboard3Server.Blaze.Notifications.SkateStats
         public uint GameType { get; set; }
 
         [TdfField("PRCS")]
-        public bool Prcs { get; set; } //TODO
+        public bool Prcs { get; set; } //TODO procesed? always opposite of finished
 
         [TdfField("RPRT")]
         public Dictionary<uint, StatReport> StatsReport { get; set; } //key is USID

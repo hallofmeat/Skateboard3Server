@@ -9,7 +9,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages
     public class DlcRequest : BlazeRequest, IRequest<DlcResponse>
     {
         [TdfField("BUID")]
-        public uint Buid { get; set; } //TODO
+        public uint BlazeId { get; set; }
 
         [TdfField("EPSN")]
         public ushort Epsn { get; set; } //TODO

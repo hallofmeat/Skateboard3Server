@@ -23,7 +23,7 @@ namespace Skateboard3Server.Blaze.Handlers.Util.Messages
         public bool Anonymous { get; set; }
 
         [TdfField("DISA")]
-        public string Disa { get; set; } //TODO
+        public string Disable { get; set; }
 
         [TdfField("FILT")]
         public string Filter { get; set; }
