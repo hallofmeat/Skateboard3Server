@@ -39,6 +39,7 @@ namespace Skateboard3Server.Blaze.Managers
             var id = (uint) Interlocked.Increment(ref _currentSessionCount); //generate a session id
             var sessionData = new UserSessionData
             {
+                SessionId = id,
                 UserId = userId,
                 Key = HexString(rawKey)
             };
@@ -87,7 +88,7 @@ namespace Skateboard3Server.Blaze.Managers
                 return GenerateSessionKey(id, sessionData.Key);
             }
 
-            throw new ArgumentException("Session Key does not exist");
+            throw new ArgumentException($"SessionId:{id} does not exist");
         }
 
         private string GenerateSessionKey(uint id, string key)
@@ -103,6 +104,7 @@ namespace Skateboard3Server.Blaze.Managers
 
     public class UserSessionData
     {
+        public uint SessionId { get; set; }
         public uint UserId { get; set; }
         public string Key { get; set; }
     }

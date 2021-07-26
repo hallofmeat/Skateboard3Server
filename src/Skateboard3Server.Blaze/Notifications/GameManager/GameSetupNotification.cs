@@ -81,10 +81,10 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public byte[] Pgsr { get; set; } //TODO
 
         [TdfField("PHST")]
-        public HstData Phst { get; set; } //TODO platformHost? playerHost?
+        public HstData Phst { get; set; } //TODO platformHost? playerHost? party host?
 
         [TdfField("PSAS")]
-        public string Psas { get; set; } //TODO
+        public string PingServerName { get; set; }
 
         [TdfField("QCAP")]
         public ushort QueueCapacity { get; set; } //TODO
@@ -93,7 +93,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public uint Seed { get; set; } //TODO
 
         [TdfField("THST")]
-        public HstData Thst { get; set; } //TODO
+        public HstData Thst { get; set; } //TODO team host?
 
         [TdfField("UUID")]
         public string Uuid { get; set; } //TODO

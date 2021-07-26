@@ -9,7 +9,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
     public class SetGameAttributesRequest : BlazeRequest, IRequest<SetGameAttributesResponse>
     {
         [TdfField("ATTR")]
-        public Dictionary<string, string> Attributes { get; set; }
+        public Dictionary<string, string> GameAttributes { get; set; }
 
         [TdfField("GID")]
         public uint GameId { get; set; }

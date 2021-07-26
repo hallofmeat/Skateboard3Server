@@ -21,7 +21,7 @@ namespace Skateboard3Server.Blaze.Notifications.UserSession
         public KeyValuePair<NetworkAddressType, NetworkAddress> Address { get; set; }
 
         [TdfField("BPS")]
-        public string BandwidthServer { get; set; } //maps to qos bandwidth server name
+        public string PingServerName { get; set; } //maps to qos ping server name
 
         [TdfField("CTY")]
         public string Cty { get; set; } //TODO city?

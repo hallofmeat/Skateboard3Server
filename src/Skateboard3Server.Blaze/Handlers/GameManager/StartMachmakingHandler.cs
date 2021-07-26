@@ -30,7 +30,6 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             var currentUserId = _clientContext.UserId.Value;
             var currentSessionId = _clientContext.UserSessionId.Value;
 
-            uint gameId = 12345; //TODO
             uint matchmakingId = 123; //TODO
             var response = new StartMatchmakingResponse
             {
@@ -53,7 +52,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         {
                             Exps = new ExpsData
                             {
-                                Mask = 483 //TODO
+                                Mask = 483 //TODO dlc mask?
                             }
                         },
                         Dnfs = new DnfsData
@@ -90,9 +89,9 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         {
                             Vval = 1 //TODO
                         },
-                        Psrs = new PsrsData
+                        PingServerNames = new PingServerNames
                         {
-                            Values = new List<string> { "q1" } //qos servers TODO: pull from config
+                            Values = new List<string> { "qs1" } //qos servers
                         },
                         Rrda = new RrdaData
                         {
@@ -189,7 +188,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             //            Hpid = _clientContext.UserId,
             //            Hslt = 1
             //        },
-            //        Psas = "tst",
+            //        Psas = "qs1",
             //        Qcap = 0,
             //        Seed = 09877,
             //        Thst = new HstData
@@ -261,7 +260,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             //                Port = 10000
             //            },
             //        }),
-            //        Bps = "tst",
+            //        Bps = "qs1",
             //        Cty = "",
             //        Dmap = new Dictionary<uint, int>
             //        {
@@ -343,7 +342,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             //            Hpid = _clientContext.UserId,
             //            Hslt = 1
             //        },
-            //        Psas = "tst",
+            //        Psas = "qs1",
             //        Qcap = 0,
             //        Seed = 09877,
             //        Thst = new HstData

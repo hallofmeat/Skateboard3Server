@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using MediatR;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Handlers.GameManager.Messages;
+using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Notifications.GameManager;
 using Skateboard3Server.Blaze.Server;
+using GameData = Skateboard3Server.Blaze.Notifications.GameManager.GameData;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager
 {
@@ -14,11 +16,13 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
     {
         private readonly IBlazeNotificationHandler _notificationHandler;
         private readonly ClientContext _clientContext;
+        private readonly IGameManager _gameManager;
 
-        public CreateGameHandler(ClientContext clientContext, IBlazeNotificationHandler notificationHandler)
+        public CreateGameHandler(ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IGameManager gameManager)
         {
             _notificationHandler = notificationHandler;
             _clientContext = clientContext;
+            _gameManager = gameManager;
         }
 
         public async Task<CreateGameResponse> Handle(CreateGameRequest request, CancellationToken cancellationToken)
@@ -31,11 +35,13 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             var currentUserId = _clientContext.UserId.Value;
             var currentExternalId = _clientContext.ExternalId.Value;
 
-            uint gameId = 12345; //TODO
-            uint gameSessionId = 54321; //TODO right name?
+            //TODO add currentuser/host info
+            //TODO add players
+            var game = _gameManager.CreateGame(request.GameName, request.GameSettings, request.Attributes);
+
             var response = new CreateGameResponse
             {
-                GameId = gameId
+                GameId = game.GameId
             };
 
             await _notificationHandler.EnqueueNotification(currentUserId, new GameSetupNotification
@@ -44,14 +50,14 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                 GameData = new GameData
                 {
                     Admins = new List<uint> { currentUserId },
-                    Attributes = request.Attributes,
+                    Attributes = game.Attributes,
                     Cap = new List<ushort> { 6, 0 },
-                    GameId = gameId,
-                    GameName = request.GameName,
+                    GameId = game.GameId,
+                    GameName = game.Name,
                     Gpvh = 1, //TODO hardcoded value?
-                    GameSettings = request.GameSettings,
-                    Gsid = gameSessionId,
-                    GameState = GameState.Init,
+                    GameSettings = game.Settings,
+                    Gsid = 1, //normally random but not used anywhere
+                    GameState = game.State,
                     Gver = 1,
                     Hnet = new List<KeyValuePair<NetworkAddressType, PairNetworkAddress>>
                     {
@@ -70,7 +76,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                                 }
                             })
                     },
-                    Hses = 1234567,
+                    Hses = 1234567, //TODO
                     Ignore = false,
                     Matr = null,
                     //Matr = new Dictionary<string, string> //TODO sent on not host
@@ -88,7 +94,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         Hpid = currentUserId,
                         Hslt = 0
                     },
-                    Psas = "",
+                    PingServerName = "", //TODO: ping server name?
                     QueueCapacity = 0,
                     Seed = 12345678, //TODO: random?
                     Thst = new HstData
@@ -96,7 +102,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         Hpid = currentUserId,
                         Hslt = 0
                     },
-                    Uuid = Guid.NewGuid().ToString(),
+                    Uuid = Guid.NewGuid().ToString(), //TODO: should move to gamemanager?
                     VoipTopology = VoipTopology.PeerToPeer,
                     VersionString = "Skate3-1",
                     Xnnc = null,
@@ -109,7 +115,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     {
                         Blob = null,
                         ExternalId = currentExternalId,
-                        Gid = gameId,
+                        Gid = game.GameId,
                         Locale = 1701729619, //enUS
                         Username = _clientContext.Username,
                         NetworkData = new QosNetworkData(),

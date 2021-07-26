@@ -38,7 +38,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public Dictionary<string, GrdaData> Grda { get; set; } //TODO
 
         [TdfField("GSRD")]
-        public GsrdData Gsrd { get; set; } //TODO
+        public GsrdData Gsrd { get; set; } //TODO game slot data?
 
         [TdfField("HBRD")]
         public HbrdData Hbrd { get; set; } //TODO
@@ -47,7 +47,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public HvrdData Hvrd { get; set; } //TODO
 
         [TdfField("PSRS")]
-        public PsrsData Psrs { get; set; } //TODO
+        public PingServerNames PingServerNames { get; set; }
 
         [TdfField("RRDA")]
         public RrdaData Rrda { get; set; } //TODO
@@ -132,7 +132,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public int Vval { get; set; } //TODO: enum
     }
 
-    public class PsrsData //TODO: name
+    public class PingServerNames
     {
         [TdfField("VALU")]
         public List<string> Values { get; set; }

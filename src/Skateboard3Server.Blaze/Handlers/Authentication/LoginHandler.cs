@@ -133,7 +133,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 Data = new ExtendedData
                 {
                     Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Unset, null),
-                    BandwidthServer = "",
+                    PingServerName = "",
                     Cty = "",
                     Dmap = new Dictionary<uint, int>
                     {
