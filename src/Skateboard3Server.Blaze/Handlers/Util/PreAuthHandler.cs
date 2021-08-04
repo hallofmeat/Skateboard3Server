@@ -48,19 +48,19 @@ namespace Skateboard3Server.Blaze.Handlers.Util
                 {
                     BandwidthServer = new QosAddress //Also used for firewall detection?
                     {
-                        Hostname = _blazeConfig.Qos.BandwidthHost,
-                        Ip = _blazeConfig.Qos.BandwidthIp,
-                        Port = _blazeConfig.Qos.BandwidthPort //default 17502
+                        Hostname = _blazeConfig.QosHost,
+                        Ip = _blazeConfig.QosIp,
+                        Port = _blazeConfig.QosPort //default 17502
                     },
                     PingCount = 10,
                     PingServers = new Dictionary<string, QosAddress>
                     {
                         //default has 3 servers (we can get away with less)
-                        { "qs1", new QosAddress
+                        { _blazeConfig.QosName, new QosAddress
                         {
-                            Hostname = _blazeConfig.Qos.PingHost,
-                            Ip = _blazeConfig.Qos.PingIp,
-                            Port = _blazeConfig.Qos.PingPort //default 17502
+                            Hostname = _blazeConfig.QosHost,
+                            Ip = _blazeConfig.QosIp,
+                            Port = _blazeConfig.QosPort //default 17502
                         }}
                     },
                     ServerId = 1

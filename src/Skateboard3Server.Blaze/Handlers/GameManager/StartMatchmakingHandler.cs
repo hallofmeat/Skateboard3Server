@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Options;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 using Skateboard3Server.Blaze.Managers;
@@ -18,16 +19,16 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
     {
         private readonly IBlazeNotificationHandler _notificationHandler;
         private readonly Skateboard3Context _context;
-        //private readonly IMatchmakingManager _matchmakingManager;
+        private readonly BlazeConfig _blazeConfig;
         private readonly IGameManager _gameManager;
         private readonly IUserSessionManager _userSessionManager;
         private readonly ClientContext _clientContext;
 
-        public StartMatchmakingHandler(ClientContext clientContext, Skateboard3Context context, IBlazeNotificationHandler notificationHandler, IGameManager gameManager, IUserSessionManager userSessionManager)
+        public StartMatchmakingHandler(ClientContext clientContext, Skateboard3Context context, IOptions<BlazeConfig> blazeConfig, IBlazeNotificationHandler notificationHandler, IGameManager gameManager, IUserSessionManager userSessionManager)
         {
             _notificationHandler = notificationHandler;
             _context = context;
-            //_matchmakingManager = matchmakingManager;
+            _blazeConfig = blazeConfig.Value;
             _gameManager = gameManager;
             _userSessionManager = userSessionManager;
             _clientContext = clientContext;
@@ -105,7 +106,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                         },
                         PingServerNames = new PingServerNames
                         {
-                            Values = new List<string> { "qs1" } //qos servers
+                            Values = new List<string> { _blazeConfig.QosName } //qos servers
                         },
                         Rrda = new RrdaData
                         {
@@ -170,7 +171,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Data = new ExtendedData
                     {
                         Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair, player.NetworkAddress),
-                        PingServerName = "qs1", //TODO dont hardcode
+                        PingServerName = _blazeConfig.QosName, //TODO dont hardcode
                         Cty = "",
                         DataMap = new Dictionary<uint, int>(), //TODO: this is missing from the real response
                         HardwareFlags = 0,
@@ -218,7 +219,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                 {
                     Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair,
                         session.NetworkAddress),
-                    PingServerName = "qs1", //TODO dont hardcode
+                    PingServerName = _blazeConfig.QosName, //TODO dont hardcode
                     Cty = "",
                     DataMap = new Dictionary<uint, int>(), //TODO: this is missing from the real response
                     HardwareFlags = 0,
