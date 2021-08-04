@@ -71,7 +71,7 @@ namespace Skateboard3Server.Host
             builder.RegisterType<SetGameStateHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SetGameSettingsHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<RemovePlayerHandler>().AsImplementedInterfaces().InstancePerDependency();
-            builder.RegisterType<DbLoggerCategory.Update>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<UpdatePlayerConnectionHandler>().AsImplementedInterfaces().InstancePerDependency();
         }
     }
 }
