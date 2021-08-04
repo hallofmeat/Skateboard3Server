@@ -27,7 +27,7 @@ namespace Skateboard3Server.Blaze.Notifications.UserSession
         public string Cty { get; set; } //TODO city?
 
         [TdfField("DMAP")]
-        public Dictionary<uint, int> Dmap { get; set; } //TODO data map?
+        public Dictionary<uint, int> DataMap { get; set; }
 
         [TdfField("HWFG")]
         public uint HardwareFlags { get; set; }
@@ -39,9 +39,9 @@ namespace Skateboard3Server.Blaze.Notifications.UserSession
         public QosNetworkData NetworkData { get; set; }
 
         [TdfField("ULST")]
-        public List<ulong> Ulst { get; set; } //TODO: session list? (short 04, short 01, int gameid)
+        public List<ulong> UserGameList { get; set; } //(short 0x04, short 0x01, int gameid) //TODO: is this right?
 
         [TdfField("UATT")]
-        public ulong Uatt { get; set; } //TODO
+        public ulong UserAttributes { get; set; }
     }
 }

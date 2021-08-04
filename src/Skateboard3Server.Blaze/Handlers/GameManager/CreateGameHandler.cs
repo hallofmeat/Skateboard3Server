@@ -17,41 +17,90 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
         private readonly IBlazeNotificationHandler _notificationHandler;
         private readonly ClientContext _clientContext;
         private readonly IGameManager _gameManager;
+        private readonly IUserSessionManager _userSessionManager;
 
-        public CreateGameHandler(ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IGameManager gameManager)
+        public CreateGameHandler(ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IGameManager gameManager, IUserSessionManager userSessionManager)
         {
             _notificationHandler = notificationHandler;
             _clientContext = clientContext;
             _gameManager = gameManager;
+            _userSessionManager = userSessionManager;
         }
 
         public async Task<CreateGameResponse> Handle(CreateGameRequest request, CancellationToken cancellationToken)
         {
-            if (_clientContext.UserId == null || _clientContext.ExternalId == null)
+            if (_clientContext.UserId == null || _clientContext.UserSessionId == null ||  _clientContext.ExternalId == null)
             {
-                throw new Exception("UserId/ExternalId not on context");
+                throw new Exception("UserId/UserSessionId/ExternalId not on context");
             }
 
             var currentUserId = _clientContext.UserId.Value;
             var currentExternalId = _clientContext.ExternalId.Value;
+            var currentSessionId = _clientContext.UserSessionId.Value;
 
-            //TODO add currentuser/host info
-            //TODO add players
-            var game = _gameManager.CreateGame(request.GameName, request.GameSettings, request.Attributes);
+            var session = _userSessionManager.GetSession(currentSessionId);
+
+            ushort capacity = 6; //TODO: hardcoded capacity
+            var game = _gameManager.CreateGame(capacity);
+            game.Name = request.GameName;
+            game.Settings = request.GameSettings;
+            game.Attributes = request.Attributes;
+            game.Version = request.VersionString;
+            game.AdminId = currentUserId; //TODO: make sure this is the right id
+            game.HostId = currentUserId; //TODO: make sure this is the right id
+            game.HostNetwork = session.NetworkAddress;
+
+            _gameManager.AddPlayer(game.GameId, new Player
+            {
+                UserId = currentUserId,
+                Username = _clientContext.Username,
+                ExternalId = currentExternalId,
+                State = PlayerState.Connecting,
+                ConnectTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000, //microseconds
+                NetworkAddress = session.NetworkAddress
+            });
 
             var response = new CreateGameResponse
             {
                 GameId = game.GameId
             };
 
+            var players = new List<PlayerData>();
+            foreach (var player in game.Players)
+            {
+                if (player == null) continue; //empty slot
+                players.Add(new PlayerData
+                {
+                    Blob = null,
+                    ExternalId = player.ExternalId,
+                    Gid = game.GameId,
+                    Locale = 1701729619, //enUS
+                    Username = player.Username,
+                    NetworkData = new QosNetworkData(),
+                    PlayerAttributes = new Dictionary<string, string>
+                    {
+                        {"dlc_mask", "483"} //matches start matchmaking MASK?
+                    },
+                    PlayerId = player.UserId, //TODO should be PlayerId?
+                    PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(NetworkAddressType.Pair, player.NetworkAddress),
+                    Sid = player.SlotId,
+                    Slot = 0,
+                    PlayerState = player.State,
+                    Team = 65535,
+                    Tidx = 65535,
+                    Time = player.ConnectTime,
+                    Uid = player.UserId
+                });
+            }
+
             await _notificationHandler.EnqueueNotification(currentUserId, new GameSetupNotification
             {
                 Error = 0,
                 GameData = new GameData
                 {
-                    Admins = new List<uint> { currentUserId },
+                    Admins = new List<uint> { game.AdminId },
                     Attributes = game.Attributes,
-                    Cap = new List<ushort> { 6, 0 },
+                    Cap = new List<ushort> { capacity, 0 },
                     GameId = game.GameId,
                     GameName = game.Name,
                     Gpvh = 1, //TODO hardcoded value?
@@ -61,20 +110,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Gver = 1,
                     Hnet = new List<KeyValuePair<NetworkAddressType, PairNetworkAddress>>
                     {
-                        new KeyValuePair<NetworkAddressType, PairNetworkAddress>(NetworkAddressType.Pair, //TODO: pair on host, clientip on player
-                            new PairNetworkAddress
-                            {
-                                ExternalIp = new ClientNetworkAddress //TODO return from request make them the host
-                                {
-                                    Ip = 2130706433, //127.0.0.1
-                                    Port = 10000 //TODO
-                                },
-                                InternalIp = new ClientNetworkAddress
-                                {
-                                    Ip = 2130706433, //127.0.0.1
-                                    Port = 10000 //TODO
-                                }
-                            })
+                        new KeyValuePair<NetworkAddressType, PairNetworkAddress>(NetworkAddressType.Pair, game.HostNetwork)
                     },
                     Hses = 1234567, //TODO
                     Ignore = false,
@@ -84,69 +120,32 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     //    {"tprt", "0"},
                     //    {"vprt", "9041"} //TODO? voice port?
                     //},
-                    Mcap = 6,
+                    Mcap = capacity, //TODO: also can be 30?
                     NetworkData = new QosNetworkData(),
                     NetworkTopology = NetworkTopology.PeerToPeerFullMesh,
                     Pgid = Guid.NewGuid().ToString(),
                     Pgsr = null,
                     Phst = new HstData //Phst vs Thst?
                     {
-                        Hpid = currentUserId,
+                        Hpid = game.HostId,
                         Hslt = 0
                     },
-                    PingServerName = "", //TODO: ping server name?
+                    PingServerName = "",
                     QueueCapacity = 0,
                     Seed = 12345678, //TODO: random?
                     Thst = new HstData
                     {
-                        Hpid = currentUserId,
+                        Hpid = game.HostId,
                         Hslt = 0
                     },
-                    Uuid = Guid.NewGuid().ToString(), //TODO: should move to gamemanager?
+                    Uuid = game.Uuid,
                     VoipTopology = VoipTopology.PeerToPeer,
-                    VersionString = "Skate3-1",
+                    VersionString = game.Version,
                     Xnnc = null,
                     Xses = null
                 },
-                Mmid = 123, //same as start matchmaking
-                Pros = new List<PlayerData>
-                {
-                    new PlayerData
-                    {
-                        Blob = null,
-                        ExternalId = currentExternalId,
-                        Gid = game.GameId,
-                        Locale = 1701729619, //enUS
-                        Username = _clientContext.Username,
-                        NetworkData = new QosNetworkData(),
-                        PlayerAttributes = new Dictionary<string, string>
-                        {
-                            {"dlc_mask", "483"} //matches start matchmaking MASK?
-                        },
-                        PlayerId = currentUserId, //TODO should be PlayerId?
-                        PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(
-                            NetworkAddressType.Pair, new PairNetworkAddress
-                            {
-                                ExternalIp = new ClientNetworkAddress
-                                {
-                                    Ip = 2130706433, //127.0.0.1
-                                    Port = 10000
-                                },
-                                InternalIp = new ClientNetworkAddress
-                                {
-                                    Ip = 2130706433, //127.0.0.1
-                                    Port = 10000
-                                },
-                            }),
-                        Sid = 0,
-                        Slot = 0,
-                        PlayerState = PlayerState.Connecting,
-                        Team = 65535,
-                        Tidx = 65535,
-                        Time = 0, //DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000, //microseconds
-                        Uid = currentUserId
-                    }
-                }
+                Mmid = 1234, //TODO: pull from matchmakingmanager //same as start matchmaking
+                Pros = players
             });
             return response;
         }

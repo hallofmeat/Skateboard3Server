@@ -31,7 +31,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public int Gver { get; set; } //TODO: enum gameVersion?
 
         [TdfField("HNET")]
-        public List<KeyValuePair<NetworkAddressType, PairNetworkAddress>> Hnet { get; set; }
+        public List<KeyValuePair<NetworkAddressType, PairNetworkAddress>> HostNetwork { get; set; }
 
         [TdfField("IGNO")]
         public bool Ignore { get; set; }
@@ -55,7 +55,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public ushort PlayerMax { get; set; }
 
         [TdfField("QCAP")]
-        public ushort QueueCapacity { get; set; }
+        public ushort QueueCapacity { get; set; } //TODO queue capacity?
 
         [TdfField("RGID")]
         public uint Rgid { get; set; } //TODO
@@ -64,7 +64,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public int Slot { get; set; } //TODO: enum
 
         [TdfField("TEAM")]
-        public ushort Team { get; set; } //TODO
+        public ushort Team { get; set; } //TODO team capacity?
 
         [TdfField("VOIP")]
         public VoipTopology VoipTopology { get; set; }

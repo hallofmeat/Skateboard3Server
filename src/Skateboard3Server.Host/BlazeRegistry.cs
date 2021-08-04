@@ -30,10 +30,14 @@ namespace Skateboard3Server.Host
 
             //Connection Handling
             builder.RegisterType<BlazeProtocol>().SingleInstance();
-            builder.RegisterType<ClientManager>().As<IClientManager>().SingleInstance(); //manages all clients
             builder.RegisterType<BlazeClientContext>().As<ClientContext>().InstancePerLifetimeScope(); //each connection gets one
             builder.RegisterType<BlazeNotificationHandler>().As<IBlazeNotificationHandler>().SingleInstance(); //I think this is correct
+
+            //Managers
+            builder.RegisterType<ClientManager>().As<IClientManager>().SingleInstance(); //manages all clients
             builder.RegisterType<UserSessionManager>().As<IUserSessionManager>().SingleInstance(); //Handles sessions
+            builder.RegisterType<GameManager>().As<IGameManager>().SingleInstance(); //Handles games
+            builder.RegisterType<MatchmakingManager>().As<IMatchmakingManager>().SingleInstance(); //Handles matchmaking
 
             //Mediator
             builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
@@ -58,7 +62,7 @@ namespace Skateboard3Server.Host
             builder.RegisterType<DlcHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<TeamMembershipHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<Unknown640Handler>().AsImplementedInterfaces().InstancePerDependency();
-            builder.RegisterType<StartMachmakingHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<StartMatchmakingHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<GameSessionHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SetGameAttributesHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<FinalizeGameCreationHandler>().AsImplementedInterfaces().InstancePerDependency();

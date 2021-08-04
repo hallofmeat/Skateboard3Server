@@ -14,7 +14,7 @@ namespace Skateboard3Server.Blaze.Handlers.Social.Messages
     public class ResponseList
     {
         [TdfField("BOID")]
-        public ulong Boid { get; set; } //TODO
+        public ulong Boid { get; set; } //TODO objectid? (short 0x19, short 0x01, int unknown)
 
         [TdfField("LID")]
         public uint Lid { get; set; } //TODO

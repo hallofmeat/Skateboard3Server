@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Threading;
 using NLog;
+using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Data.Models;
 
 namespace Skateboard3Server.Blaze.Managers
@@ -10,6 +11,7 @@ namespace Skateboard3Server.Blaze.Managers
     public interface IUserSessionManager
     {
         (uint Id, string SessionKey) CreateSession(uint userId);
+        UserSessionData GetSession(uint id);
         void RemoveSession(uint id);
         UserSessionData GetUserSessionDataForKey(string key);
         string GetSessionKey(uint id);
@@ -27,7 +29,7 @@ namespace Skateboard3Server.Blaze.Managers
         private readonly ConcurrentDictionary<uint, UserSessionData> _sessions =
             new ConcurrentDictionary<uint, UserSessionData>();
 
-        private int _currentSessionCount = 1;
+        private int _currentSessionCount = 0;
 
         private static readonly RNGCryptoServiceProvider RandomGenerator = new RNGCryptoServiceProvider();
 
@@ -43,11 +45,23 @@ namespace Skateboard3Server.Blaze.Managers
                 UserId = userId,
                 Key = HexString(rawKey)
             };
-            _sessions.TryAdd(id, sessionData);
+            if (!_sessions.TryAdd(id, sessionData))
+            {
+                throw new Exception($"Could not add session SessionId:{id}");
+            }
 
             var sessionKey = GenerateSessionKey(id, sessionData.Key);
-
             return (id, sessionKey);
+        }
+
+        public UserSessionData GetSession(uint id)
+        {
+            if (!_sessions.TryGetValue(id, out var sessionData))
+            {
+                throw new ArgumentException($"SessionId:{id} does not exist");
+            }
+
+            return sessionData;
         }
 
         public void RemoveSession(uint id)
@@ -83,12 +97,12 @@ namespace Skateboard3Server.Blaze.Managers
 
         public string GetSessionKey(uint id)
         {
-            if (_sessions.TryGetValue(id, out var sessionData))
+            if (!_sessions.TryGetValue(id, out var sessionData))
             {
-                return GenerateSessionKey(id, sessionData.Key);
+                throw new ArgumentException($"SessionId:{id} does not exist");
             }
-
-            throw new ArgumentException($"SessionId:{id} does not exist");
+         
+            return GenerateSessionKey(id, sessionData.Key);
         }
 
         private string GenerateSessionKey(uint id, string key)
@@ -107,5 +121,6 @@ namespace Skateboard3Server.Blaze.Managers
         public uint SessionId { get; set; }
         public uint UserId { get; set; }
         public string Key { get; set; }
+        public PairNetworkAddress NetworkAddress { get; set; }
     }
 }

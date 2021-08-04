@@ -19,7 +19,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public MatchmakingCriteria MatchmakingCriteria { get; set; }
 
         [TdfField("DUR")]
-        public uint Dur { get; set; } //TODO
+        public uint Dur { get; set; } //TODO duration?
 
         [TdfField("GNAM")]
         public string GameName { get; set; }
@@ -31,7 +31,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public string Gver { get; set; } //TODO gameVersion?
 
         [TdfField("IGNO")]
-        public bool Igno { get; set; } //TODO
+        public bool Igno { get; set; } //TODO ignore?
 
         [TdfField("MODE")]
         public uint Mode { get; set; }
@@ -49,10 +49,10 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public KeyValuePair<NetworkAddressType, PairNetworkAddress> PlayerNetwork { get; set; }
 
         [TdfField("QCAP")]
-        public ushort Qcap { get; set; } //TODO
+        public ushort Qcap { get; set; } //TODO queue capacity?
 
         [TdfField("VOIP")]
-        public int Voip { get; set; } //TODO enum
+        public int Voip { get; set; } //TODO enum voipTopology?
     }
 
     public class MatchmakingCriteria
@@ -115,13 +115,13 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public int Dnf { get; set; } //TODO enum
     }
 
-    public class ThldCriteria //TODO better name
+    public class ThldCriteria //TODO better name, threshold?
     {
         [TdfField("THLD")]
         public string Thld { get; set; } //TODO
     }
 
-    public class ThldValueCriteria //TODO better name
+    public class ThldValueCriteria //TODO better name, threshold?
     {
         [TdfField("THLD")]
         public string Thld { get; set; } //TODO
@@ -178,7 +178,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public string Thld { get; set; } //TODO
 
         [TdfField("TID")]
-        public ushort Tid { get; set; } //TODO
+        public ushort Tid { get; set; } //TODO teamid?
 
     }
 
