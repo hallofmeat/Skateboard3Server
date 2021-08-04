@@ -22,7 +22,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             //TODO do logic with game manager
             var response = new RemovePlayerResponse();
             //TODO: notify all players
-            await _notificationHandler.EnqueueNotification(request.PlayerId, new RemovePlayerNotification
+            await _notificationHandler.SendNotification(request.PlayerId, new PlayerRemovedNotification
             {
                 BlazeErrorCode = 0,
                 Cntx = request.Cntx, //always 0
@@ -30,8 +30,6 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                 PlayerId = request.PlayerId,
                 Reason = request.Reason
             });
-
-
             return response;
         }
     }

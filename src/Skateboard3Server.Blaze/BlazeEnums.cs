@@ -29,7 +29,8 @@
         StartMatchmaking = 0x0D,
         FinalizeGameCreation = 0x0F,
         CreateGame = 0x19,
-        GameSession = 0x1A,
+        GameSession = 0x1A, //TODO: SetGameSession?
+        UpdatePlayerConnection = 0x1D, //TODO: UpdateMeshConnection?
     }
 
     public enum GameManagerNotification : ushort
@@ -37,7 +38,8 @@
         MatchmakingFinished = 0x0A,
         MatchmakingStatus = 0x0C,
         GameSetup = 0x14,
-        RemovePlayer = 0x28,
+        PlayerJoinCompleted = 0x1E,
+        PlayerRemoved = 0x28,
         GameAttributeChange = 0x50,
         GameStateChange = 0x64,
         GameSettingsChange = 0x6E,
@@ -173,8 +175,16 @@
 
     public enum PlayerState : int
     {
+        Disconnected = 0x0,
         Connecting = 0x2,
         Connected = 0x4,
+    }
+
+    public enum PlayerRemoveReason : int
+    {
+        JoinTimeout = 0x0,
+        ConnectionLost = 0x01,
+        Leave = 0x06,
     }
 
     public enum VoipTopology : int

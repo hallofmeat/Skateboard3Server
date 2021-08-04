@@ -41,7 +41,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             var session = _userSessionManager.GetSession(currentSessionId);
 
             ushort capacity = 6; //TODO: hardcoded capacity
-            var game = _gameManager.CreateGame(capacity);
+            var game = _gameManager.CreateGame(capacity); //TODO pass game instead of returning it?
             game.Name = request.GameName;
             game.Settings = request.GameSettings;
             game.Attributes = request.Attributes;
@@ -55,7 +55,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                 UserId = currentUserId,
                 Username = _clientContext.Username,
                 ExternalId = currentExternalId,
-                State = PlayerState.Connecting,
+                State = PlayerState.Connected,
                 ConnectTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000, //microseconds
                 NetworkAddress = session.NetworkAddress
             });

@@ -1,5 +1,6 @@
 using Autofac;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Skateboard3Server.Blaze;
 using Skateboard3Server.Blaze.Handlers.Authentication;
 using Skateboard3Server.Blaze.Handlers.GameManager;
@@ -70,6 +71,7 @@ namespace Skateboard3Server.Host
             builder.RegisterType<SetGameStateHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<SetGameSettingsHandler>().AsImplementedInterfaces().InstancePerDependency();
             builder.RegisterType<RemovePlayerHandler>().AsImplementedInterfaces().InstancePerDependency();
+            builder.RegisterType<DbLoggerCategory.Update>().AsImplementedInterfaces().InstancePerDependency();
         }
     }
 }
