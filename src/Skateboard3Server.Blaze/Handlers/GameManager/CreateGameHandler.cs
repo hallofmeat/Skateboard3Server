@@ -125,7 +125,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     NetworkTopology = NetworkTopology.PeerToPeerFullMesh,
                     Pgid = Guid.NewGuid().ToString(),
                     Pgsr = null,
-                    Phst = new HstData //Phst vs Thst?
+                    Phst = new HstData //Phst PlatformHost? vs Thst?
                     {
                         Hpid = game.HostId,
                         Hslt = 0

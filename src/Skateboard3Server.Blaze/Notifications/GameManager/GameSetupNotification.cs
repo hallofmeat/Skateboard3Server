@@ -93,7 +93,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public uint Seed { get; set; } //TODO
 
         [TdfField("THST")]
-        public HstData Thst { get; set; } //TODO team host?
+        public HstData Thst { get; set; } //TODO team host? normally dirtybot
 
         [TdfField("UUID")]
         public string Uuid { get; set; } //TODO

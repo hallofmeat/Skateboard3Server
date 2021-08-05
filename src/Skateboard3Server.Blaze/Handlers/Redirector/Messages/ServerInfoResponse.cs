@@ -16,7 +16,7 @@ namespace Skateboard3Server.Blaze.Handlers.Redirector.Messages
         public bool Secure { get; set; }
 
         [TdfField("XDNS")]
-        public uint Xdns { get; set; }
+        public uint Xdns { get; set; } //TODO: dnsip?
 
     }
 }
