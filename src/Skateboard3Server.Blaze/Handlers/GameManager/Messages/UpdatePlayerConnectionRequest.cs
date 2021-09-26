@@ -18,7 +18,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
     public class PlayerTarget
     {
         [TdfField("PID")]
-        public uint PlayerId { get; set; }
+        public uint PersonaId { get; set; }
 
         [TdfField("STAT")]
         public PlayerState State { get; set; }

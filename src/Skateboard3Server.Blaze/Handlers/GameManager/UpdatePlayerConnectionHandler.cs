@@ -27,21 +27,21 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                 {
                     case PlayerState.Connected:
                         //TODO use context userid?
-                        await _notificationHandler.SendNotification(target.PlayerId, new PlayerJoinCompletedNotification
+                        await _notificationHandler.SendNotification(target.PersonaId, new PlayerJoinCompletedNotification
                         {
                             BlazeErrorCode = 0,
                             GameId = request.GameId,
-                            PlayerId = target.PlayerId,
+                            PersonaId = target.PersonaId,
                         });
                         break;
                     case PlayerState.Disconnected:
                         //TODO use context userid?
-                        await _notificationHandler.SendNotification(target.PlayerId, new PlayerRemovedNotification
+                        await _notificationHandler.SendNotification(target.PersonaId, new PlayerRemovedNotification
                         {
                             BlazeErrorCode = 0,
                             Cntx = 0,
                             GameId = request.GameId,
-                            PlayerId = target.PlayerId,
+                            PersonaId = target.PersonaId,
                             Reason = PlayerRemoveReason.JoinTimeout //I think this is right?
                         });
                         break;

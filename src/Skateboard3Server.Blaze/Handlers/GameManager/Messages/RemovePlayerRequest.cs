@@ -17,7 +17,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
         public uint GameId { get; set; }
 
         [TdfField("PID")]
-        public uint PlayerId { get; set; }
+        public uint PersonaId { get; set; }
 
         [TdfField("REAS")]
         public PlayerRemoveReason Reason { get; set; }

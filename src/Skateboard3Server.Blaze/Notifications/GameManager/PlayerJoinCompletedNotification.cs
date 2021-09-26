@@ -10,6 +10,6 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public uint GameId { get; set; }
 
         [TdfField("PID")]
-        public uint PlayerId { get; set; }
+        public uint PersonaId { get; set; }
     }
 }

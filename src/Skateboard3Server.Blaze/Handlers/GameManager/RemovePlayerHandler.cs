@@ -22,12 +22,12 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             //TODO do logic with game manager
             var response = new RemovePlayerResponse();
             //TODO: notify all players
-            await _notificationHandler.SendNotification(request.PlayerId, new PlayerRemovedNotification
+            await _notificationHandler.SendNotification(request.PersonaId, new PlayerRemovedNotification
             {
                 BlazeErrorCode = 0,
                 Cntx = request.Cntx, //always 0
                 GameId = request.GameId,
-                PlayerId = request.PlayerId,
+                PersonaId = request.PersonaId,
                 Reason = request.Reason
             });
             return response;

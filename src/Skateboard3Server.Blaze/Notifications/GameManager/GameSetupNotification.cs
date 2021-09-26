@@ -15,10 +15,10 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public GameData GameData { get; set; }
 
         [TdfField("MMID")]
-        public uint Mmid { get; set; } //TODO matchmakingId?
+        public uint MatchmakingId { get; set; }
 
         [TdfField("PROS")]
-        public List<PlayerData> Pros { get; set; } //TODO
+        public List<PlayerData> Players { get; set; }
     }
 
     public class GameData
@@ -54,7 +54,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public int Gver { get; set; } //TODO: enum gameVersion?
 
         [TdfField("HNET")]
-        public List<KeyValuePair<NetworkAddressType, PairNetworkAddress>> Hnet { get; set; } //TODO hostNetwork? //TODO: this is pair if host client if not
+        public List<KeyValuePair<NetworkAddressType, PairNetworkAddress>> HostNetwork { get; set; }
 
         [TdfField("HSES")]
         public uint Hses { get; set; } //TODO hostSession?
@@ -66,7 +66,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public Dictionary<string, string> Matr { get; set; } //TODO
 
         [TdfField("MCAP")]
-        public ushort Mcap { get; set; } //TODO capacity?
+        public ushort Mcap { get; set; } //TODO max capacity?
 
         [TdfField("NQOS")]
         public QosNetworkData NetworkData { get; set; }
@@ -75,13 +75,13 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public NetworkTopology NetworkTopology { get; set; }
 
         [TdfField("PGID")]
-        public string Pgid { get; set; } //TODO
+        public string Pgid { get; set; } //TODO platform gameid?
 
         [TdfField("PGSR")]
-        public byte[] Pgsr { get; set; } //TODO
+        public byte[] Pgsr { get; set; } //TODO platform gameserver?
 
         [TdfField("PHST")]
-        public HstData Phst { get; set; } //TODO platformHost? playerHost? party host?
+        public HostData PlatformHost { get; set; }
 
         [TdfField("PSAS")]
         public string PingServerName { get; set; }
@@ -93,7 +93,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public uint Seed { get; set; } //TODO
 
         [TdfField("THST")]
-        public HstData Thst { get; set; } //TODO team host? normally dirtybot
+        public HostData TopologyHost { get; set; } //normally dirtybot
 
         [TdfField("UUID")]
         public string Uuid { get; set; } //TODO
@@ -111,13 +111,13 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public byte[] Xses { get; set; } //TODO
     }
 
-    public class HstData //TODO: better name
+    public class HostData //TODO: better name
     {
         [TdfField("HPID")]
-        public uint Hpid { get; set; } //TODO host playerid?
+        public uint HostPersonaId { get; set; }
 
         [TdfField("HSLT")]
-        public byte Hslt { get; set; } //TODO host slot?
+        public byte HostSlot { get; set; }
     }
 
     public class PlayerData
@@ -144,7 +144,7 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public Dictionary<string, string> PlayerAttributes { get; set; }
 
         [TdfField("PID")]
-        public uint PlayerId { get; set; }
+        public uint PersonaId { get; set; }
 
         [TdfField("PNET")]
         public KeyValuePair<NetworkAddressType, PairNetworkAddress> PlayerNetwork { get; set; }

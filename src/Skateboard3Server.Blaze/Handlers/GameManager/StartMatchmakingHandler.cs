@@ -254,7 +254,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     {
                         {"dlc_mask", "483"} //matches start matchmaking MASK?
                     },
-                    PlayerId = player.UserId, //TODO should be PlayerId?
+                    PersonaId = player.UserId, //TODO should be PlayerId?
                     PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(NetworkAddressType.Pair, player.NetworkAddress),
                     Sid = player.SlotId,
                     Slot = 0,
@@ -282,7 +282,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Gsid = 1, //normally random but not used anywhere
                     GameState = game.State,
                     Gver = 1,
-                    Hnet = new List<KeyValuePair<NetworkAddressType, PairNetworkAddress>>
+                    HostNetwork = new List<KeyValuePair<NetworkAddressType, PairNetworkAddress>>
                     {
                         new KeyValuePair<NetworkAddressType, PairNetworkAddress>(NetworkAddressType.Pair, game.HostNetwork)
                     },
@@ -298,18 +298,18 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     NetworkTopology = NetworkTopology.PeerToPeerFullMesh,
                     Pgid = "",
                     Pgsr = null,
-                    Phst = new HstData //Phst player host? vs Thst team host?
+                    PlatformHost = new HostData
                     {
-                        Hpid = game.HostId,
-                        Hslt = 0
+                        HostPersonaId = game.HostId,
+                        HostSlot = 0
                     },
                     PingServerName = "",
                     QueueCapacity = 0,
                     Seed = 12345678, //TODO: random?
-                    Thst = new HstData
+                    TopologyHost = new HostData
                     {
-                        Hpid = game.HostId,
-                        Hslt = 0
+                        HostPersonaId = game.HostId,
+                        HostSlot = 0
                     },
                     Uuid = game.Uuid,
                     VoipTopology = VoipTopology.PeerToPeer,
@@ -317,8 +317,8 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Xnnc = null,
                     Xses = null
                 },
-                Mmid = matchmakingId, //same as start matchmaking
-                Pros = players
+                MatchmakingId = matchmakingId, //same as start matchmaking
+                Players = players
             });
             return response;
         }
