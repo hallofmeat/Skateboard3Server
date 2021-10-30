@@ -101,7 +101,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
             persona.User.LastLogin = currentTimestamp;
             await _context.SaveChangesAsync(cancellationToken);
 
-            _clientContext.UserId = persona.UserId;
+            _clientContext.UserId = newSession.UserId;
             _clientContext.UserSessionId = sessionData.SessionId;
 
             var response = new LoginResponse
@@ -110,20 +110,20 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 Priv = "",
                 Session = new LoginSession
                 {
-                    BlazeId = persona.UserId,
+                    BlazeId = newSession.UserId,
                     FirstLogin = false, //TODO
                     SessionKey = sessionData.SessionKey,
-                    LastLoginTime = persona.User.LastLogin,
+                    LastLoginTime = currentTimestamp,
                     Email = "",
                     Persona = new LoginPersona
                     {
-                        DisplayName = persona.Username,
-                        LastUsed = persona.LastUsed,
-                        PersonaId = persona.Id,
-                        ExternalId = persona.ExternalId,
+                        DisplayName = newSession.Username,
+                        LastUsed = currentTimestamp,
+                        PersonaId = newSession.UserId,
+                        ExternalId = newSession.ExternalId,
                         ExternalIdType = ExternalIdType.PS3,
                     },
-                    AccountId = persona.User.AccountId,
+                    AccountId = newSession.AccountId,
                 },
                 Spam = true, //TODO: what is spam?
                 TermsHost = "",
@@ -132,13 +132,13 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
 
             await _notificationHandler.EnqueueNotification(persona.UserId, new UserAddedNotification
             {
-                AccountId = persona.User.AccountId,
+                AccountId = newSession.AccountId,
                 AccountLocale = 1701729619, //enUS //TODO: not hardcode
-                ExternalBlob = persona.ExternalBlob,
-                Id = persona.UserId,
-                PersonaId = persona.Id,
-                Username = persona.Username,
-                ExternalId = persona.ExternalId,
+                ExternalBlob = newSession.ExternalBlob,
+                Id = newSession.UserId,
+                PersonaId = newSession.PersonaId,
+                Username = newSession.Username,
+                ExternalId = newSession.ExternalId,
                 Online = true
             });
 
@@ -162,7 +162,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                     },
                     UserAttributes = 0 //always 0
                 },
-                UserId = persona.UserId
+                UserId = newSession.UserId
             });
 
             return response;
