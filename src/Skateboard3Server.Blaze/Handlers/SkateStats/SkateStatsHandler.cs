@@ -21,15 +21,9 @@ namespace Skateboard3Server.Blaze.Handlers.SkateStats
 
         public async Task<SkateStatsResponse> Handle(SkateStatsRequest request, CancellationToken cancellationToken)
         {
-            if (_clientContext.UserId == null)
-            {
-                throw new Exception("UserId not on context");
-            }
-            var currentUserId = _clientContext.UserId.Value;
-
             var response = new SkateStatsResponse();
 
-            await _notificationHandler.EnqueueNotification(currentUserId, new SkateStatsReportNotification
+            await _notificationHandler.EnqueueNotification(new SkateStatsReportNotification
             {
                 Error = 0,
                 Final = false,

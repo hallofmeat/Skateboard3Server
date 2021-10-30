@@ -12,5 +12,6 @@ namespace Skateboard3Server.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Persona> Personas { get; set; }
     }
 }

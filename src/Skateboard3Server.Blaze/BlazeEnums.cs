@@ -87,6 +87,7 @@
     public enum UserSessionCommand : ushort
     {
         HardwareFlags = 0x8,
+        LookupUsers = 0x0D,
         NetworkInfo = 0x14
     }
 

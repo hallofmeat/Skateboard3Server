@@ -8,13 +8,46 @@ using Skateboard3Server.Data;
 namespace Skateboard3Server.Data.Migrations
 {
     [DbContext(typeof(Skateboard3Context))]
-    partial class BlazeContextModelSnapshot : ModelSnapshot
+    partial class Skateboard3ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.16");
+
+            modelBuilder.Entity("Skateboard3Server.Data.Models.Persona", b =>
+                {
+                    b.Property<uint>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("ExternalBlob")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<ulong>("ExternalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ExternalIdType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("LastUsed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Personas");
+                });
 
             modelBuilder.Entity("Skateboard3Server.Data.Models.User", b =>
                 {
@@ -25,28 +58,21 @@ namespace Skateboard3Server.Data.Migrations
                     b.Property<long>("AccountId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte[]>("ExternalBlob")
-                        .HasColumnType("BLOB");
-
-                    b.Property<ulong>("ExternalId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ExternalIdType")
-                        .HasColumnType("INTEGER");
-
                     b.Property<uint>("LastLogin")
                         .HasColumnType("INTEGER");
-
-                    b.Property<long>("PersonaId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Skateboard3Server.Data.Models.Persona", b =>
+                {
+                    b.HasOne("Skateboard3Server.Data.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

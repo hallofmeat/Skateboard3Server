@@ -168,6 +168,6 @@ namespace Skateboard3Server.Blaze.Notifications.GameManager
         public long Time { get; set; } //TODO
 
         [TdfField("UID")]
-        public uint Uid { get; set; } //TODO
+        public uint UserId { get; set; }
     }
 }

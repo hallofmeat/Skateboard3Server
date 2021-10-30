@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,10 +46,10 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 throw new Exception("Could not parse ticket, unable to login");
             }
 
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.ExternalId == ticket.Body.UserId, cancellationToken: cancellationToken);
-
-            //First time we have seen this user
-            if (user == null)
+            var persona = await _context.Personas.SingleOrDefaultAsync(x => x.ExternalId == ticket.Body.UserId, cancellationToken: cancellationToken);
+            
+            //First time we have seen this persona
+            if (persona == null)
             {
                 //TODO: a hack, this normally comes from the auth new login flow but I dont want to prompt for a login
                 var externalBlob = new List<byte>();
@@ -62,33 +61,48 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 externalBlob.Add(0x1);
                 externalBlob.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
 
-                user = new User
-                {
-                    ExternalId = ticket.Body.UserId,
-                    ExternalBlob = externalBlob.ToArray(),
-                    ExternalIdType = ticket.Body.IssuerId == 100 ? UserExternalIdType.PS3 : UserExternalIdType.Rpcs3, //100 is retail issuerId
-                    Username = ticket.Body.Username,
-                };
+                //Create new user
+                var user = new User();
                 await _context.Users.AddAsync(user, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                //For now just use the blazeid for both AccountId and PersonaId (this is so the rest of the logic can use those values where they are supposed to)
+                //For now just use the blazeid for both AccountId (this is so the rest of the logic can use those values where they are supposed to)
                 user.AccountId = user.Id;
-                user.PersonaId = user.Id;
+
+                persona = new Persona
+                {
+                    ExternalId = ticket.Body.UserId,
+                    ExternalBlob = externalBlob.ToArray(),
+                    ExternalIdType = ticket.Body.IssuerId == 100 ? PersonaExternalIdType.PS3 : PersonaExternalIdType.Rpcs3, //100 is retail issuerId
+                    Username = ticket.Body.Username,
+                    User = user
+                };
+                await _context.Personas.AddAsync(persona, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
+            //TODO: handle same user connecting/logging in at the same time
+
             //Create session
-            var userSession = _userSessionManager.CreateSession(user.Id);
+            var newSession = new UserSessionData
+            {
+                AccountId = persona.User.AccountId,
+                UserId = persona.UserId,
+                PersonaId = persona.Id,
+                Username = persona.Username,
+                ExternalId = persona.ExternalId,
+                ExternalBlob = persona.ExternalBlob,
+            };
+            var sessionData = _userSessionManager.StoreSession(newSession);
 
             //Update login time
-            user.LastLogin = TimeUtil.GetUnixTimestamp();
+            var currentTimestamp = TimeUtil.GetUnixTimestamp();
+            persona.LastUsed = currentTimestamp;
+            persona.User.LastLogin = currentTimestamp;
             await _context.SaveChangesAsync(cancellationToken);
 
-            _clientContext.UserId = user.Id;
-            _clientContext.UserSessionId = userSession.Id;
-            _clientContext.Username = user.Username;
-            _clientContext.ExternalId = user.ExternalId;
+            _clientContext.UserId = persona.UserId;
+            _clientContext.UserSessionId = sessionData.SessionId;
 
             var response = new LoginResponse
             {
@@ -96,39 +110,39 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                 Priv = "",
                 Session = new LoginSession
                 {
-                    BlazeId = user.Id,
+                    BlazeId = persona.UserId,
                     FirstLogin = false, //TODO
-                    SessionKey = userSession.SessionKey,
-                    LastLoginTime = user.LastLogin,
+                    SessionKey = sessionData.SessionKey,
+                    LastLoginTime = persona.User.LastLogin,
                     Email = "",
                     Persona = new LoginPersona
                     {
-                        DisplayName = user.Username,
-                        LastUsed = user.LastLogin,
-                        PersonaId = user.PersonaId,
-                        ExternalId = user.ExternalId,
+                        DisplayName = persona.Username,
+                        LastUsed = persona.LastUsed,
+                        PersonaId = persona.Id,
+                        ExternalId = persona.ExternalId,
                         ExternalIdType = ExternalIdType.PS3,
                     },
-                    AccountId = user.AccountId,
+                    AccountId = persona.User.AccountId,
                 },
                 Spam = true, //TODO: what is spam?
                 TermsHost = "",
                 TermsUrl = ""
             };
 
-            await _notificationHandler.EnqueueNotification(user.Id, new UserAddedNotification
+            await _notificationHandler.EnqueueNotification(persona.UserId, new UserAddedNotification
             {
-                AccountId = user.AccountId,
+                AccountId = persona.User.AccountId,
                 AccountLocale = 1701729619, //enUS //TODO: not hardcode
-                ExternalBlob = user.ExternalBlob,
-                Id = user.Id,
-                PersonaId = user.PersonaId,
-                Username = user.Username,
-                ExternalId = user.ExternalId,
+                ExternalBlob = persona.ExternalBlob,
+                Id = persona.UserId,
+                PersonaId = persona.Id,
+                Username = persona.Username,
+                ExternalId = persona.ExternalId,
                 Online = true
             });
 
-            await _notificationHandler.EnqueueNotification(user.Id, new UserExtendedDataNotification
+            await _notificationHandler.EnqueueNotification(persona.UserId, new UserExtendedDataNotification
             {
                 Data = new ExtendedData
                 {
@@ -148,7 +162,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
                     },
                     UserAttributes = 0 //always 0
                 },
-                UserId = user.Id
+                UserId = persona.UserId
             });
 
             return response;

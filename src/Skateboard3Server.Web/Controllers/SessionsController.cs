@@ -129,17 +129,17 @@ namespace Skateboard3Server.Web.Controllers
                 return false;
             }
 
-            var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == userSessionData.UserId);
+            var persona = await _dbContext.Personas.SingleOrDefaultAsync(x => x.Id == userSessionData.PersonaId);
 
-            if (user == null)
+            if (persona == null)
             {
                 return false;
             }
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(user.Id)),
-                new Claim(ClaimTypes.Name,  user.Username),
+                new Claim(ClaimTypes.NameIdentifier,  Convert.ToString(persona.Id)),
+                new Claim(ClaimTypes.Name,  persona.Username),
             };
 
             var claimsIdentity = new ClaimsIdentity(

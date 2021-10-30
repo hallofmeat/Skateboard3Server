@@ -23,12 +23,10 @@ namespace Skateboard3Server.Blaze.Handlers.UserSession
         {
             if (_clientContext.UserSessionId == null)
             {
-                throw new Exception("UserId/UserSessionId not on context");
+                throw new Exception("UserSessionId not on context");
             }
-            var currentSessionId = _clientContext.UserSessionId.Value;
-
-            var session = _userSessionManager.GetSession(currentSessionId);
-            session.NetworkAddress = request.Address.Value;
+            var currentSession = _userSessionManager.GetSession(_clientContext.UserSessionId.Value);
+            currentSession.NetworkAddress = request.Address.Value;
             //TODO: rest of the values
 
             var response = new NetworkInfoResponse();

@@ -23,9 +23,6 @@ namespace Skateboard3Server.Host.Blaze
         public override uint? UserId { get; set; }
         public override uint? UserSessionId { get; set; }
 
-        public override string Username { get; set; }
-        public override ulong? ExternalId { get; set; }
-
         public override IDictionary<object, object> Items => ConnectionContext?.Items;
 
     }

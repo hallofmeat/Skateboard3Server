@@ -35,13 +35,11 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
         }
         public async Task<StartMatchmakingResponse> Handle(StartMatchmakingRequest request, CancellationToken cancellationToken)
         {
-            if (_clientContext.UserId == null || _clientContext.UserSessionId == null || _clientContext.ExternalId == null)
+            if (_clientContext.UserSessionId == null)
             {
-                throw new Exception("UserId/UserSessionId/ExternalId not on context");
+                throw new Exception("UserSessionId not on context");
             }
-            var currentUserId = _clientContext.UserId.Value;
-            var currentSessionId = _clientContext.UserSessionId.Value;
-            var currentExternalId = _clientContext.ExternalId.Value;
+            var currentSession = _userSessionManager.GetSession(_clientContext.UserSessionId.Value);
 
             //uint matchmakingId = _matchmakingManager.CreateMatchmakingSession();
             uint matchmakingId = 1234;
@@ -51,7 +49,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             };
 
             //TODO async
-            await _notificationHandler.EnqueueNotification(currentUserId, new MatchmakingStatusNotification
+            await _notificationHandler.EnqueueNotification(new MatchmakingStatusNotification
             {
                 Asil = new List<AsilData>
                 {
@@ -116,34 +114,34 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     }
                 },
                 MatchmakingSessionId = matchmakingId,
-                UserSessionId = currentSessionId
+                UserSessionId = currentSession.SessionId
             });
 
             //TODO: matchmaking manager?
             var game = _gameManager.FindGame(games => games.FirstOrDefault());
             if (game == null) //No game exists go ahead and force a new one
             {
-                await _notificationHandler.EnqueueNotification(currentUserId, new MatchmakingFinishedNotification
+                await _notificationHandler.EnqueueNotification(new MatchmakingFinishedNotification
                 {
                     Fit = 0,
                     GameId = 0,
                     Maxf = 0,
                     MatchmakingSessionId = matchmakingId,
                     Result = MatchmakingResult.TimedOut, //TimeOut will result in GameManager 0x19 message
-                    UserSessionId = currentSessionId
+                    UserSessionId = currentSession.SessionId
                 });
                 return response;
             }
 
             //Join existing game
-            await _notificationHandler.EnqueueNotification(currentUserId, new MatchmakingFinishedNotification
+            await _notificationHandler.EnqueueNotification(new MatchmakingFinishedNotification
             {
                 Fit = 100, //TODO: what value?
                 GameId = game.GameId,
                 Maxf = 100, //TODO: what value?
                 MatchmakingSessionId = matchmakingId,
                 Result = MatchmakingResult.JoinedExistingGame, //TODO: I think this value is correct
-                UserSessionId = currentSessionId
+                UserSessionId = currentSession.SessionId
             });
 
 
@@ -151,23 +149,21 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             foreach (var player in game.Players)
             {
                 if (player == null) continue; //empty slot
-                //TODO: maybe dont look up the user?
-                var user = _context.Users.Single(x => x.Id == player.UserId);
-                await _notificationHandler.SendNotification(currentUserId, new UserAddedNotification
+                await _notificationHandler.SendNotification(new UserAddedNotification
                 {
-                    AccountId = user.AccountId,
+                    AccountId = player.AccountId,
                     AccountLocale = 1701729619, //enUS
-                    ExternalBlob = user.ExternalBlob,
+                    ExternalBlob = player.ExternalBlob,
                     ExternalId = player.ExternalId,
-                    Id = user.Id,
+                    Id = player.UserId,
                     Username = player.Username,
                     Online = true,
-                    PersonaId = user.PersonaId
+                    PersonaId = player.PersonaId
                 });
 
-                await _notificationHandler.SendNotification(currentUserId, new UserExtendedDataNotification
+                await _notificationHandler.SendNotification(new UserExtendedDataNotification
                 {
-                    UserId = user.Id,
+                    UserId = player.UserId,
                     Data = new ExtendedData
                     {
                         Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair, player.NetworkAddress),
@@ -188,37 +184,38 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                 });
             }
 
-            var session = _userSessionManager.GetSession(currentSessionId);
             _gameManager.AddPlayer(game.GameId, new Player
             {
-                UserId = currentUserId,
-                Username = _clientContext.Username,
-                ExternalId = currentExternalId,
+                AccountId = currentSession.AccountId,
+                UserId = currentSession.UserId,
+                PersonaId = currentSession.PersonaId,
+                Username = currentSession.Username,
+                ExternalId = currentSession.ExternalId,
+                ExternalBlob = currentSession.ExternalBlob,
                 State = PlayerState.Connecting,
                 ConnectTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000, //microseconds
-                NetworkAddress = session.NetworkAddress
+                NetworkAddress = currentSession.NetworkAddress,
             });
 
-            var currentUser = _context.Users.Single(x => x.Id == currentUserId);
             var currentUserAdded = new UserAddedNotification
             {
-                AccountId = currentUser.AccountId,
+                AccountId = currentSession.AccountId,
                 AccountLocale = 1701729619, //enUS
-                ExternalBlob = currentUser.ExternalBlob,
-                ExternalId = currentUser.ExternalId,
-                Id = currentUser.Id,
-                Username = currentUser.Username,
+                ExternalBlob = currentSession.ExternalBlob,
+                ExternalId = currentSession.ExternalId,
+                Id = currentSession.UserId,
+                Username = currentSession.Username,
                 Online = true,
-                PersonaId = currentUser.PersonaId
+                PersonaId = currentSession.PersonaId
             };
 
             var currentUserExtended = new UserExtendedDataNotification
             {
-                UserId = currentUser.Id,
+                UserId = currentSession.UserId,
                 Data = new ExtendedData
                 {
                     Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair,
-                        session.NetworkAddress),
+                        currentSession.NetworkAddress),
                     PingServerName = _blazeConfig.QosName, //TODO dont hardcode
                     Cty = "",
                     DataMap = new Dictionary<uint, int>(), //TODO: this is missing from the real response
@@ -262,12 +259,12 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Team = 65535,
                     Tidx = 65535,
                     Time = player.ConnectTime,
-                    Uid = player.UserId
+                    UserId = player.UserId
                 });
             }
 
             //Tell new player about the game
-            await _notificationHandler.EnqueueNotification(currentUserId, new GameSetupNotification
+            await _notificationHandler.EnqueueNotification(new GameSetupNotification
             {
                 Error = 0,
                 GameData = new GameData

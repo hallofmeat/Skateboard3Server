@@ -29,16 +29,11 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
 
         public async Task<CreateGameResponse> Handle(CreateGameRequest request, CancellationToken cancellationToken)
         {
-            if (_clientContext.UserId == null || _clientContext.UserSessionId == null ||  _clientContext.ExternalId == null)
+            if (_clientContext.UserSessionId == null)
             {
-                throw new Exception("UserId/UserSessionId/ExternalId not on context");
+                throw new Exception("UserSessionId not on context");
             }
-
-            var currentUserId = _clientContext.UserId.Value;
-            var currentExternalId = _clientContext.ExternalId.Value;
-            var currentSessionId = _clientContext.UserSessionId.Value;
-
-            var session = _userSessionManager.GetSession(currentSessionId);
+            var currentSession = _userSessionManager.GetSession(_clientContext.UserSessionId.Value);
 
             ushort capacity = 6; //TODO: hardcoded capacity
             var game = _gameManager.CreateGame(capacity); //TODO pass game instead of returning it?
@@ -46,18 +41,21 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
             game.Settings = request.GameSettings;
             game.Attributes = request.Attributes;
             game.Version = request.VersionString;
-            game.AdminId = currentUserId; //TODO: make sure this is the right id
-            game.HostId = currentUserId; //TODO: make sure this is the right id
-            game.HostNetwork = session.NetworkAddress;
+            game.AdminId = currentSession.UserId; //TODO: make sure this is the right id
+            game.HostId = currentSession.UserId; //TODO: make sure this is the right id
+            game.HostNetwork = currentSession.NetworkAddress;
 
             _gameManager.AddPlayer(game.GameId, new Player
             {
-                UserId = currentUserId,
-                Username = _clientContext.Username,
-                ExternalId = currentExternalId,
+                AccountId = currentSession.AccountId,
+                UserId = currentSession.UserId,
+                PersonaId = currentSession.PersonaId,
+                Username = currentSession.Username,
+                ExternalId = currentSession.ExternalId,
+                ExternalBlob = currentSession.ExternalBlob,
                 State = PlayerState.Connected,
                 ConnectTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000, //microseconds
-                NetworkAddress = session.NetworkAddress
+                NetworkAddress = currentSession.NetworkAddress,
             });
 
             var response = new CreateGameResponse
@@ -81,7 +79,7 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     {
                         {"dlc_mask", "483"} //matches start matchmaking MASK?
                     },
-                    PersonaId = player.UserId, //TODO should be PlayerId?
+                    PersonaId = player.PersonaId,
                     PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(NetworkAddressType.Pair, player.NetworkAddress),
                     Sid = player.SlotId,
                     Slot = 0,
@@ -89,11 +87,11 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager
                     Team = 65535,
                     Tidx = 65535,
                     Time = player.ConnectTime,
-                    Uid = player.UserId
+                    UserId = player.UserId
                 });
             }
 
-            await _notificationHandler.EnqueueNotification(currentUserId, new GameSetupNotification
+            await _notificationHandler.EnqueueNotification(new GameSetupNotification
             {
                 Error = 0,
                 GameData = new GameData

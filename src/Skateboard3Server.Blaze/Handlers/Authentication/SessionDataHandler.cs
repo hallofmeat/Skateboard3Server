@@ -25,38 +25,28 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication
 
         public async Task<SessionDataResponse> Handle(SessionDataRequest request, CancellationToken cancellationToken)
         {
-            if (_clientContext.UserId == null || _clientContext.UserSessionId == null)
+            if (_clientContext.UserSessionId == null)
             {
-                throw new Exception("UserId/UserSessionId not on context");
+                throw new Exception("UserSessionId not on context");
             }
-            var currentUserId = _clientContext.UserId.Value;
-            var currentSessionId = _clientContext.UserSessionId.Value;
-
-            var user = await _skateboard3Context.Users.SingleOrDefaultAsync(x => x.Id == currentUserId, cancellationToken);
-
-            if (user == null)
-            {
-                return null;
-            }
-
-            var userSessionKey = _userSessionManager.GetSessionKey(currentSessionId);
+            var session = _userSessionManager.GetSession(_clientContext.UserSessionId.Value);
 
             var response = new SessionDataResponse
             {
-                BlazeId = user.Id,
+                BlazeId = session.UserId,
                 FirstLogin = false,
-                SessionKey = userSessionKey,
+                SessionKey = session.SessionKey,
                 LastLoginTime = 0, 
                 Email = "", //nobody@ea.com normally
                 Persona = new SessionDataPersona
                 {
-                    DisplayName = user.Username,
+                    DisplayName = session.Username,
                     LastUsed = 0,
-                    PersonaId = user.PersonaId,
+                    PersonaId = session.PersonaId,
                     ExternalId = 0,
                     ExternalIdType = ExternalIdType.Unknown,
                 },
-                AccountId = user.AccountId,
+                AccountId = session.AccountId,
             };
             return response;
             

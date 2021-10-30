@@ -76,6 +76,7 @@ namespace Skateboard3Server.Blaze.Managers
         public ClientContext GetByUserId(uint userId)
         {
             //TODO: this isnt great
+            //TODO: handle multiple users with the same userid connected
             foreach (var (_, client) in _clients)
             {
                 if (client.UserId == userId)
