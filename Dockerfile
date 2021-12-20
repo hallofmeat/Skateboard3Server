@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app 
 
 # Restore
@@ -29,7 +29,7 @@ RUN dotnet publish -c Release -o /app/publish
 
 #TODO: unit tests
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:6.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app 
 
 # gosredirector
