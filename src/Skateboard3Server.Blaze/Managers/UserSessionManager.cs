@@ -30,13 +30,10 @@ namespace Skateboard3Server.Blaze.Managers
 
         private int _currentSessionCount = 0;
 
-        private static readonly RNGCryptoServiceProvider RandomGenerator = new RNGCryptoServiceProvider();
-
-
         public (uint SessionId, string SessionKey) StoreSession(UserSessionData sessionData)
         {
             var rawKey = new byte[16];
-            RandomGenerator.GetBytes(rawKey);
+            RandomNumberGenerator.Fill(rawKey);
             var id = (uint) Interlocked.Increment(ref _currentSessionCount); //generate a session id
             sessionData.SessionId = id;
             sessionData.SessionKey = HexString(rawKey);
