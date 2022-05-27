@@ -10,7 +10,7 @@
     <PackageReference Include="System.IO.Pipelines" Version="6.0.1" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.3" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="Bedrock.Framework" Version="0.1.70-alpha.g4b3f1a4bf3" />
+    <PackageReference Include="Bedrock.Framework" Version="0.1.63-alpha.gf69fa1b135" />
   </ItemGroup>
 
   <ItemGroup>
