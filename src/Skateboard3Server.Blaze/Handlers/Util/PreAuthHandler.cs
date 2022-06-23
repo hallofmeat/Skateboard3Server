@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -17,6 +19,23 @@ public class PreAuthHandler : IRequestHandler<PreAuthRequest, PreAuthResponse>
     }
     public async Task<PreAuthResponse> Handle(PreAuthRequest request, CancellationToken cancellationToken)
     {
+        var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
+        if (firstQosHost == null)
+        {
+            throw new Exception("BlazeConfig.QosHosts was not configured");
+        }
+
+        var pingQosHosts = _blazeConfig.QosHosts.Select(x => new
+        {
+            Key = x.Name,
+            Value = new QosAddress
+            {
+                Hostname = x.Host,
+                Ip = x.Ip,
+                Port = x.Port,
+            }
+        }).ToDictionary(pair => pair.Key, pair => pair.Value);
+
         var response = new PreAuthResponse
         {
             //0x01, 0x04, 0x07, 0x08, 0x09, 0x0B, 0x0C, 0x0F, 0x19, 0x7800, 0x7802, 0x7803
@@ -48,21 +67,12 @@ public class PreAuthHandler : IRequestHandler<PreAuthRequest, PreAuthResponse>
             {
                 BandwidthServer = new QosAddress //Also used for firewall detection?
                 {
-                    Hostname = _blazeConfig.QosHost,
-                    Ip = _blazeConfig.QosIp,
-                    Port = _blazeConfig.QosPort //default 17502
+                    Hostname = firstQosHost.Host,
+                    Ip = firstQosHost.Ip,
+                    Port = firstQosHost.Port //default 17502
                 },
                 PingCount = 10,
-                PingServers = new Dictionary<string, QosAddress>
-                {
-                    //default has 3 servers (we can get away with less)
-                    { _blazeConfig.QosName, new QosAddress
-                    {
-                        Hostname = _blazeConfig.QosHost,
-                        Ip = _blazeConfig.QosIp,
-                        Port = _blazeConfig.QosPort //default 17502
-                    }}
-                },
+                PingServers = pingQosHosts,
                 ServerId = 1
             },
             ServerVersion = "Skateboard3Server 0.0.1"

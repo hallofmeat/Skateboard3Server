@@ -41,6 +41,12 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
         }
         var currentSession = _userSessionManager.GetSession(_clientContext.UserSessionId.Value);
 
+        var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
+        if (firstQosHost == null)
+        {
+            throw new Exception("BlazeConfig.QosHosts was not configured");
+        }
+
         //uint matchmakingId = _matchmakingManager.CreateMatchmakingSession();
         uint matchmakingId = 1234;
         var response = new StartMatchmakingResponse
@@ -104,7 +110,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
                     },
                     PingServerNames = new PingServerNames
                     {
-                        Values = new List<string> { _blazeConfig.QosName } //qos servers
+                        Values = _blazeConfig.QosHosts.Select(x => x.Name).ToList() //qos servers
                     },
                     Rrda = new RrdaData
                     {
@@ -167,7 +173,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
                 Data = new ExtendedData
                 {
                     Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair, player.NetworkAddress),
-                    PingServerName = _blazeConfig.QosName, //TODO dont hardcode
+                    PingServerName = firstQosHost.Name,
                     Cty = "",
                     DataMap = new Dictionary<uint, int>(), //TODO: this is missing from the real response
                     HardwareFlags = 0,
@@ -216,7 +222,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
             {
                 Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair,
                     currentSession.NetworkAddress),
-                PingServerName = _blazeConfig.QosName, //TODO dont hardcode
+                PingServerName = firstQosHost.Name,
                 Cty = "",
                 DataMap = new Dictionary<uint, int>(), //TODO: this is missing from the real response
                 HardwareFlags = 0,
