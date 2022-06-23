@@ -8,73 +8,109 @@ using NLog;
 using Org.BouncyCastle.Crypto.Tls;
 using Skateboard3Server.Blaze;
 
-namespace Skateboard3Server.BlazeProxy
+namespace Skateboard3Server.BlazeProxy;
+
+/// <summary>
+/// Used for proxying to the real server and printing requests (for debug only)
+/// </summary>
+public class BlazeProxyHandler : ConnectionHandler
 {
-    /// <summary>
-    /// Used for proxying to the real server and printing requests (for debug only)
-    /// </summary>
-    public class BlazeProxyHandler : ConnectionHandler
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    private readonly IBlazeDebugParser _parser;
+    private readonly BlazeProxySettings _proxySettings;
+
+    public BlazeProxyHandler(IBlazeDebugParser parser, IOptions<BlazeProxySettings> proxySettings)
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        _parser = parser;
+        _proxySettings = proxySettings.Value;
+    }
 
-        private readonly IBlazeDebugParser _parser;
-        private readonly BlazeProxySettings _proxySettings;
+    public override async Task OnConnectedAsync(ConnectionContext connection)
+    {
+        Logger.Debug($"Connecting to {_proxySettings.RemoteHost}:{_proxySettings.RemotePort}");
+        var proxyClient = new TcpClient();
+        await proxyClient.ConnectAsync(_proxySettings.RemoteHost, _proxySettings.RemotePort);
 
-        public BlazeProxyHandler(IBlazeDebugParser parser, IOptions<BlazeProxySettings> proxySettings)
+        var ogStream = proxyClient.GetStream();
+
+        Stream proxyStream = ogStream;
+
+        if (_proxySettings.Secure)
         {
-            _parser = parser;
-            _proxySettings = proxySettings.Value;
+            var protocol = new TlsClientProtocol(proxyStream, new Org.BouncyCastle.Security.SecureRandom());
+            protocol.Connect(new BlazeTlsClient());
+            proxyStream = protocol.Stream;
         }
 
-        public override async Task OnConnectedAsync(ConnectionContext connection)
+        var blazeProtocol = new BlazeProxyProtocol();
+        var localReader = connection.CreateReader();
+        var localWriter = connection.CreateWriter();
+
+        var remoteReader = new ProtocolReader(proxyStream);
+        var remoteWriter = new ProtocolWriter(proxyStream);
+
+
+        while (true)
         {
-            Logger.Debug($"Connecting to {_proxySettings.RemoteHost}:{_proxySettings.RemotePort}");
-            var proxyClient = new TcpClient();
-            await proxyClient.ConnectAsync(_proxySettings.RemoteHost, _proxySettings.RemotePort);
-
-            var ogStream = proxyClient.GetStream();
-
-            Stream proxyStream = ogStream;
-
-            if (_proxySettings.Secure)
+            try
             {
-                var protocol = new TlsClientProtocol(proxyStream, new Org.BouncyCastle.Security.SecureRandom());
-                protocol.Connect(new BlazeTlsClient());
-                proxyStream = protocol.Stream;
+                var result = await localReader.ReadAsync(blazeProtocol);
+                var message = result.Message;
+
+                if (message != null)
+                {
+                    var header = message.Header;
+                    Logger.Debug(
+                        $"Client -> Proxy; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+
+                    var requestPayload = message.Payload;
+
+                    if (!requestPayload.IsEmpty)
+                    {
+                        if (!_parser.TryParseBody(requestPayload))
+                        {
+                            Logger.Error("Failed to parse request message");
+                        }
+                    }
+
+                    await remoteWriter.WriteAsync(blazeProtocol, message);
+                }
+
+                if (result.IsCompleted)
+                {
+                    break;
+                }
+            }
+            finally
+            {
+                localReader.Advance();
             }
 
-            var blazeProtocol = new BlazeProxyProtocol();
-            var localReader = connection.CreateReader();
-            var localWriter = connection.CreateWriter();
-
-            var remoteReader = new ProtocolReader(proxyStream);
-            var remoteWriter = new ProtocolWriter(proxyStream);
-
-
-            while (true)
+            do
             {
                 try
                 {
-                    var result = await localReader.ReadAsync(blazeProtocol);
+                    var result = await remoteReader.ReadAsync(blazeProtocol);
                     var message = result.Message;
 
                     if (message != null)
                     {
                         var header = message.Header;
                         Logger.Debug(
-                            $"Client -> Proxy; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
+                            $"Proxy <- Server; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
 
-                        var requestPayload = message.Payload;
+                        var responsePayload = message.Payload;
 
-                        if (!requestPayload.IsEmpty)
+                        if (!responsePayload.IsEmpty)
                         {
-                            if (!_parser.TryParseBody(requestPayload))
+                            if (!_parser.TryParseBody(responsePayload))
                             {
-                                Logger.Error("Failed to parse request message");
+                                Logger.Error("Failed to parse response message");
                             }
                         }
 
-                        await remoteWriter.WriteAsync(blazeProtocol, message);
+                        await localWriter.WriteAsync(blazeProtocol, message);
                     }
 
                     if (result.IsCompleted)
@@ -84,47 +120,10 @@ namespace Skateboard3Server.BlazeProxy
                 }
                 finally
                 {
-                    localReader.Advance();
+                    remoteReader.Advance();
                 }
-
-                do
-                {
-                    try
-                    {
-                        var result = await remoteReader.ReadAsync(blazeProtocol);
-                        var message = result.Message;
-
-                        if (message != null)
-                        {
-                            var header = message.Header;
-                            Logger.Debug(
-                                $"Proxy <- Server; Length:{header.Length} Component:{header.Component} Command:0x{header.Command:X2} ErrorCode:{header.ErrorCode} MessageType:{header.MessageType} MessageId:{header.MessageId}");
-
-                            var responsePayload = message.Payload;
-
-                            if (!responsePayload.IsEmpty)
-                            {
-                                if (!_parser.TryParseBody(responsePayload))
-                                {
-                                    Logger.Error("Failed to parse response message");
-                                }
-                            }
-
-                            await localWriter.WriteAsync(blazeProtocol, message);
-                        }
-
-                        if (result.IsCompleted)
-                        {
-                            break;
-                        }
-                    }
-                    finally
-                    {
-                        remoteReader.Advance();
-                    }
-                } while (ogStream.DataAvailable);
-            }
-
+            } while (ogStream.DataAvailable);
         }
+
     }
 }

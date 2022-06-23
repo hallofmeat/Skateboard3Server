@@ -1,40 +1,42 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Skateboard3Server.Data.Models
+namespace Skateboard3Server.Data.Models;
+
+public class Persona
 {
-    public class Persona
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public uint Id { get; set; } //PersonaId
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public uint Id { get; set; } //PersonaId
 
-        [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+    [ForeignKey(nameof(UserId))]
+    public virtual User User { get; set; } = null!;
 
-        [Required]
-        public uint UserId { get; set; }
-        
-        public string Username { get; set; }
+    [Required]
+    public uint UserId { get; set; }
 
-        [Required]
-        public ulong ExternalId { get; set; }
+    [Required]
+    public string Username { get; set; } = null!;
 
-        public PersonaExternalIdType ExternalIdType { get; set; }
+    [Required]
+    public ulong ExternalId { get; set; }
 
-        public byte[] ExternalBlob { get; set; }
+    [Required]
+    public PersonaExternalIdType ExternalIdType { get; set; }
 
-        public uint LastUsed { get; set; }
+    [Required]
+    public byte[] ExternalBlob { get; set; } = null!;
 
-    }
+    [Required]
+    public uint LastUsed { get; set; }
 
-    public enum PersonaExternalIdType
-    {
-        Unknown,
-        Xbox,
-        PS3,
-        Xenia,
-        Rpcs3
-    }
+}
 
+public enum PersonaExternalIdType
+{
+    Unknown,
+    Xbox,
+    PS3,
+    Xenia,
+    Rpcs3
 }

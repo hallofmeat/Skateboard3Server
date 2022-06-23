@@ -1,11 +1,10 @@
 ﻿using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Blaze.Handlers.UserSession.Messages
+namespace Skateboard3Server.Blaze.Handlers.UserSession.Messages;
+
+[BlazeResponse(BlazeComponent.UserSession, (ushort)UserSessionCommand.NetworkInfo)]
+public class NetworkInfoResponse : BlazeResponse
 {
-    [BlazeResponse(BlazeComponent.UserSession, (ushort)UserSessionCommand.NetworkInfo)]
-    public class NetworkInfoResponse : BlazeResponse
-    {
-        //Empty
-    }
+    //Empty
 }

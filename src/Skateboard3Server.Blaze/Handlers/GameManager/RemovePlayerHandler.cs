@@ -5,32 +5,31 @@ using Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 using Skateboard3Server.Blaze.Notifications.GameManager;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Blaze.Handlers.GameManager
+namespace Skateboard3Server.Blaze.Handlers.GameManager;
+
+public class RemovePlayerHandler : IRequestHandler<RemovePlayerRequest, RemovePlayerResponse>
 {
-    public class RemovePlayerHandler : IRequestHandler<RemovePlayerRequest, RemovePlayerResponse>
+
+    private readonly IBlazeNotificationHandler _notificationHandler;
+
+    public RemovePlayerHandler(IBlazeNotificationHandler notificationHandler)
     {
+        _notificationHandler = notificationHandler;
+    }
 
-        private readonly IBlazeNotificationHandler _notificationHandler;
-
-        public RemovePlayerHandler(IBlazeNotificationHandler notificationHandler)
+    public async Task<RemovePlayerResponse> Handle(RemovePlayerRequest request, CancellationToken cancellationToken)
+    {
+        //TODO do logic with game manager
+        var response = new RemovePlayerResponse();
+        //TODO: notify all players
+        await _notificationHandler.SendNotification(request.PersonaId, new PlayerRemovedNotification
         {
-            _notificationHandler = notificationHandler;
-        }
-
-        public async Task<RemovePlayerResponse> Handle(RemovePlayerRequest request, CancellationToken cancellationToken)
-        {
-            //TODO do logic with game manager
-            var response = new RemovePlayerResponse();
-            //TODO: notify all players
-            await _notificationHandler.SendNotification(request.PersonaId, new PlayerRemovedNotification
-            {
-                BlazeErrorCode = 0,
-                Cntx = request.Cntx, //always 0
-                GameId = request.GameId,
-                PersonaId = request.PersonaId,
-                Reason = request.Reason
-            });
-            return response;
-        }
+            BlazeErrorCode = 0,
+            Cntx = request.Cntx, //always 0
+            GameId = request.GameId,
+            PersonaId = request.PersonaId,
+            Reason = request.Reason
+        });
+        return response;
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace Skateboard3Server.Web.Services.Models.SkateFeed
+﻿namespace Skateboard3Server.Web.Services.Models.SkateFeed;
+
+public class PlayerSignedIntoEaNation
 {
-    public class PlayerSignedIntoEaNation
-    {
-        //TODO: add properties
-    }
+    //TODO: add properties
 }

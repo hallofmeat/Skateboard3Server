@@ -6,80 +6,79 @@ using NLog;
 using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Host.Blaze
+namespace Skateboard3Server.Host.Blaze;
+
+public class BlazeConnectionHandler : ConnectionHandler
 {
-    public class BlazeConnectionHandler : ConnectionHandler
+    private readonly BlazeProtocol _protocol;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly IClientManager _clientManager;
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    public BlazeConnectionHandler(BlazeProtocol protocol, IServiceScopeFactory serviceScopeFactory, IClientManager clientManager)
     {
-        private readonly BlazeProtocol _protocol;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly IClientManager _clientManager;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        _protocol = protocol;
+        _serviceScopeFactory = serviceScopeFactory;
+        _clientManager = clientManager;
+    }
 
-        public BlazeConnectionHandler(BlazeProtocol protocol, IServiceScopeFactory serviceScopeFactory, IClientManager clientManager)
+    public override async Task OnConnectedAsync(ConnectionContext connection)
+    {
+        IServiceScope scope = null;
+        BlazeClientContext clientContext = null;
+        try
         {
-            _protocol = protocol;
-            _serviceScopeFactory = serviceScopeFactory;
-            _clientManager = clientManager;
+            //Create connection scope
+            scope = _serviceScopeFactory.CreateScope();
+            var messageHandler = scope.ServiceProvider.GetRequiredService<IBlazeMessageHandler>();
+
+            clientContext = (BlazeClientContext) scope.ServiceProvider.GetRequiredService<ClientContext>();
+            clientContext.ConnectionContext = connection;
+            clientContext.Reader = connection.CreateReader();
+            clientContext.Writer = connection.CreateWriter();
+
+            _clientManager.Add(clientContext);
+
+            while (true)
+            {
+                try
+                {
+                    var result = await clientContext.Reader.ReadAsync(_protocol);
+                    var message = result.Message;
+
+                    if (message != null)
+                    {
+                        var response = await messageHandler.ProcessMessage(message);
+                        if (response != null)
+                        {
+                            await clientContext.Writer.WriteAsync(_protocol, response);
+                        }
+                        //Send new notifications
+                        while (clientContext.PendingNotifications.TryDequeue(out var notification))
+                        {
+                            await clientContext.Writer.WriteAsync(_protocol, notification);
+                        }
+                    }
+
+                    if (result.IsCompleted)
+                    {
+                        break;
+                    }
+                }
+                finally
+                {
+                    clientContext.Reader.Advance();
+                }
+            }
         }
-
-        public override async Task OnConnectedAsync(ConnectionContext connection)
+        finally
         {
-            IServiceScope scope = null;
-            BlazeClientContext clientContext = null;
-            try
+            if (clientContext != null)
             {
-                //Create connection scope
-                scope = _serviceScopeFactory.CreateScope();
-                var messageHandler = scope.ServiceProvider.GetRequiredService<IBlazeMessageHandler>();
-
-                clientContext = (BlazeClientContext) scope.ServiceProvider.GetRequiredService<ClientContext>();
-                clientContext.ConnectionContext = connection;
-                clientContext.Reader = connection.CreateReader();
-                clientContext.Writer = connection.CreateWriter();
-
-                _clientManager.Add(clientContext);
-
-                while (true)
-                {
-                    try
-                    {
-                        var result = await clientContext.Reader.ReadAsync(_protocol);
-                        var message = result.Message;
-
-                        if (message != null)
-                        {
-                            var response = await messageHandler.ProcessMessage(message);
-                            if (response != null)
-                            {
-                                await clientContext.Writer.WriteAsync(_protocol, response);
-                            }
-                            //Send new notifications
-                            while (clientContext.PendingNotifications.TryDequeue(out var notification))
-                            {
-                                await clientContext.Writer.WriteAsync(_protocol, notification);
-                            }
-                        }
-
-                        if (result.IsCompleted)
-                        {
-                            break;
-                        }
-                    }
-                    finally
-                    {
-                        clientContext.Reader.Advance();
-                    }
-                }
+                _clientManager.Remove(clientContext);
             }
-            finally
-            {
-                if (clientContext != null)
-                {
-                    _clientManager.Remove(clientContext);
-                }
              
-                scope?.Dispose();
-            }
+            scope?.Dispose();
         }
     }
 }

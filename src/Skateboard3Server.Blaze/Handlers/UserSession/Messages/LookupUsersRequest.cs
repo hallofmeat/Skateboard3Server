@@ -1,10 +1,21 @@
-﻿using Skateboard3Server.Blaze.Serializer.Attributes;
+﻿using System.Collections.Generic;
+using MediatR;
+using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Blaze.Notifications.UserSession;
+namespace Skateboard3Server.Blaze.Handlers.UserSession.Messages;
 
-[BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionNotification.UserRemoved)]
-public class UserRemovedNotification : BlazeNotification
+[BlazeRequest(BlazeComponent.UserSession, (ushort)UserSessionCommand.LookupUsers)]
+public class LookupUsersRequest : BlazeRequest, IRequest<LookupUsersResponse>
+{
+    [TdfField("LTYP")]
+    public int ListType { get; set; } //TODO: enum
+
+    [TdfField("ULST")]
+    public List<UserList> Users { get; set; }
+}
+
+public class UserList
 {
     [TdfField("AID")]
     public long AccountId { get; set; }
@@ -29,5 +40,4 @@ public class UserRemovedNotification : BlazeNotification
 
     [TdfField("PID")]
     public long PersonaId { get; set; }
-
 }

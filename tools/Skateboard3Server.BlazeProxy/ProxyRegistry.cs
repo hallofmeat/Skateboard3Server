@@ -1,13 +1,12 @@
 using Autofac;
 using Skateboard3Server.Blaze;
 
-namespace Skateboard3Server.BlazeProxy
+namespace Skateboard3Server.BlazeProxy;
+
+public class ProxyRegistry : Module
 {
-    public class ProxyRegistry : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<BlazeDebugParser>().As<IBlazeDebugParser>();
-        }
+        builder.RegisterType<BlazeDebugParser>().As<IBlazeDebugParser>();
     }
 }

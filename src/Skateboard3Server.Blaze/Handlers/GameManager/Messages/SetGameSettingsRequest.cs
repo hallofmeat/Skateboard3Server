@@ -2,16 +2,14 @@
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
+namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
+
+[BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.SetGameSettings)]
+public class SetGameSettingsRequest : BlazeRequest, IRequest<SetGameSettingsResponse>
 {
-    [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.SetGameSettings)]
-    public class SetGameSettingsRequest : BlazeRequest, IRequest<SetGameSettingsResponse>
-    {
-        [TdfField("GID")]
-        public uint GameId { get; set; }
+    [TdfField("GID")]
+    public uint GameId { get; set; }
 
-        [TdfField("GSET")]
-        public uint GameSettings { get; set; }
-    }
-
+    [TdfField("GSET")]
+    public uint GameSettings { get; set; }
 }

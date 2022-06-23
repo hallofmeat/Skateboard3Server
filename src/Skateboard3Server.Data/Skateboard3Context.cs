@@ -1,17 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Skateboard3Server.Data.Models;
 
-namespace Skateboard3Server.Data
+namespace Skateboard3Server.Data;
+
+public class Skateboard3Context : DbContext
 {
-    public class Skateboard3Context : DbContext
+    public Skateboard3Context(DbContextOptions<Skateboard3Context> options)
+        : base(options)
     {
-        public Skateboard3Context(DbContextOptions<Skateboard3Context> options)
-            : base(options)
-        {
 
-        }
-
-        public DbSet<User> Users { get; set; }
-        public DbSet<Persona> Personas { get; set; }
     }
+
+    public DbSet<User> Users { get; set; }
+    public DbSet<Persona> Personas { get; set; }
 }

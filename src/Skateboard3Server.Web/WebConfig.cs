@@ -1,7 +1,6 @@
-﻿namespace Skateboard3Server.Web
+﻿namespace Skateboard3Server.Web;
+
+public class WebConfig
 {
-    public class WebConfig
-    {
-        public string BlobStorageLocation { get; set; }
-    }
+    public string BlobStorageLocation { get; set; }
 }

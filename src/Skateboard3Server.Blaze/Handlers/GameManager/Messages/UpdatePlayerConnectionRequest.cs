@@ -3,25 +3,23 @@ using MediatR;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages
+namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
+
+[BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.UpdatePlayerConnection)]
+public class UpdatePlayerConnectionRequest : BlazeRequest, IRequest<UpdatePlayerConnectionResponse>
 {
-    [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.UpdatePlayerConnection)]
-    public class UpdatePlayerConnectionRequest : BlazeRequest, IRequest<UpdatePlayerConnectionResponse>
-    {
-        [TdfField("GID")]
-        public uint GameId { get; set; }
+    [TdfField("GID")]
+    public uint GameId { get; set; }
 
-        [TdfField("TARG")]
-        public List<PlayerTarget> Targets { get; set; }
-    }
+    [TdfField("TARG")]
+    public List<PlayerTarget> Targets { get; set; }
+}
 
-    public class PlayerTarget
-    {
-        [TdfField("PID")]
-        public uint PersonaId { get; set; }
+public class PlayerTarget
+{
+    [TdfField("PID")]
+    public uint PersonaId { get; set; }
 
-        [TdfField("STAT")]
-        public PlayerState State { get; set; }
-    }
-
+    [TdfField("STAT")]
+    public PlayerState State { get; set; }
 }

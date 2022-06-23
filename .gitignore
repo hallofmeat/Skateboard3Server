@@ -351,6 +351,8 @@ MigrationBackup/
 
 # sqlite
 *.db
+*.db-shm
+*.db-wal
 
 # appsettings
 appsettings.Development.json

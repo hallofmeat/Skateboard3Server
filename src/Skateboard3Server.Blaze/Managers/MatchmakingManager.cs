@@ -2,43 +2,42 @@
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 
-namespace Skateboard3Server.Blaze.Managers
+namespace Skateboard3Server.Blaze.Managers;
+
+public interface IMatchmakingManager
 {
-    public interface IMatchmakingManager
+    uint CreateMatchmakingSession();
+    void RemoveMatchmakingSession(uint matchmakingId);
+    Game MatchGame();
+}
+
+/// <summary>
+/// Manages matchmaking with people
+/// </summary>
+public class MatchmakingManager : IMatchmakingManager
+{
+    private readonly IGameManager _gameManager;
+
+    private int _currentMatchmakingCount = 0;
+
+    public MatchmakingManager(IGameManager gameManager)
     {
-        uint CreateMatchmakingSession();
-        void RemoveMatchmakingSession(uint matchmakingId);
-        Game MatchGame();
+        _gameManager = gameManager;
     }
 
-    /// <summary>
-    /// Manages matchmaking with people
-    /// </summary>
-    public class MatchmakingManager : IMatchmakingManager
+    public uint CreateMatchmakingSession() //TODO: pass more stuff?
     {
-        private readonly IGameManager _gameManager;
+        return (uint)Interlocked.Increment(ref _currentMatchmakingCount); //generate a matchmaking id
+    }
 
-        private int _currentMatchmakingCount = 0;
+    public void RemoveMatchmakingSession(uint matchmakingId)
+    {
+        //TODO do stuff
+    }
 
-        public MatchmakingManager(IGameManager gameManager)
-        {
-            _gameManager = gameManager;
-        }
-
-        public uint CreateMatchmakingSession() //TODO: pass more stuff?
-        {
-            return (uint)Interlocked.Increment(ref _currentMatchmakingCount); //generate a matchmaking id
-        }
-
-        public void RemoveMatchmakingSession(uint matchmakingId)
-        {
-            //TODO do stuff
-        }
-
-        public Game MatchGame()
-        {
-            //TODO make smarter (like include player count to eliminate full games, game state etc)
-            return _gameManager.FindGame(games => games.FirstOrDefault());
-        }
+    public Game MatchGame()
+    {
+        //TODO make smarter (like include player count to eliminate full games, game state etc)
+        return _gameManager.FindGame(games => games.FirstOrDefault());
     }
 }

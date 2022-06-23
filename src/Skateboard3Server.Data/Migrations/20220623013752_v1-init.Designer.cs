@@ -6,17 +6,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Skateboard3Server.Data;
 
+#nullable disable
+
 namespace Skateboard3Server.Data.Migrations
 {
     [DbContext(typeof(Skateboard3Context))]
-    [Migration("20211030171244_v1-init")]
+    [Migration("20220623013752_v1-init")]
     partial class v1init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.16");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.6");
 
             modelBuilder.Entity("Skateboard3Server.Data.Models.Persona", b =>
                 {
@@ -75,6 +76,8 @@ namespace Skateboard3Server.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

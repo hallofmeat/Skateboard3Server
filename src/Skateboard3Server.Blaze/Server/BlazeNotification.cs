@@ -1,6 +1,5 @@
-﻿namespace Skateboard3Server.Blaze.Server
+﻿namespace Skateboard3Server.Blaze.Server;
+
+public abstract class BlazeNotification : BlazeResponse
 {
-    public abstract class BlazeNotification : BlazeResponse
-    {
-    }
 }

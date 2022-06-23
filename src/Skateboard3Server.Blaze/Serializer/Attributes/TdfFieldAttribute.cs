@@ -1,16 +1,15 @@
 ﻿using System;
 
-namespace Skateboard3Server.Blaze.Serializer.Attributes
+namespace Skateboard3Server.Blaze.Serializer.Attributes;
+
+[AttributeUsage(AttributeTargets.Property)]
+public class TdfFieldAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class TdfFieldAttribute : Attribute
+    public TdfFieldAttribute(string tag)
     {
-        public TdfFieldAttribute(string tag)
-        {
-            Tag = tag;
-        }
-
-        public string Tag { get; }
-
+        Tag = tag;
     }
+
+    public string Tag { get; }
+
 }

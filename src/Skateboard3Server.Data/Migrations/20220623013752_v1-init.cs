@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace Skateboard3Server.Data.Migrations
 {
     public partial class v1init : Migration
@@ -11,10 +13,10 @@ namespace Skateboard3Server.Data.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<uint>(nullable: false)
+                    Id = table.Column<uint>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<long>(nullable: false),
-                    LastLogin = table.Column<uint>(nullable: false)
+                    AccountId = table.Column<long>(type: "INTEGER", nullable: false),
+                    LastLogin = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,14 +27,14 @@ namespace Skateboard3Server.Data.Migrations
                 name: "Personas",
                 columns: table => new
                 {
-                    Id = table.Column<uint>(nullable: false)
+                    Id = table.Column<uint>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<uint>(nullable: false),
-                    Username = table.Column<string>(nullable: false),
-                    ExternalId = table.Column<ulong>(nullable: false),
-                    ExternalIdType = table.Column<int>(nullable: false),
-                    ExternalBlob = table.Column<byte[]>(nullable: false),
-                    LastUsed = table.Column<uint>(nullable: false)
+                    UserId = table.Column<uint>(type: "INTEGER", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    ExternalId = table.Column<ulong>(type: "INTEGER", nullable: false),
+                    ExternalIdType = table.Column<int>(type: "INTEGER", nullable: false),
+                    ExternalBlob = table.Column<byte[]>(type: "BLOB", nullable: false),
+                    LastUsed = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

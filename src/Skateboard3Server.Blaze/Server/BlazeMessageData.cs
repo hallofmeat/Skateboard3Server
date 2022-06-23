@@ -1,11 +1,10 @@
 ﻿using System.Buffers;
 
-namespace Skateboard3Server.Blaze.Server
+namespace Skateboard3Server.Blaze.Server;
+
+public class BlazeMessageData
 {
-    public class BlazeMessageData
-    {
-        public BlazeHeader Header { get; set; }
+    public BlazeHeader Header { get; set; }
         
-        public ReadOnlySequence<byte> Payload { get; set; }
-    }
+    public ReadOnlySequence<byte> Payload { get; set; }
 }

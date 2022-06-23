@@ -1,6 +1,5 @@
-﻿namespace Skateboard3Server.Blaze.Server
+﻿namespace Skateboard3Server.Blaze.Server;
+
+public interface IBlazeMessage
 {
-    public interface IBlazeMessage
-    {
-    }
 }

@@ -10,106 +10,105 @@ using NLog;
 using NLog.Web;
 using Skateboard3Server.Host.Blaze;
 
-namespace Skateboard3Server.Host
+namespace Skateboard3Server.Host;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            //Setup NLog
-            LogManager.Setup().LoadConfigurationFromAppSettings();
+        //Setup NLog
+        LogManager.Setup().LoadConfigurationFromAppSettings();
 
-            try
-            {
-                CreateHostBuilder(args).Build().Run();
-            }
-            finally
-            {
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                LogManager.Shutdown();
-            }
+        try
+        {
+            CreateHostBuilder(args).Build().Run();
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        finally
         {
-            return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                })
-                .UseNLog()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.ConfigureKestrel(serverOptions =>
-                        {
-                            //gosredirector (Blaze)
-                            serverOptions.ListenAnyIP(42100,
-                                options =>
-                                {
-                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                                        .UseConnectionHandler<BlazeConnectionHandler>();
-                                });
-                            //eadpgs-blapp001 (Blaze) //TODO: should be ssl
-                            serverOptions.ListenAnyIP(10744,
-                                options =>
-                                {
-                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                                        .UseConnectionHandler<BlazeConnectionHandler>();
-
-                                });
-                            //gostelemetry //TODO: no idea what format this is in
-                            serverOptions.ListenAnyIP(9946,
-                                options =>
-                                {
-                                    options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                                        .UseConnectionHandler<DummyConnectionHandler>();
-                                });
-                            //matchmaking host? //TODO: no idea what format this is in, udp?
-                            //serverOptions.ListenAnyIP(9033,
-                            //    options =>
-                            //    {
-                            //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                            //            .UseConnectionHandler<DummyConnectionHandler>();
-                            //    });
-                            //downloads.skate.online (HTTP)
-                            serverOptions.ListenAnyIP(80);
-                        })
-                        .UseStartup<Startup>();
-                });
-        }
-
-
-
-        private static void HexLoggingFormatter(Microsoft.Extensions.Logging.ILogger logger, string method, ReadOnlySpan<byte> buffer)
-        {
-            if (!logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
-                return;
-
-            var builder = new StringBuilder($"{method}[{buffer.Length}] ");
-
-            // Write the hex
-            foreach (var b in buffer)
-            {
-                builder.Append(b.ToString("X2"));
-                builder.Append(" ");
-            }
-
-            logger.LogTrace(builder.ToString());
+            // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+            LogManager.Shutdown();
         }
     }
 
-    public static class ConnectionBuilderExtensions
+    public static IHostBuilder CreateHostBuilder(string[] args)
     {
-        public static TBuilder UseBlazeServerSsl<TBuilder>(this TBuilder builder, BlazeTlsOptions options) where TBuilder : IConnectionBuilder
-        {
-            builder.Use(next =>
+        return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+            .ConfigureLogging(logging =>
             {
-                var middleware = new BlazeSslServerMiddleware(next, options);
-                return middleware.OnConnectionAsync;
+                logging.ClearProviders();
+                logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+            })
+            .UseNLog()
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        //gosredirector (Blaze)
+                        serverOptions.ListenAnyIP(42100,
+                            options =>
+                            {
+                                options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                    .UseConnectionHandler<BlazeConnectionHandler>();
+                            });
+                        //eadpgs-blapp001 (Blaze) //TODO: should be ssl
+                        serverOptions.ListenAnyIP(10744,
+                            options =>
+                            {
+                                options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                    .UseConnectionHandler<BlazeConnectionHandler>();
+
+                            });
+                        //gostelemetry //TODO: no idea what format this is in
+                        serverOptions.ListenAnyIP(9946,
+                            options =>
+                            {
+                                options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                                    .UseConnectionHandler<DummyConnectionHandler>();
+                            });
+                        //matchmaking host? //TODO: no idea what format this is in, udp?
+                        //serverOptions.ListenAnyIP(9033,
+                        //    options =>
+                        //    {
+                        //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                        //            .UseConnectionHandler<DummyConnectionHandler>();
+                        //    });
+                        //downloads.skate.online (HTTP)
+                        serverOptions.ListenAnyIP(80);
+                    })
+                    .UseStartup<Startup>();
             });
-            return builder;
+    }
+
+
+
+    private static void HexLoggingFormatter(Microsoft.Extensions.Logging.ILogger logger, string method, ReadOnlySpan<byte> buffer)
+    {
+        if (!logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+            return;
+
+        var builder = new StringBuilder($"{method}[{buffer.Length}] ");
+
+        // Write the hex
+        foreach (var b in buffer)
+        {
+            builder.Append(b.ToString("X2"));
+            builder.Append(" ");
         }
+
+        logger.LogTrace(builder.ToString());
+    }
+}
+
+public static class ConnectionBuilderExtensions
+{
+    public static TBuilder UseBlazeServerSsl<TBuilder>(this TBuilder builder, BlazeTlsOptions options) where TBuilder : IConnectionBuilder
+    {
+        builder.Use(next =>
+        {
+            var middleware = new BlazeSslServerMiddleware(next, options);
+            return middleware.OnConnectionAsync;
+        });
+        return builder;
     }
 }

@@ -1,11 +1,10 @@
 ﻿using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
-namespace Skateboard3Server.Blaze.Handlers.SkateStats.Messages
+namespace Skateboard3Server.Blaze.Handlers.SkateStats.Messages;
+
+[BlazeResponse(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.UpdateStats)]
+public class SkateStatsResponse : BlazeResponse
 {
-    [BlazeResponse(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.UpdateStats)]
-    public class SkateStatsResponse : BlazeResponse
-    {
-        //Empty
-    }
+    //Empty
 }
