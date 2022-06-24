@@ -24,16 +24,18 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     private readonly ClientContext _clientContext;
     private readonly IPs3TicketDecoder _ticketDecoder;
     private readonly IUserSessionManager _userSessionManager;
+    private readonly IClientManager _clientManager;
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
-    public LoginHandler(Skateboard3Context context, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder, IUserSessionManager userSessionManager)
+    public LoginHandler(Skateboard3Context context, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder, IUserSessionManager userSessionManager, IClientManager clientManager)
     {
         _context = context;
         _clientContext = clientContext;
         _notificationHandler = notificationHandler;
         _ticketDecoder = ticketDecoder;
         _userSessionManager = userSessionManager;
+        _clientManager = clientManager;
     }
 
     public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
@@ -43,7 +45,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
         var ticket = _ticketDecoder.DecodeTicket(request.Ticket);
         if (ticket == null)
         {
-            throw new Exception("Could not parse ticket, unable to login");
+            throw new Exception("Could not parse ticket, unable to login!");
         }
 
         var persona = await _context.Personas.Include(x => x.User).SingleOrDefaultAsync(x => x.ExternalId == ticket.Body.UserId, cancellationToken: cancellationToken);
@@ -80,8 +82,14 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
             await _context.Personas.AddAsync(persona, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
-
-        //TODO: handle same user connecting/logging in at the same time
+        else
+        {
+            //check they are already connected
+            if (_clientManager.PersonaConnected(persona.Id))
+            {
+                throw new Exception($"Persona {persona.Id} is already connected, bailing!");
+            }
+        }
 
         //Create session
         var newSession = new UserSessionData

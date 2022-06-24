@@ -201,3 +201,10 @@ public enum NetworkTopology : int //TODO nat type? figure out what the maps to o
     PeerToPeerPartialMesh = 0x83, //TODO: is this the right name?
     PeerToPeerDirtyCastFailover = 0x84 //TODO: is this the right name?
 }
+
+public enum UserLookupType : int
+{
+    UserId = 0x0,
+    PersonaName = 0x1,
+    ExternalId = 0x2,
+}
