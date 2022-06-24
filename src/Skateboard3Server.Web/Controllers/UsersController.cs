@@ -2,6 +2,7 @@
 
 namespace Skateboard3Server.Web.Controllers;
 
+//TODO: not sure if personaid or userid
 [Route("/skate3/webkit/PS3/English/i/Users")]
 public class UsersController : Controller
 {

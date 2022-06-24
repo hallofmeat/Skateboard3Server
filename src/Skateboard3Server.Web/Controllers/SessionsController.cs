@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Data;
 
@@ -19,6 +20,8 @@ public class SessionsController : ControllerBase
 {
     private readonly Skateboard3Context _dbContext;
     private readonly IUserSessionManager _userSessionManager;
+
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public SessionsController(Skateboard3Context dbContext, IUserSessionManager userSessionManager)
     {

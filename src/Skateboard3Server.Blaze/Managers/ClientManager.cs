@@ -12,7 +12,7 @@ public interface IClientManager
     int Count { get; }
     void Add(ClientContext client);
     void Remove(ClientContext client);
-    ClientContext GetByUserId(uint userId);
+    ClientContext GetByPersonaId(uint personaId);
 }
 
 public class ClientManager : IClientManager
@@ -73,13 +73,12 @@ public class ClientManager : IClientManager
         _clients.TryRemove(client.ConnectionId, out _);
     }
 
-    public ClientContext GetByUserId(uint userId)
+    public ClientContext GetByPersonaId(uint personaId)
     {
         //TODO: this isnt great
-        //TODO: handle multiple users with the same userid connected
         foreach (var (_, client) in _clients)
         {
-            if (client.UserId == userId)
+            if (client.PersonaId == personaId)
             {
                 return client;
             }

@@ -13,7 +13,6 @@ public interface IUserSessionManager
     UserSessionData GetSession(uint id);
     void RemoveSession(uint id);
     UserSessionData GetUserSessionDataForKey(string key);
-    string GetSessionKey(uint id);
 }
 
 /// <summary>
@@ -35,16 +34,16 @@ public class UserSessionManager : IUserSessionManager
         var rawKey = new byte[16];
         RandomNumberGenerator.Fill(rawKey);
         var id = (uint) Interlocked.Increment(ref _currentSessionCount); //generate a session id
-        sessionData.SessionId = id;
-        sessionData.SessionKey = HexString(rawKey);
+        var hexKey = HexString(rawKey);
+
+        sessionData.SetSessionData(id, hexKey);
 
         if (!_sessions.TryAdd(id, sessionData))
         {
             throw new Exception($"Could not add session SessionId:{id}");
         }
 
-        var sessionKey = GenerateSessionKey(id, sessionData.SessionKey);
-        return (id, sessionKey);
+        return (sessionData.SessionId, sessionData.SessionKey);
     }
 
     public UserSessionData GetSession(uint id)
@@ -79,28 +78,13 @@ public class UserSessionManager : IUserSessionManager
 
         if (_sessions.TryGetValue(sessionId, out var sessionData))
         {
-            if (encodedKey.Equals(sessionData.SessionKey))
+            if (encodedKey.Equals(sessionData.RawSessionKey))
             {
                 return sessionData;
             }
         }
 
         return null;
-    }
-
-    public string GetSessionKey(uint id)
-    {
-        if (!_sessions.TryGetValue(id, out var sessionData))
-        {
-            throw new ArgumentException($"SessionId:{id} does not exist");
-        }
-         
-        return GenerateSessionKey(id, sessionData.SessionKey);
-    }
-
-    private string GenerateSessionKey(uint id, string key)
-    {
-        return id.ToString("X8") + "_" + key;
     }
 
     private string HexString(byte[] bytes)
@@ -111,8 +95,6 @@ public class UserSessionManager : IUserSessionManager
 
 public class UserSessionData
 {
-    public uint SessionId { get; set; }
-    public string SessionKey { get; set; }
     public long AccountId { get; set; }
     public uint UserId { get; set; }
     public uint PersonaId { get; set; }
@@ -121,4 +103,20 @@ public class UserSessionData
     public byte[] ExternalBlob { get; set; }
 
     public PairNetworkAddress NetworkAddress { get; set; }
+
+    //Set by UserSessionManager
+    public void SetSessionData(uint sessionId, string rawSessionKey)
+    {
+        SessionId = sessionId;
+        RawSessionKey = rawSessionKey;
+        SessionKey = GenerateSessionKey(sessionId, rawSessionKey);
+    }
+    private string GenerateSessionKey(uint id, string key)
+    {
+        return id.ToString("X8") + "_" + key;
+    }
+    public uint SessionId { get; private set; }
+    public string RawSessionKey { get; private set; }
+    public string SessionKey { get; private set; } //SessionId(hex)_SessionKey
+
 }

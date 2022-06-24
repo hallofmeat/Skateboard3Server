@@ -242,8 +242,8 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
         foreach (var player in game.Players)
         {
             if (player == null) continue; //empty slot
-            await _notificationHandler.SendNotification(player.UserId, currentUserExtended);
-            await _notificationHandler.SendNotification(player.UserId, currentUserAdded);
+            await _notificationHandler.SendNotification(player.PersonaId, currentUserExtended);
+            await _notificationHandler.SendNotification(player.PersonaId, currentUserAdded);
 
             players.Add(new PlayerData
             {
@@ -257,7 +257,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
                 {
                     {"dlc_mask", "483"} //matches start matchmaking MASK?
                 },
-                PersonaId = player.UserId, //TODO should be PlayerId?
+                PersonaId = player.PersonaId,
                 PlayerNetwork = new KeyValuePair<NetworkAddressType, PairNetworkAddress>(NetworkAddressType.Pair, player.NetworkAddress),
                 Sid = player.SlotId,
                 Slot = 0,

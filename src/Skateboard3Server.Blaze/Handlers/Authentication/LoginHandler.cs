@@ -102,6 +102,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
         await _context.SaveChangesAsync(cancellationToken);
 
         _clientContext.UserId = newSession.UserId;
+        _clientContext.PersonaId = newSession.PersonaId;
         _clientContext.UserSessionId = sessionData.SessionId;
 
         var response = new LoginResponse
@@ -130,7 +131,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
             TermsUrl = ""
         };
 
-        await _notificationHandler.EnqueueNotification(persona.UserId, new UserAddedNotification
+        await _notificationHandler.EnqueueNotification(new UserAddedNotification
         {
             AccountId = newSession.AccountId,
             AccountLocale = 1701729619, //enUS //TODO: not hardcode
@@ -142,7 +143,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
             Online = true
         });
 
-        await _notificationHandler.EnqueueNotification(persona.UserId, new UserExtendedDataNotification
+        await _notificationHandler.EnqueueNotification(new UserExtendedDataNotification
         {
             Data = new ExtendedData
             {

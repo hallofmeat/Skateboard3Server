@@ -32,7 +32,7 @@ public class BlazeRegistry : Module
         //Connection Handling
         builder.RegisterType<BlazeProtocol>().SingleInstance();
         builder.RegisterType<BlazeClientContext>().As<ClientContext>().InstancePerLifetimeScope(); //each connection gets one
-        builder.RegisterType<BlazeNotificationHandler>().As<IBlazeNotificationHandler>().SingleInstance(); //I think this is correct
+        builder.RegisterType<BlazeNotificationHandler>().As<IBlazeNotificationHandler>(); //Dont make a singlton because clientcontext
 
         //Managers
         builder.RegisterType<ClientManager>().As<IClientManager>().SingleInstance(); //manages all clients

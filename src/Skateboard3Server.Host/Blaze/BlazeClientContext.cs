@@ -21,6 +21,7 @@ public class BlazeClientContext : ClientContext
     public override string ConnectionId => ConnectionContext?.ConnectionId;
 
     public override uint? UserId { get; set; }
+    public override uint? PersonaId { get; set; }
     public override uint? UserSessionId { get; set; }
 
     public override IDictionary<object, object> Items => ConnectionContext?.Items;

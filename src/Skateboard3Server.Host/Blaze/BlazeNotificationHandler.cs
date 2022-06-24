@@ -30,12 +30,12 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         _blazeSerializer = blazeSerializer;
     }
 
-    public Task EnqueueNotification(uint userId, BlazeNotification notification)
+    public Task EnqueueNotification(uint personaId, BlazeNotification notification)
     {
-        var userContext = _clientManager.GetByUserId(userId) as BlazeClientContext;
+        var userContext = _clientManager.GetByPersonaId(personaId) as BlazeClientContext;
         if (userContext == null)
         {
-            Logger.Warn($"User {userId} is not connected");
+            Logger.Warn($"Persona {personaId} is not connected");
             return Task.CompletedTask;
         }
 
@@ -49,7 +49,7 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         var currentUserContext = _clientContext as BlazeClientContext;
         if (currentUserContext == null)
         {
-            Logger.Warn($"Current User has no context");
+            Logger.Warn($"Current Persona has no context");
             return Task.CompletedTask;
         }
 
@@ -58,12 +58,12 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         return Task.CompletedTask;
     }
 
-    public async Task SendNotification(uint userId, BlazeNotification notification)
+    public async Task SendNotification(uint personaId, BlazeNotification notification)
     {
-        var userContext = _clientManager.GetByUserId(userId) as BlazeClientContext;
+        var userContext = _clientManager.GetByPersonaId(personaId) as BlazeClientContext;
         if (userContext == null)
         {
-            Logger.Warn($"User {userId} is not connected");
+            Logger.Warn($"Persona {personaId} is not connected");
             return;
         }
 
@@ -80,7 +80,7 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         var currentUserContext = _clientContext as BlazeClientContext;
         if (currentUserContext == null)
         {
-            Logger.Warn($"Current User has no context");
+            Logger.Warn($"Current Persona has no context");
             return;
         }
 

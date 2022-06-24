@@ -26,7 +26,6 @@ public class UpdatePlayerConnectionHandler : IRequestHandler<UpdatePlayerConnect
             switch (target.State)
             {
                 case PlayerState.Connected:
-                    //TODO use context userid?
                     await _notificationHandler.SendNotification(target.PersonaId, new PlayerJoinCompletedNotification
                     {
                         BlazeErrorCode = 0,
@@ -35,7 +34,6 @@ public class UpdatePlayerConnectionHandler : IRequestHandler<UpdatePlayerConnect
                     });
                     break;
                 case PlayerState.Disconnected:
-                    //TODO use context userid?
                     await _notificationHandler.SendNotification(target.PersonaId, new PlayerRemovedNotification
                     {
                         BlazeErrorCode = 0,
