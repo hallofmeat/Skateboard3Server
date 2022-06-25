@@ -62,9 +62,9 @@ public class BlazeRegistry : Module
         builder.RegisterType<SkateStatsHandler>().AsImplementedInterfaces().InstancePerDependency();
         builder.RegisterType<DlcHandler>().AsImplementedInterfaces().InstancePerDependency();
         builder.RegisterType<TeamMembershipHandler>().AsImplementedInterfaces().InstancePerDependency();
-        builder.RegisterType<Unknown640Handler>().AsImplementedInterfaces().InstancePerDependency();
+        builder.RegisterType<TeamInvitationsHandler>().AsImplementedInterfaces().InstancePerDependency();
         builder.RegisterType<StartMatchmakingHandler>().AsImplementedInterfaces().InstancePerDependency();
-        builder.RegisterType<GameSessionHandler>().AsImplementedInterfaces().InstancePerDependency();
+        builder.RegisterType<UpdateGameSessionHandler>().AsImplementedInterfaces().InstancePerDependency();
         builder.RegisterType<SetGameAttributesHandler>().AsImplementedInterfaces().InstancePerDependency();
         builder.RegisterType<FinalizeGameCreationHandler>().AsImplementedInterfaces().InstancePerDependency();
         builder.RegisterType<CreateGameHandler>().AsImplementedInterfaces().InstancePerDependency();

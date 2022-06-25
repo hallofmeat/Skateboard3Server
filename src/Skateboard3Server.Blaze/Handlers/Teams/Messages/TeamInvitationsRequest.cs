@@ -5,9 +5,9 @@ using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.Teams.Messages;
 
-[BlazeRequest(BlazeComponent.Teams, (ushort)TeamsCommand.Unknown640)]
+[BlazeRequest(BlazeComponent.Teams, (ushort)TeamsCommand.TeamInvitations)]
 [UsedImplicitly]
-public record Unknown640Request : BlazeRequestMessage, IRequest<Unknown640Response>
+public record TeamInvitationsRequest : BlazeRequestMessage, IRequest<TeamInvitationsResponse>
 {
     [TdfField("CLID")]
     public uint ClientId { get; set; }

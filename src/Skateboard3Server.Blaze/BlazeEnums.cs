@@ -8,15 +8,15 @@ public enum BlazeComponent : ushort
     Stats = 0x7,
     Util = 0x9,
     Teams = 0xB, //Clubs in other blaze server implementations 
-    SkateStats = 0xC, //TODO: not sure if correct
-    Social = 0x19, //TODO: Metadata?
+    SkateStats = 0xC, //Game Report in other blaze server implementations
+    Social = 0x19, //Association Lists in other blaze server implementations
     UserSession = 0x7802,
 }
 
 public enum AuthenticationCommand : ushort
 {
     Dlc = 0x20,
-    Login = 0xC8,
+    Login = 0xC8, //TODO: might be just login for ps3?
     SessionData = 0xE6
 }
 
@@ -29,8 +29,8 @@ public enum GameManagerCommand : ushort
     StartMatchmaking = 0x0D,
     FinalizeGameCreation = 0x0F,
     CreateGame = 0x19,
-    GameSession = 0x1A, //TODO: SetGameSession?
-    UpdatePlayerConnection = 0x1D, //TODO: UpdateMeshConnection?
+    UpdateGameSession = 0x1A,
+    UpdatePlayerConnection = 0x1D,
 }
 
 public enum GameManagerNotification : ushort
@@ -65,8 +65,8 @@ public enum UtilCommand : ushort
 
 public enum TeamsCommand : ushort
 {
-    TeamMembership = 0xA8C, //TODO: I dont think this is right
-    Unknown640 = 0x640 //TODO I think this is pending invites
+    TeamMembership = 0xA8C,
+    TeamInvitations = 0x640
 }
 
 public enum SkateStatsCommand : ushort

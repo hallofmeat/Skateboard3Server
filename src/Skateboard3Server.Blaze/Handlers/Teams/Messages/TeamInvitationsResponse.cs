@@ -3,8 +3,8 @@ using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.Teams.Messages;
 
-[BlazeResponse(BlazeComponent.Teams, (ushort)TeamsCommand.Unknown640)]
-public record Unknown640Response : BlazeResponseMessage
+[BlazeResponse(BlazeComponent.Teams, (ushort)TeamsCommand.TeamInvitations)]
+public record TeamInvitationsResponse : BlazeResponseMessage
 {
     //Empty
 }

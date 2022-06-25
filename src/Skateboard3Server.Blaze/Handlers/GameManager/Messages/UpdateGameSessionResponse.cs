@@ -3,8 +3,8 @@ using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 
-[BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.GameSession)]
-public record GameSessionResponse : BlazeResponseMessage
+[BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.UpdateGameSession)]
+public record UpdateGameSessionResponse : BlazeResponseMessage
 {
     //Empty
 }

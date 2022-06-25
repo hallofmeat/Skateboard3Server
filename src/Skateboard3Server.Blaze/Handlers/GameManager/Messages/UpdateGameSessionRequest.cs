@@ -5,9 +5,9 @@ using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 
-[BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.GameSession)]
+[BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.UpdateGameSession)]
 [UsedImplicitly]
-public record GameSessionRequest : BlazeRequestMessage, IRequest<GameSessionResponse>
+public record UpdateGameSessionRequest : BlazeRequestMessage, IRequest<UpdateGameSessionResponse>
 {
     [TdfField("GID")]
     public uint GameId { get; set; }
