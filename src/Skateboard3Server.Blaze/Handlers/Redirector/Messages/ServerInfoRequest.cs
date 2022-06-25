@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using MediatR;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
@@ -6,7 +7,8 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Redirector.Messages;
 
 [BlazeRequest(BlazeComponent.Redirector, (ushort)RedirectorCommand.ServerInfo)]
-public class ServerInfoRequest : BlazeRequest, IRequest<ServerInfoResponse>
+[UsedImplicitly]
+public record ServerInfoRequest : BlazeRequestMessage, IRequest<ServerInfoResponse>
 {
     [TdfField("BSDK")]
     public string BlazeSdk { get; set; }

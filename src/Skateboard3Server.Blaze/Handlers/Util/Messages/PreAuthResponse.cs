@@ -5,7 +5,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Util.Messages;
 
 [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.PreAuth)]
-public class PreAuthResponse : BlazeResponse
+public record PreAuthResponse : BlazeResponseMessage
 {
     [TdfField("CIDS")]
     public List<ushort> ComponentIds { get; set; }
@@ -20,13 +20,13 @@ public class PreAuthResponse : BlazeResponse
     public string ServerVersion { get; set; }
 }
 
-public class ServerConfig
+public record ServerConfig
 {
     [TdfField("CONF")]
     public Dictionary<string, string> Values { get; set; }
 }
 
-public class QosConfig
+public record QosConfig
 {
     [TdfField("BWPS")]
     public QosAddress BandwidthServer { get; set; }
@@ -41,7 +41,7 @@ public class QosConfig
     public uint ServerId { get; set; }
 }
 
-public class QosAddress
+public record QosAddress
 {
     [TdfField("PSA")]
     public string Hostname { get; set; }

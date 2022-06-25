@@ -1,11 +1,13 @@
-﻿using MediatR;
+﻿using JetBrains.Annotations;
+using MediatR;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 
 [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.SetGameSettings)]
-public class SetGameSettingsRequest : BlazeRequest, IRequest<SetGameSettingsResponse>
+[UsedImplicitly]
+public record SetGameSettingsRequest : BlazeRequestMessage, IRequest<SetGameSettingsResponse>
 {
     [TdfField("GID")]
     public uint GameId { get; set; }

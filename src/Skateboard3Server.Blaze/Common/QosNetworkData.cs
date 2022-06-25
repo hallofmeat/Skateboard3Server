@@ -2,7 +2,7 @@
 
 namespace Skateboard3Server.Blaze.Common;
 
-public class QosNetworkData
+public record QosNetworkData
 {
     [TdfField("DBPS")]
     public uint DownstreamBitsPerSecond { get; set; }

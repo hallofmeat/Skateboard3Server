@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using MediatR;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
@@ -6,7 +7,8 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages;
 
 [BlazeRequest(BlazeComponent.Authentication, (ushort)AuthenticationCommand.Dlc)]
-public class DlcRequest : BlazeRequest, IRequest<DlcResponse>
+[UsedImplicitly]
+public record DlcRequest : BlazeRequestMessage, IRequest<DlcResponse>
 {
     [TdfField("BUID")]
     public uint BlazeId { get; set; }

@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.GameManager;
 
 [BlazeNotification(BlazeComponent.GameManager, (ushort)GameManagerNotification.GameSetup)]
-public class GameSetupNotification : BlazeNotification
+public record GameSetupNotification : BlazeNotificationMessage
 {
     [TdfField("ERR")]
     public uint Error { get; set; }
@@ -21,7 +21,7 @@ public class GameSetupNotification : BlazeNotification
     public List<PlayerData> Players { get; set; }
 }
 
-public class GameData
+public record GameData
 {
     [TdfField("ADMN")]
     public List<uint> Admins { get; set; }
@@ -111,7 +111,7 @@ public class GameData
     public byte[] Xses { get; set; } //TODO
 }
 
-public class HostData //TODO: better name
+public record HostData //TODO: better name
 {
     [TdfField("HPID")]
     public uint HostPersonaId { get; set; }
@@ -120,7 +120,7 @@ public class HostData //TODO: better name
     public byte HostSlot { get; set; }
 }
 
-public class PlayerData
+public record PlayerData
 {
     [TdfField("BLOB")]
     public byte[] Blob { get; set; }

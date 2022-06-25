@@ -1,11 +1,13 @@
-﻿using MediatR;
+﻿using JetBrains.Annotations;
+using MediatR;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.Util.Messages;
 
 [BlazeRequest(BlazeComponent.Util, (ushort)UtilCommand.PreAuth)]
-public class PreAuthRequest : BlazeRequest, IRequest<PreAuthResponse>
+[UsedImplicitly]
+public record PreAuthRequest : BlazeRequestMessage, IRequest<PreAuthResponse>
 {
     [TdfField("CDAT")]
     public ClientData ClientData { get; set; }
@@ -18,7 +20,7 @@ public class PreAuthRequest : BlazeRequest, IRequest<PreAuthResponse>
 
 }
 
-public class ClientData
+public record ClientData
 {
     [TdfField("LANG")]
     public uint Language { get; set; }
@@ -27,7 +29,7 @@ public class ClientData
     public int Type { get; set; }
 }
 
-public class ClientInfo
+public record ClientInfo
 {
     [TdfField("BSDK")]
     public string BlazeSdk { get; set; }
@@ -61,7 +63,7 @@ public class ClientInfo
 
 }
 
-public class ClientConfigData
+public record ClientConfigData
 {
     [TdfField("CFID")]
     public string ConfigId { get; set; }

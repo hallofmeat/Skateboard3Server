@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Util.Messages;
 
 [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.PostAuth)]
-public class PostAuthResponse : BlazeResponse
+public record PostAuthResponse : BlazeResponseMessage
 {
     [TdfField("TELE")]
     public TelemetryServer TelemetryServer { get; set; }
@@ -14,7 +14,7 @@ public class PostAuthResponse : BlazeResponse
 
 }
 
-public class TelemetryServer
+public record TelemetryServer
 {
     [TdfField("ADRS")]
     public string Ip { get; set; }
@@ -47,7 +47,7 @@ public class TelemetryServer
     public uint Spct { get; set; } //TODO
 }
 
-public class TickServer
+public record TickServer
 {
     [TdfField("ADRS")]
     public string Ip { get; set; }

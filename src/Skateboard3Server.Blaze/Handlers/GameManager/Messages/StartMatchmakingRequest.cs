@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using MediatR;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Serializer.Attributes;
@@ -7,7 +8,8 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 
 [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.StartMatchmaking)]
-public class StartMatchmakingRequest : BlazeRequest, IRequest<StartMatchmakingResponse>
+[UsedImplicitly]
+public record StartMatchmakingRequest : BlazeRequestMessage, IRequest<StartMatchmakingResponse>
 {
     [TdfField("ATTR")]
     public Dictionary<string, string> Attributes { get; set; }

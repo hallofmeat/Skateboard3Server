@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using MediatR;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Serializer.Attributes;
@@ -7,7 +8,8 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.SkateStats.Messages;
 
 [BlazeRequest(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.UpdateStats)]
-public class SkateStatsRequest : BlazeRequest, IRequest<SkateStatsResponse>
+[UsedImplicitly]
+public record SkateStatsRequest : BlazeRequestMessage, IRequest<SkateStatsResponse>
 {
     [TdfField("FNSH")]
     public bool Finished { get; set; }

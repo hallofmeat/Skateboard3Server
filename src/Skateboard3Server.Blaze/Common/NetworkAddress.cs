@@ -2,11 +2,11 @@
 
 namespace Skateboard3Server.Blaze.Common;
 
-public class NetworkAddress
+public record NetworkAddress
 {
 }
 
-public class ServerNetworkAddress : NetworkAddress
+public record ServerNetworkAddress : NetworkAddress
 {
     [TdfField("HOST")]
     public string Host { get; set; }
@@ -18,7 +18,7 @@ public class ServerNetworkAddress : NetworkAddress
     public ushort Port { get; set; }
 }
 
-public class ClientNetworkAddress : NetworkAddress
+public record ClientNetworkAddress : NetworkAddress
 {
 
     [TdfField("IP")]
@@ -28,7 +28,7 @@ public class ClientNetworkAddress : NetworkAddress
     public ushort Port { get; set; }
 }
 
-public class PairNetworkAddress : NetworkAddress
+public record PairNetworkAddress : NetworkAddress
 {
 
     [TdfField("EXIP")]

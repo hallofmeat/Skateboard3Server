@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.UserSession.Messages;
 
 [BlazeResponse(BlazeComponent.UserSession, (ushort)UserSessionCommand.LookupUsers)]
-public class LookupUsersResponse : BlazeResponse
+public record LookupUsersResponse : BlazeResponseMessage
 {
 
     [TdfField("ULST")]

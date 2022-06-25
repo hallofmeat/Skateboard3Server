@@ -43,7 +43,7 @@ public class BlazeMessageHandler : IBlazeMessageHandler
             {
                 var parsedRequest = _blazeDeserializer.Deserialize(requestPayload, requestType);
 
-                var response = (BlazeResponse) await _mediator.Send(parsedRequest);
+                var response = (BlazeResponseMessage) await _mediator.Send(parsedRequest);
                 if (response == null)
                 {
                     Logger.Warn($"Response was null for request {requestType}");

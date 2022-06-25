@@ -5,13 +5,13 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Social.Messages;
 
 [BlazeResponse(BlazeComponent.Social, (ushort)SocialCommand.FriendsList)]
-public class FriendsListResponse : BlazeResponse
+public record FriendsListResponse : BlazeResponseMessage
 {
     [TdfField("ALMP")]
     public Dictionary<string, ResponseList> ResponseLists { get; set; }
 }
 
-public class ResponseList
+public record ResponseList
 {
     [TdfField("BOID")]
     public ulong Boid { get; set; } //TODO objectid? (short 0x19, short 0x01, int unknown)

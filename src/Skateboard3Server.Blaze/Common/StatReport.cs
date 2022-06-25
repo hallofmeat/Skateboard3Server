@@ -3,7 +3,7 @@ using Skateboard3Server.Blaze.Serializer.Attributes;
 
 namespace Skateboard3Server.Blaze.Common;
 
-public class StatReport
+public record StatReport
 {
     [TdfField("RPRT")]
     public Dictionary<string, string> Stats { get; set; }

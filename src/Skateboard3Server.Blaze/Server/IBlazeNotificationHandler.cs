@@ -10,14 +10,14 @@ public interface IBlazeNotificationHandler
     /// <param name="personaId"></param>
     /// <param name="notification"></param>
     /// <returns></returns>
-    Task EnqueueNotification(uint personaId, BlazeNotification notification);
+    Task EnqueueNotification(uint personaId, BlazeNotificationMessage notification);
 
     /// <summary>
     /// Sends notification after a response is written to the current persona/connection
     /// </summary>
     /// <param name="notification"></param>
     /// <returns></returns>
-    Task EnqueueNotification(BlazeNotification notification);
+    Task EnqueueNotification(BlazeNotificationMessage notification);
 
     /// <summary>
     /// Sends a notification right now
@@ -25,12 +25,12 @@ public interface IBlazeNotificationHandler
     /// <param name="personaId"></param>
     /// <param name="notification"></param>
     /// <returns></returns>
-    Task SendNotification(uint personaId, BlazeNotification notification);
+    Task SendNotification(uint personaId, BlazeNotificationMessage notification);
 
     /// <summary>
     /// Sends a notification right now to the current persona/connection
     /// </summary>
     /// <param name="notification"></param>
     /// <returns></returns>
-    Task SendNotification(BlazeNotification notification);
+    Task SendNotification(BlazeNotificationMessage notification);
 }

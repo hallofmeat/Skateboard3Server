@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Teams.Messages;
 
 [BlazeResponse(BlazeComponent.Teams, (ushort)TeamsCommand.TeamMembership)]
-public class TeamMembershipResponse : BlazeResponse
+public record TeamMembershipResponse : BlazeResponseMessage
 {
     //Empty
 }

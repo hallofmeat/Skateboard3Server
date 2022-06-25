@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.SkateStats.Messages;
 
 [BlazeResponse(BlazeComponent.SkateStats, (ushort)SkateStatsCommand.UpdateStats)]
-public class SkateStatsResponse : BlazeResponse
+public record SkateStatsResponse : BlazeResponseMessage
 {
     //Empty
 }

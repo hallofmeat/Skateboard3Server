@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using MediatR;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
@@ -6,7 +7,8 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Teams.Messages;
 
 [BlazeRequest(BlazeComponent.Teams, (ushort)TeamsCommand.TeamMembership)]
-public class TeamMembershipRequest : BlazeRequest, IRequest<TeamMembershipResponse>
+[UsedImplicitly]
+public record TeamMembershipRequest : BlazeRequestMessage, IRequest<TeamMembershipResponse>
 {
     [TdfField("IDLT")]
     public List<uint> Idlt { get; set; } //TODO

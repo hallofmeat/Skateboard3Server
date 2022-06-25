@@ -2,7 +2,7 @@
 
 namespace Skateboard3Server.Blaze.Common;
 
-public class UserInformation
+public record UserInformation
 {
     [TdfField("AID")]
     public long AccountId { get; set; }

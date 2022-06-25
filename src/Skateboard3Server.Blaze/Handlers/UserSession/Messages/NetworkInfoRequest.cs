@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using MediatR;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Serializer.Attributes;
@@ -7,7 +8,8 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.UserSession.Messages;
 
 [BlazeRequest(BlazeComponent.UserSession, (ushort)UserSessionCommand.NetworkInfo)]
-public class NetworkInfoRequest : BlazeRequest, IRequest<NetworkInfoResponse>
+[UsedImplicitly]
+public record NetworkInfoRequest : BlazeRequestMessage, IRequest<NetworkInfoResponse>
 {
     [TdfField("ADDR")]
     public KeyValuePair<NetworkAddressType, PairNetworkAddress> Address { get; set; }

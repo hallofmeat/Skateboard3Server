@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.SkateStats;
 
 [BlazeNotification(BlazeComponent.SkateStats, (ushort)SkateStatsNotification.StatsReport)]
-public class SkateStatsReportNotification : BlazeNotification
+public record SkateStatsReportNotification : BlazeNotificationMessage
 {
     [TdfField("EROR")]
     public int Error { get; set; }
@@ -21,7 +21,7 @@ public class SkateStatsReportNotification : BlazeNotification
     public RequestReport RequestReport { get; set; } //TODO
 }
 
-public class RequestReport
+public record RequestReport
 {
     [TdfField("FNSH")]
     public bool Finished { get; set; }

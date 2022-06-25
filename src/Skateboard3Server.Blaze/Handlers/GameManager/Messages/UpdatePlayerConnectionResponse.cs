@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 
 [BlazeResponse(BlazeComponent.GameManager, (ushort)GameManagerCommand.UpdatePlayerConnection)]
-public class UpdatePlayerConnectionResponse : BlazeResponse
+public record UpdatePlayerConnectionResponse : BlazeResponseMessage
 {
     //Empty
 }

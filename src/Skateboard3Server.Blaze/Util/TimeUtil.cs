@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Skateboard3Server.Blaze.Common;
+namespace Skateboard3Server.Blaze.Util;
 
 public static class TimeUtil
 {
     public static uint GetUnixTimestamp()
     {
         //https://stackoverflow.com/a/17632585
-        return (uint) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+        return (uint)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
     }
 }

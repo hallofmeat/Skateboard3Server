@@ -9,14 +9,14 @@ namespace Skateboard3Server.Blaze.Serializer;
 
 public interface IBlazeDeserializer
 {
-    BlazeRequest Deserialize(in ReadOnlySequence<byte> payload, Type requestType);
+    BlazeRequestMessage Deserialize(in ReadOnlySequence<byte> payload, Type requestType);
 }
 
 public class BlazeDeserializer : IBlazeDeserializer
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public BlazeRequest Deserialize(in ReadOnlySequence<byte> payload, Type requestType)
+    public BlazeRequestMessage Deserialize(in ReadOnlySequence<byte> payload, Type requestType)
     {
         var request = Activator.CreateInstance(requestType);
 
@@ -32,7 +32,7 @@ public class BlazeDeserializer : IBlazeDeserializer
 
         Logger.Trace($"Request parsed:{Environment.NewLine}{requestSb}");
 
-        return (BlazeRequest) request;
+        return (BlazeRequestMessage) request;
     }
 
     private void ParseObject(ref SequenceReader<byte> payloadReader, object target, ParserState state,

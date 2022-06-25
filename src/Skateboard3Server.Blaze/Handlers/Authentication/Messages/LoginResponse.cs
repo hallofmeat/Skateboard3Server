@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages;
 
 [BlazeResponse(BlazeComponent.Authentication, (ushort)AuthenticationCommand.Login)]
-public class LoginResponse : BlazeResponse
+public record LoginResponse : BlazeResponseMessage
 {
     [TdfField("AGUP")]
     public bool Agup { get; set; } //TODO
@@ -26,7 +26,7 @@ public class LoginResponse : BlazeResponse
 
 }
 
-public class LoginSession
+public record LoginSession
 {
     [TdfField("BUID")]
     public uint BlazeId { get; set; }
@@ -50,7 +50,7 @@ public class LoginSession
     public long AccountId { get; set; }
 }
 
-public class LoginPersona
+public record LoginPersona
 {
     [TdfField("DSNM")]
     public string DisplayName { get; set; }

@@ -6,7 +6,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.UserSession;
 
 [BlazeNotification(BlazeComponent.UserSession, (ushort)UserSessionNotification.UserExtendedData)]
-public class UserExtendedDataNotification : BlazeNotification
+public record UserExtendedDataNotification : BlazeNotificationMessage
 {
     [TdfField("DATA")]
     public ExtendedData Data { get; set; }
@@ -15,7 +15,7 @@ public class UserExtendedDataNotification : BlazeNotification
     public uint UserId { get; set; }
 }
 
-public class ExtendedData
+public record ExtendedData
 {
     [TdfField("ADDR")]
     public KeyValuePair<NetworkAddressType, NetworkAddress> Address { get; set; }

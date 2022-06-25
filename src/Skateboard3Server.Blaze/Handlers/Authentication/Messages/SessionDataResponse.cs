@@ -4,7 +4,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages;
 
 [BlazeResponse(BlazeComponent.Authentication, (ushort)AuthenticationCommand.SessionData)]
-public class SessionDataResponse : BlazeResponse
+public record SessionDataResponse : BlazeResponseMessage
 {
     [TdfField("BUID")]
     public uint BlazeId { get; set; }
@@ -28,7 +28,7 @@ public class SessionDataResponse : BlazeResponse
     public long AccountId { get; set; }
 }
 
-public class SessionDataPersona
+public record SessionDataPersona
 {
     [TdfField("DSNM")]
     public string DisplayName { get; set; }

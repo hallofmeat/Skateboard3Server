@@ -30,7 +30,7 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         _blazeSerializer = blazeSerializer;
     }
 
-    public Task EnqueueNotification(uint personaId, BlazeNotification notification)
+    public Task EnqueueNotification(uint personaId, BlazeNotificationMessage notification)
     {
         var userContext = _clientManager.GetByPersonaId(personaId) as BlazeClientContext;
         if (userContext == null)
@@ -44,7 +44,7 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         return Task.CompletedTask;
     }
 
-    public Task EnqueueNotification(BlazeNotification notification)
+    public Task EnqueueNotification(BlazeNotificationMessage notification)
     {
         var currentUserContext = _clientContext as BlazeClientContext;
         if (currentUserContext == null)
@@ -58,7 +58,7 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         return Task.CompletedTask;
     }
 
-    public async Task SendNotification(uint personaId, BlazeNotification notification)
+    public async Task SendNotification(uint personaId, BlazeNotificationMessage notification)
     {
         var userContext = _clientManager.GetByPersonaId(personaId) as BlazeClientContext;
         if (userContext == null)
@@ -75,7 +75,7 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         }
     }
 
-    public async Task SendNotification(BlazeNotification notification)
+    public async Task SendNotification(BlazeNotificationMessage notification)
     {
         var currentUserContext = _clientContext as BlazeClientContext;
         if (currentUserContext == null)
@@ -92,7 +92,7 @@ public class BlazeNotificationHandler : IBlazeNotificationHandler
         }
     }
 
-    private BlazeMessageData EncodeNotification(BlazeNotification notification)
+    private BlazeMessageData EncodeNotification(BlazeNotificationMessage notification)
     {
         _blazeTypeLookup.TryGetResponseComponentCommand(notification.GetType(), out var component, out var command);
 

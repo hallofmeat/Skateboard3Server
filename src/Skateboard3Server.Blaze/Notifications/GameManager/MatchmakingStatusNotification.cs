@@ -5,7 +5,7 @@ using Skateboard3Server.Blaze.Server;
 namespace Skateboard3Server.Blaze.Notifications.GameManager;
 
 [BlazeNotification(BlazeComponent.GameManager, (ushort)GameManagerNotification.MatchmakingStatus)]
-public class MatchmakingStatusNotification : BlazeNotification
+public record MatchmakingStatusNotification : BlazeNotificationMessage
 {
     [TdfField("ASIL")]
     public List<AsilData> Asil { get; set; } //TODO
@@ -17,7 +17,7 @@ public class MatchmakingStatusNotification : BlazeNotification
     public uint UserSessionId { get; set; }
 }
 
-public class AsilData //TODO: name
+public record AsilData //TODO: name
 {
     [TdfField("CGS")]
     public CgsData Cgs { get; set; } //TODO
@@ -57,7 +57,7 @@ public class AsilData //TODO: name
 }
 
 
-public class CgsData //TODO: name
+public record CgsData //TODO: name
 {
     [TdfField("EVST")]
     public uint Evst { get; set; } //TODO
@@ -69,19 +69,19 @@ public class CgsData //TODO: name
     public uint Nomp { get; set; } //TODO
 }
 
-public class CustData //TODO: name
+public record CustData //TODO: name
 {
     [TdfField("EXPS")]
     public ExpsData Exps { get; set; } //TODO
 }
 
-public class ExpsData //TODO: name
+public record ExpsData //TODO: name
 {
     [TdfField("MASK")]
     public ulong Mask { get; set; } //TODO DLC mask?
 }
 
-public class DnfsData //TODO: name
+public record DnfsData //TODO: name
 {
     [TdfField("MDNF")]
     public int Mdnf { get; set; } //TODO: enum
@@ -90,19 +90,19 @@ public class DnfsData //TODO: name
     public int Xdnf { get; set; } //TODO: enum
 }
 
-public class FgsData //TODO: name
+public record FgsData //TODO: name
 {
     [TdfField("GNUM")]
     public uint Gnum { get; set; } //TODO
 }
 
-public class GeosData
+public record GeosData
 {
     [TdfField("DIST")]
     public uint Dist { get; set; } //TODO
 }
 
-public class GrdaData //TODO: name
+public record GrdaData //TODO: name
 {
     [TdfField("NAME")]
     public string Name { get; set; }
@@ -111,7 +111,7 @@ public class GrdaData //TODO: name
     public List<string> Values { get; set; }
 }
 
-public class GsrdData //TODO: name
+public record GsrdData //TODO: name
 {
     [TdfField("PMAX")]
     public uint Pmax { get; set; } //TODO Player Max?
@@ -120,30 +120,30 @@ public class GsrdData //TODO: name
     public uint Pmin { get; set; } //TODO Player Min?
 }
 
-public class HbrdData //TODO: name
+public record HbrdData //TODO: name
 {
     [TdfField("BVAL")]
     public int Bval { get; set; } //TODO: enum
 }
 
-public class HvrdData //TODO: name
+public record HvrdData //TODO: name
 {
     [TdfField("VVAL")]
     public int Vval { get; set; } //TODO: enum
 }
 
-public class PingServerNames
+public record PingServerNames
 {
     [TdfField("VALU")]
     public List<string> Values { get; set; }
 }
 
-public class RrdaData //TODO: name
+public record RrdaData //TODO: name
 {
     [TdfField("RVAL")]
     public byte Rval { get; set; }
 }
 
-public class TsrsData //TODO: name
+public record TsrsData //TODO: name
 {
 }

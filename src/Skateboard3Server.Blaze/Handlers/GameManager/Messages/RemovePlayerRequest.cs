@@ -1,11 +1,13 @@
-﻿using MediatR;
+﻿using JetBrains.Annotations;
+using MediatR;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 
 [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.RemovePlayer)]
-public class RemovePlayerRequest : BlazeRequest, IRequest<RemovePlayerResponse>
+[UsedImplicitly]
+public record RemovePlayerRequest : BlazeRequestMessage, IRequest<RemovePlayerResponse>
 {
     [TdfField("BTPL")]
     public ulong Btpl { get; set; } //TODO
