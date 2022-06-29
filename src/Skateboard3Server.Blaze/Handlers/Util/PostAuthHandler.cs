@@ -3,19 +3,22 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Skateboard3Server.Blaze.Handlers.Util.Messages;
+using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.Util;
 
 public class PostAuthHandler : IRequestHandler<PostAuthRequest, PostAuthResponse>
 {
+    private readonly ClientContext _clientContext;
     private readonly BlazeConfig _blazeConfig;
 
-    public PostAuthHandler(IOptions<BlazeConfig> blazeConfig)
+    public PostAuthHandler(IOptions<BlazeConfig> blazeConfig, ClientContext clientContext)
     {
+        _clientContext = clientContext;
         _blazeConfig = blazeConfig.Value;
     }
 
-    public async Task<PostAuthResponse> Handle(PostAuthRequest request, CancellationToken cancellationToken)
+    public Task<PostAuthResponse> Handle(PostAuthRequest request, CancellationToken cancellationToken)
     {
         var response = new PostAuthResponse
         {
@@ -36,9 +39,9 @@ public class PostAuthHandler : IRequestHandler<PostAuthRequest, PostAuthResponse
             {
                 Ip = _blazeConfig.PublicIp,
                 Port = 8999,
-                Key = $"{1234},{_blazeConfig.PublicIp}:8999,skate-2010-ps3,10,50,50,50,50,0,0" //TODO blazeid
+                Key = $"{_clientContext.UserId},{_blazeConfig.PublicIp}:8999,skate-2010-ps3,10,50,50,50,50,0,0"
             }
         };
-        return response;
+        return Task.FromResult(response);
     }
 }

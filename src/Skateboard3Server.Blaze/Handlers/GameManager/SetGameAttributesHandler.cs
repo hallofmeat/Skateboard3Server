@@ -18,11 +18,11 @@ public class SetGameAttributesHandler : IRequestHandler<SetGameAttributesRequest
         _gameManager = gameManager;
     }
 
-    public async Task<SetGameAttributesResponse> Handle(SetGameAttributesRequest request, CancellationToken cancellationToken)
+    public Task<SetGameAttributesResponse> Handle(SetGameAttributesRequest request, CancellationToken cancellationToken)
     {
         _gameManager.UpdateAttributes(request.GameId, request.GameAttributes);
         //TODO notify all other users in a game
         var response = new SetGameAttributesResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

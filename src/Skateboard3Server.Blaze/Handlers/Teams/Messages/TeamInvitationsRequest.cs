@@ -10,12 +10,12 @@ namespace Skateboard3Server.Blaze.Handlers.Teams.Messages;
 public record TeamInvitationsRequest : BlazeRequestMessage, IRequest<TeamInvitationsResponse>
 {
     [TdfField("CLID")]
-    public uint ClientId { get; set; }
+    public uint ClientId { get; init; }
 
     [TdfField("INVT")]
-    public int Invt { get; set; } //TODO
+    public int Invt { get; init; } //TODO
 
     [TdfField("NSOT")]
-    public int Nsot { get; set; } //TODO
+    public int Nsot { get; init; } //TODO
 
 }

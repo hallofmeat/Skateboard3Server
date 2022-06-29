@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Skateboard3Server.Data.Models;
 
+#pragma warning disable CS8618
+
 namespace Skateboard3Server.Data;
 
 public class Skateboard3Context : DbContext

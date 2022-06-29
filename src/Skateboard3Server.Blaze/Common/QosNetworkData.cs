@@ -5,12 +5,12 @@ namespace Skateboard3Server.Blaze.Common;
 public record QosNetworkData
 {
     [TdfField("DBPS")]
-    public uint DownstreamBitsPerSecond { get; set; }
+    public uint DownstreamBitsPerSecond { get; init; }
 
     [TdfField("NATT")]
-    public NatType NatType { get; set; }
+    public NatType NatType { get; init; }
 
     [TdfField("UBPS")]
-    public uint UpstreamBitsPerSecond { get; set; }
+    public uint UpstreamBitsPerSecond { get; init; }
 
 }

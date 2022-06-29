@@ -17,7 +17,7 @@ public class PreAuthHandler : IRequestHandler<PreAuthRequest, PreAuthResponse>
     {
         _blazeConfig = blazeConfig.Value;
     }
-    public async Task<PreAuthResponse> Handle(PreAuthRequest request, CancellationToken cancellationToken)
+    public Task<PreAuthResponse> Handle(PreAuthRequest request, CancellationToken cancellationToken)
     {
         var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
         if (firstQosHost == null)
@@ -77,6 +77,6 @@ public class PreAuthHandler : IRequestHandler<PreAuthRequest, PreAuthResponse>
             },
             ServerVersion = "Skateboard3Server 0.0.1"
         };
-        return response;
+        return Task.FromResult(response);
     }
 }

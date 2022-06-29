@@ -6,6 +6,7 @@ using MediatR;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 using Skateboard3Server.Blaze.Managers;
+using Skateboard3Server.Blaze.Managers.Models;
 using Skateboard3Server.Blaze.Notifications.GameManager;
 using Skateboard3Server.Blaze.Server;
 using GameData = Skateboard3Server.Blaze.Notifications.GameManager.GameData;

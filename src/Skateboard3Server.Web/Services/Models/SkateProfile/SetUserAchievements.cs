@@ -6,5 +6,5 @@ public class SetUserAchievements
 {
     public PlatformType PlatformId { get; set; }
     public uint UserId { get; set; }
-    public string AchievementIds { get; set; }
+    public string? AchievementIds { get; set; }
 }

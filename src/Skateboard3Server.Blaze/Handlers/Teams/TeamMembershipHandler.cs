@@ -7,9 +7,9 @@ namespace Skateboard3Server.Blaze.Handlers.Teams;
 
 public class TeamMembershipHandler : IRequestHandler<TeamMembershipRequest, TeamMembershipResponse> //TODO: I think this name is wrong
 {
-    public async Task<TeamMembershipResponse> Handle(TeamMembershipRequest request, CancellationToken cancellationToken)
+    public Task<TeamMembershipResponse> Handle(TeamMembershipRequest request, CancellationToken cancellationToken)
     {
         var response = new TeamMembershipResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

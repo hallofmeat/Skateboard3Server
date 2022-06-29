@@ -5,6 +5,8 @@ using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
+#pragma warning disable CS8618
+
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 
 [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.CreateGame)]
@@ -12,65 +14,65 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 public record CreateGameRequest : BlazeRequestMessage, IRequest<CreateGameResponse>
 {
     [TdfField("ATTR")]
-    public Dictionary<string, string> Attributes { get; set; }
+    public Dictionary<string, string> Attributes { get; init; }
 
     [TdfField("BTPL")]
-    public ulong Btpl { get; set; } //TODO
+    public ulong Btpl { get; init; } //TODO
 
     [TdfField("GCTR")]
-    public string Gctr { get; set; } //TODO
+    public string Gctr { get; init; } //TODO
 
     [TdfField("GNAM")]
-    public string GameName { get; set; }
+    public string GameName { get; init; }
 
     [TdfField("GSET")]
-    public uint GameSettings { get; set; }
+    public uint GameSettings { get; init; }
 
     [TdfField("GURL")]
-    public string Gurl { get; set; } //TODO gameUrl?
+    public string Gurl { get; init; } //TODO gameUrl?
 
     [TdfField("GVER")]
-    public int Gver { get; set; } //TODO: enum gameVersion?
+    public int Gver { get; init; } //TODO: enum gameVersion?
 
     [TdfField("HNET")]
-    public List<KeyValuePair<NetworkAddressType, PairNetworkAddress>> HostNetwork { get; set; }
+    public List<KeyValuePair<NetworkAddressType, PairNetworkAddress>> HostNetwork { get; init; }
 
     [TdfField("IGNO")]
-    public bool Ignore { get; set; }
+    public bool Ignore { get; init; }
 
     [TdfField("NTOP")]
-    public NetworkTopology NetworkTopology { get; set; }
+    public NetworkTopology NetworkTopology { get; init; }
 
     [TdfField("PATT")]
-    public Dictionary<string, string> PlayerAttributes { get; set; }
+    public Dictionary<string, string> PlayerAttributes { get; init; }
 
     [TdfField("PCAP")]
-    public List<ushort> PlayerCapacity { get; set; }
+    public List<ushort> PlayerCapacity { get; init; }
 
     [TdfField("PGID")]
-    public string Pgid { get; set; } //TODO
+    public string Pgid { get; init; } //TODO
 
     [TdfField("PGSC")]
-    public byte[] Pgsc { get; set; } //TODO
+    public byte[] Pgsc { get; init; } //TODO
 
     [TdfField("PMAX")]
-    public ushort PlayerMax { get; set; }
+    public ushort PlayerMax { get; init; }
 
     [TdfField("QCAP")]
-    public ushort QueueCapacity { get; set; } //TODO queue capacity?
+    public ushort QueueCapacity { get; init; } //TODO queue capacity?
 
     [TdfField("RGID")]
-    public uint Rgid { get; set; } //TODO
+    public uint Rgid { get; init; } //TODO
 
     [TdfField("SLOT")]
-    public int Slot { get; set; } //TODO: enum
+    public int Slot { get; init; } //TODO: enum
 
     [TdfField("TEAM")]
-    public ushort Team { get; set; } //TODO team capacity?
+    public ushort Team { get; init; } //TODO team capacity?
 
     [TdfField("VOIP")]
-    public VoipTopology VoipTopology { get; set; }
+    public VoipTopology VoipTopology { get; init; }
 
     [TdfField("VSTR")]
-    public string VersionString { get; set; }
+    public string VersionString { get; init; }
 }

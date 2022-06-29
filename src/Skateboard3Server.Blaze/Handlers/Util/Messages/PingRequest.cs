@@ -9,4 +9,5 @@ namespace Skateboard3Server.Blaze.Handlers.Util.Messages;
 [UsedImplicitly]
 public record PingRequest : BlazeRequestMessage, IRequest<PingResponse>
 {
+    //Empty
 }

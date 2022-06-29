@@ -8,13 +8,13 @@ namespace Skateboard3Server.Blaze.Handlers.Util;
 
 public class PingHandler : IRequestHandler<PingRequest, PingResponse>
 {
-    public async Task<PingResponse> Handle(PingRequest request, CancellationToken cancellationToken)
+    public Task<PingResponse> Handle(PingRequest request, CancellationToken cancellationToken)
     {
 
         var response = new PingResponse
         {
             Timestamp = TimeUtil.GetUnixTimestamp()
         };
-        return response;
+        return Task.FromResult(response);
     }
 }

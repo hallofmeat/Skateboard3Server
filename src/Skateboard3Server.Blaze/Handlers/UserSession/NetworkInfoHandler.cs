@@ -19,7 +19,7 @@ public class NetworkInfoHandler : IRequestHandler<NetworkInfoRequest, NetworkInf
         _userSessionManager = userSessionManager;
     }
 
-    public async Task<NetworkInfoResponse> Handle(NetworkInfoRequest request, CancellationToken cancellationToken)
+    public Task<NetworkInfoResponse> Handle(NetworkInfoRequest request, CancellationToken cancellationToken)
     {
         if (_clientContext.UserSessionId == null)
         {
@@ -30,6 +30,6 @@ public class NetworkInfoHandler : IRequestHandler<NetworkInfoRequest, NetworkInf
         //TODO: rest of the values
 
         var response = new NetworkInfoResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

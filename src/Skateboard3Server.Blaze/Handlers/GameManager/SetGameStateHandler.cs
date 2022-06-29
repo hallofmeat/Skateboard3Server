@@ -18,11 +18,11 @@ public class SetGameStateHandler : IRequestHandler<SetGameStateRequest, SetGameS
         _gameManager = gameManager;
     }
 
-    public async Task<SetGameStateResponse> Handle(SetGameStateRequest request, CancellationToken cancellationToken)
+    public Task<SetGameStateResponse> Handle(SetGameStateRequest request, CancellationToken cancellationToken)
     {
         _gameManager.UpdateState(request.GameId, request.GameState);
         //TODO notify other players game settings changed
         var response = new SetGameStateResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

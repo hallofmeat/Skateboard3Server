@@ -18,7 +18,7 @@ public class ServerInfoHandler : IRequestHandler<ServerInfoRequest, ServerInfoRe
     {
         _blazeConfig = blazeConfig.Value;
     }
-    public async Task<ServerInfoResponse> Handle(ServerInfoRequest request, CancellationToken cancellationToken)
+    public Task<ServerInfoResponse> Handle(ServerInfoRequest request, CancellationToken cancellationToken)
     {
         var response = new ServerInfoResponse
         {
@@ -31,6 +31,6 @@ public class ServerInfoHandler : IRequestHandler<ServerInfoRequest, ServerInfoRe
             Secure = false,
             Xdns = 0
         };
-        return response;
+        return Task.FromResult(response);
     }
 }

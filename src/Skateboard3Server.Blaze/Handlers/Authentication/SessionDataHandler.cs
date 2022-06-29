@@ -2,28 +2,24 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Skateboard3Server.Blaze.Handlers.Authentication.Messages;
 using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Server;
-using Skateboard3Server.Data;
 
 namespace Skateboard3Server.Blaze.Handlers.Authentication;
 
 public class SessionDataHandler : IRequestHandler<SessionDataRequest, SessionDataResponse>
 {
-    private readonly Skateboard3Context _skateboard3Context;
     private readonly ClientContext _clientContext;
     private readonly IUserSessionManager _userSessionManager;
 
-    public SessionDataHandler(Skateboard3Context skateboard3Context, ClientContext clientContext, IUserSessionManager userSessionManager)
+    public SessionDataHandler(ClientContext clientContext, IUserSessionManager userSessionManager)
     {
-        _skateboard3Context = skateboard3Context;
         _clientContext = clientContext;
         _userSessionManager = userSessionManager;
     }
 
-    public async Task<SessionDataResponse> Handle(SessionDataRequest request, CancellationToken cancellationToken)
+    public Task<SessionDataResponse> Handle(SessionDataRequest request, CancellationToken cancellationToken)
     {
         if (_clientContext.UserSessionId == null)
         {
@@ -48,7 +44,7 @@ public class SessionDataHandler : IRequestHandler<SessionDataRequest, SessionDat
             },
             AccountId = session.AccountId,
         };
-        return response;
+        return Task.FromResult(response);
             
     }
 }

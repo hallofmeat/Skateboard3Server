@@ -4,6 +4,8 @@ using MediatR;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
+#pragma warning disable CS8618
+
 namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 
 [BlazeRequest(BlazeComponent.GameManager, (ushort)GameManagerCommand.UpdatePlayerConnection)]
@@ -11,17 +13,17 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 public record UpdatePlayerConnectionRequest : BlazeRequestMessage, IRequest<UpdatePlayerConnectionResponse>
 {
     [TdfField("GID")]
-    public uint GameId { get; set; }
+    public uint GameId { get; init; }
 
     [TdfField("TARG")]
-    public List<PlayerTarget> Targets { get; set; }
+    public List<PlayerTarget> Targets { get; init; }
 }
 
 public record PlayerTarget
 {
     [TdfField("PID")]
-    public uint PersonaId { get; set; }
+    public uint PersonaId { get; init; }
 
     [TdfField("STAT")]
-    public PlayerState State { get; set; }
+    public PlayerState State { get; init; }
 }

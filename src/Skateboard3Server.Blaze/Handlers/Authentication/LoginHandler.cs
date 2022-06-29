@@ -9,6 +9,7 @@ using NLog;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Handlers.Authentication.Messages;
 using Skateboard3Server.Blaze.Managers;
+using Skateboard3Server.Blaze.Managers.Models;
 using Skateboard3Server.Blaze.Notifications.UserSession;
 using Skateboard3Server.Blaze.Server;
 using Skateboard3Server.Blaze.Util;
@@ -20,7 +21,7 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication;
 
 public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
 {
-    private readonly Skateboard3Context _context;
+    private readonly Skateboard3Context _dbContext;
     private readonly IBlazeNotificationHandler _notificationHandler;
     private readonly ClientContext _clientContext;
     private readonly IPs3TicketDecoder _ticketDecoder;
@@ -29,9 +30,9 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         
-    public LoginHandler(Skateboard3Context context, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder, IUserSessionManager userSessionManager, IClientManager clientManager)
+    public LoginHandler(Skateboard3Context dbContext, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder, IUserSessionManager userSessionManager, IClientManager clientManager)
     {
-        _context = context;
+        _dbContext = dbContext;
         _clientContext = clientContext;
         _notificationHandler = notificationHandler;
         _ticketDecoder = ticketDecoder;
@@ -49,7 +50,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
             throw new Exception("Could not parse ticket, unable to login!");
         }
 
-        var persona = await _context.Personas.Include(x => x.User).SingleOrDefaultAsync(x => x.ExternalId == ticket.Body.UserId, cancellationToken: cancellationToken);
+        var persona = await _dbContext.Personas.Include(x => x.User).SingleOrDefaultAsync(x => x.ExternalId == ticket.Body.UserId, cancellationToken: cancellationToken);
             
         //First time we have seen this persona
         if (persona == null)
@@ -66,8 +67,8 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
 
             //Create new user
             var user = new User();
-            await _context.Users.AddAsync(user, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _dbContext.Users.AddAsync(user, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             //For now just use the blazeid for both AccountId (this is so the rest of the logic can use those values where they are supposed to)
             user.AccountId = user.Id;
@@ -80,8 +81,8 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
                 Username = ticket.Body.Username,
                 User = user
             };
-            await _context.Personas.AddAsync(persona, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _dbContext.Personas.AddAsync(persona, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
         else
         {
@@ -108,7 +109,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
         var currentTimestamp = TimeUtil.GetUnixTimestamp();
         persona.LastUsed = currentTimestamp;
         persona.User.LastLogin = currentTimestamp;
-        await _context.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         _clientContext.UserId = newSession.UserId;
         _clientContext.PersonaId = newSession.PersonaId;

@@ -10,18 +10,18 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 public record RemovePlayerRequest : BlazeRequestMessage, IRequest<RemovePlayerResponse>
 {
     [TdfField("BTPL")]
-    public ulong Btpl { get; set; } //TODO
+    public ulong Btpl { get; init; } //TODO
 
     [TdfField("CNTX")]
-    public ushort Cntx { get; set; } //TODO context?
+    public ushort Cntx { get; init; } //TODO context?
 
     [TdfField("GID")]
-    public uint GameId { get; set; }
+    public uint GameId { get; init; }
 
     [TdfField("PID")]
-    public uint PersonaId { get; set; }
+    public uint PersonaId { get; init; }
 
     [TdfField("REAS")]
-    public PlayerRemoveReason Reason { get; set; }
+    public PlayerRemoveReason Reason { get; init; }
 
 }

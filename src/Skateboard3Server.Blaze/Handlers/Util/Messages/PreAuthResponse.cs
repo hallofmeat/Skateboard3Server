@@ -2,6 +2,8 @@
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
+#pragma warning disable CS8618
+
 namespace Skateboard3Server.Blaze.Handlers.Util.Messages;
 
 [BlazeResponse(BlazeComponent.Util, (ushort)UtilCommand.PreAuth)]

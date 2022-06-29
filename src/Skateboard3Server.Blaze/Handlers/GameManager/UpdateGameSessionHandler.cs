@@ -7,9 +7,9 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager;
 
 public class UpdateGameSessionHandler : IRequestHandler<UpdateGameSessionRequest, UpdateGameSessionResponse>
 {
-    public async Task<UpdateGameSessionResponse> Handle(UpdateGameSessionRequest request, CancellationToken cancellationToken)
+    public Task<UpdateGameSessionResponse> Handle(UpdateGameSessionRequest request, CancellationToken cancellationToken)
     {
         var response = new UpdateGameSessionResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

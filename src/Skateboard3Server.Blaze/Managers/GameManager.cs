@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using NLog;
-using Skateboard3Server.Blaze.Common;
+using Skateboard3Server.Blaze.Managers.Models;
 
 namespace Skateboard3Server.Blaze.Managers;
 
@@ -118,38 +118,4 @@ public class GameManager : IGameManager
             throw new Exception($"Could not add player:{newPlayer.UserId} to game:{gameId}");
         }
     }
-}
-
-public class Game
-{
-    public uint GameId { get; set; }
-    public string Uuid { get; set; }
-    public string Name { get; set; }
-    public GameState State { get; set; }
-    public uint Settings { get; set; }
-    public Dictionary<string, string> Attributes { get; set; }
-    public string Version { get; set; }
-    public ushort Capacity { get; set; }
-
-
-    //TODO: threadsafety?
-    public List<Player> Players { get; set; }
-    public uint AdminId { get; set; }
-    public uint HostId { get; set; }
-
-    public PairNetworkAddress HostNetwork { get; set; }
-}
-
-public class Player
-{
-    public byte SlotId { get; set; }
-    public long AccountId { get; set; }
-    public uint UserId { get; set; }
-    public uint PersonaId { get; set; }
-    public ulong ExternalId { get; set; }
-    public byte[] ExternalBlob { get; set; }
-    public string Username { get; set; }
-    public PlayerState State { get; set; }
-    public long ConnectTime { get; set; } //microseconds
-    public PairNetworkAddress NetworkAddress { get; set; }
 }

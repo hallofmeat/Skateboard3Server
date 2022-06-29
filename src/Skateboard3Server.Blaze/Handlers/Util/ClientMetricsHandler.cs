@@ -7,10 +7,10 @@ namespace Skateboard3Server.Blaze.Handlers.Util;
 
 public class ClientMetricsHandler : IRequestHandler<ClientMetricsRequest, ClientMetricsResponse>
 {
-    public async Task<ClientMetricsResponse> Handle(ClientMetricsRequest request, CancellationToken cancellationToken)
+    public Task<ClientMetricsResponse> Handle(ClientMetricsRequest request, CancellationToken cancellationToken)
     {
 
         var response = new ClientMetricsResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

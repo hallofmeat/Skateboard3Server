@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
 
 // ReSharper disable InconsistentNaming
+#pragma warning disable CS8618
 
 namespace Skateboard3Server.Web.Controllers;
 

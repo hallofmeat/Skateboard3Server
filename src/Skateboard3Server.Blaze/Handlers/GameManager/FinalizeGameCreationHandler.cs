@@ -7,9 +7,9 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager;
 
 public class FinalizeGameCreationHandler : IRequestHandler<FinalizeGameCreationRequest, FinalizeGameCreationResponse>
 {
-    public async Task<FinalizeGameCreationResponse> Handle(FinalizeGameCreationRequest request, CancellationToken cancellationToken)
+    public Task<FinalizeGameCreationResponse> Handle(FinalizeGameCreationRequest request, CancellationToken cancellationToken)
     {
         var response = new FinalizeGameCreationResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

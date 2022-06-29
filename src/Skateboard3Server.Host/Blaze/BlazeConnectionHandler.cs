@@ -33,9 +33,7 @@ public class BlazeConnectionHandler : ConnectionHandler
             var messageHandler = scope.ServiceProvider.GetRequiredService<IBlazeMessageHandler>();
 
             clientContext = (BlazeClientContext) scope.ServiceProvider.GetRequiredService<ClientContext>();
-            clientContext.ConnectionContext = connection;
-            clientContext.Reader = connection.CreateReader();
-            clientContext.Writer = connection.CreateWriter();
+            clientContext.Connected(connection, connection.CreateWriter(), connection.CreateReader());
 
             _clientManager.Add(clientContext);
 

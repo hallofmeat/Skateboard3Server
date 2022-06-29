@@ -7,9 +7,9 @@ namespace Skateboard3Server.Blaze.Handlers.Teams;
 
 public class TeamInvitationsHandler : IRequestHandler<TeamInvitationsRequest, TeamInvitationsResponse>
 {
-    public async Task<TeamInvitationsResponse> Handle(TeamInvitationsRequest request, CancellationToken cancellationToken)
+    public Task<TeamInvitationsResponse> Handle(TeamInvitationsRequest request, CancellationToken cancellationToken)
     {
         var response = new TeamInvitationsResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

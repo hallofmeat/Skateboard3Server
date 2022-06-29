@@ -10,5 +10,5 @@ namespace Skateboard3Server.Blaze.Handlers.UserSession.Messages;
 public record HardwareFlagsRequest : BlazeRequestMessage, IRequest<HardwareFlagsResponse>
 {
     [TdfField("HWFG")]
-    public uint HardwareFlags { get; set; }
+    public uint HardwareFlags { get; init; }
 }

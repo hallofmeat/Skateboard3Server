@@ -9,4 +9,5 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication.Messages;
 [UsedImplicitly]
 public record SessionDataRequest : BlazeRequestMessage, IRequest<SessionDataResponse>
 {
+    //Empty
 }

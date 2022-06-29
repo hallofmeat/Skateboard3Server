@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Threading.Tasks;
 using Autofac;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -37,8 +38,12 @@ public class Startup
         var skateboardConfigSection = Configuration.GetSection("Skateboard");
         if (skateboardConfigSection != null)
         {
-            services.Configure<BlazeConfig>(skateboardConfigSection.GetSection("Blaze"));
-            services.Configure<WebConfig>(skateboardConfigSection.GetSection("Web"));
+            services.AddOptions<BlazeConfig>()
+                .Bind(skateboardConfigSection.GetSection("Blaze"))
+                .ValidateDataAnnotations();
+            services.AddOptions<WebConfig>()
+                .Bind(skateboardConfigSection.GetSection("Web"))
+                .ValidateDataAnnotations();
         }
 
         //Load controllers/views and custom xml output formatter from Skateboard3Server.Web
@@ -93,12 +98,14 @@ public class Startup
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
         //Help find the endpoints we havent made yet
-        app.UseStatusCodePages(async context =>
+        app.UseStatusCodePages(context =>
         {
             if (context.HttpContext.Response.StatusCode == 404)
             {
                 Logger.Warn($"TODO: 404 {context.HttpContext.Request.GetDisplayUrl()}");
             }
+
+            return Task.CompletedTask;
         });
     }
 

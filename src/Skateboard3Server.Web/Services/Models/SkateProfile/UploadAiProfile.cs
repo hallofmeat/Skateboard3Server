@@ -8,7 +8,7 @@ public class UploadAiProfile
     public PlatformType PlatformId { get; set; }
     public uint UserId { get; set; }
     public int TypeId { get; set; } //TODO: enum?
-    public IFormFile AiProfile { get; set; }
+    public IFormFile? AiProfile { get; set; }
 
 
 }

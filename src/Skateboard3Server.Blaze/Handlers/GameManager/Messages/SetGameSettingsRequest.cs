@@ -10,8 +10,8 @@ namespace Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 public record SetGameSettingsRequest : BlazeRequestMessage, IRequest<SetGameSettingsResponse>
 {
     [TdfField("GID")]
-    public uint GameId { get; set; }
+    public uint GameId { get; init; }
 
     [TdfField("GSET")]
-    public uint GameSettings { get; set; }
+    public uint GameSettings { get; init; }
 }

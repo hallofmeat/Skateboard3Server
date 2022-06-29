@@ -7,9 +7,9 @@ namespace Skateboard3Server.Blaze.Handlers.Authentication;
 
 public class DlcHandler : IRequestHandler<DlcRequest, DlcResponse>
 {
-    public async Task<DlcResponse> Handle(DlcRequest request, CancellationToken cancellationToken)
+    public Task<DlcResponse> Handle(DlcRequest request, CancellationToken cancellationToken)
     {
         var response = new DlcResponse();
-        return response;
+        return Task.FromResult(response);
     }
 }

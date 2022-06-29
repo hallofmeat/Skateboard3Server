@@ -6,5 +6,5 @@ public class SetUserDlc
 {
     public PlatformType PlatformId { get; set; }
     public uint UserId { get; set; }
-    public string OfferIds { get; set; }
+    public string? OfferIds { get; set; }
 }

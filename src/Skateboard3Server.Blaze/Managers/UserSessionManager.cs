@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Threading;
 using NLog;
-using Skateboard3Server.Blaze.Common;
+using Skateboard3Server.Blaze.Managers.Models;
 
 namespace Skateboard3Server.Blaze.Managers;
 
@@ -91,32 +91,4 @@ public class UserSessionManager : IUserSessionManager
     {
         return BitConverter.ToString(bytes).Replace("-", "").ToLower();
     }
-}
-
-public class UserSessionData
-{
-    public long AccountId { get; set; }
-    public uint UserId { get; set; }
-    public uint PersonaId { get; set; }
-    public string Username { get; set; }
-    public ulong ExternalId { get; set; }
-    public byte[] ExternalBlob { get; set; }
-
-    public PairNetworkAddress NetworkAddress { get; set; }
-
-    //Set by UserSessionManager
-    public void SetSessionData(uint sessionId, string rawSessionKey)
-    {
-        SessionId = sessionId;
-        RawSessionKey = rawSessionKey;
-        SessionKey = GenerateSessionKey(sessionId, rawSessionKey);
-    }
-    private string GenerateSessionKey(uint id, string key)
-    {
-        return id.ToString("X8") + "_" + key;
-    }
-    public uint SessionId { get; private set; }
-    public string RawSessionKey { get; private set; }
-    public string SessionKey { get; private set; } //SessionId(hex)_SessionKey
-
 }

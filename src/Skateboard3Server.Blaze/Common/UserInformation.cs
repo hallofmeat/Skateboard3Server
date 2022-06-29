@@ -1,5 +1,7 @@
 ﻿using Skateboard3Server.Blaze.Serializer.Attributes;
 
+#pragma warning disable CS8618
+
 namespace Skateboard3Server.Blaze.Common;
 
 public record UserInformation

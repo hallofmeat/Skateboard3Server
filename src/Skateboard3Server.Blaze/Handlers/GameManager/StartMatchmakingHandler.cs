@@ -8,26 +8,24 @@ using Microsoft.Extensions.Options;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 using Skateboard3Server.Blaze.Managers;
+using Skateboard3Server.Blaze.Managers.Models;
 using Skateboard3Server.Blaze.Notifications.GameManager;
 using Skateboard3Server.Blaze.Notifications.UserSession;
 using Skateboard3Server.Blaze.Server;
-using Skateboard3Server.Data;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager;
 
 public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, StartMatchmakingResponse>
 {
     private readonly IBlazeNotificationHandler _notificationHandler;
-    private readonly Skateboard3Context _context;
     private readonly BlazeConfig _blazeConfig;
     private readonly IGameManager _gameManager;
     private readonly IUserSessionManager _userSessionManager;
     private readonly ClientContext _clientContext;
 
-    public StartMatchmakingHandler(ClientContext clientContext, Skateboard3Context context, IOptions<BlazeConfig> blazeConfig, IBlazeNotificationHandler notificationHandler, IGameManager gameManager, IUserSessionManager userSessionManager)
+    public StartMatchmakingHandler(ClientContext clientContext, IOptions<BlazeConfig> blazeConfig, IBlazeNotificationHandler notificationHandler, IGameManager gameManager, IUserSessionManager userSessionManager)
     {
         _notificationHandler = notificationHandler;
-        _context = context;
         _blazeConfig = blazeConfig.Value;
         _gameManager = gameManager;
         _userSessionManager = userSessionManager;

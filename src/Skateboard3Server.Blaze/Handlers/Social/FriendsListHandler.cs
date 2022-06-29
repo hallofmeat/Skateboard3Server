@@ -8,7 +8,7 @@ namespace Skateboard3Server.Blaze.Handlers.Social;
 
 public class FriendsListHandler : IRequestHandler<FriendsListRequest, FriendsListResponse>
 {
-    public async Task<FriendsListResponse> Handle(FriendsListRequest request, CancellationToken cancellationToken)
+    public Task<FriendsListResponse> Handle(FriendsListRequest request, CancellationToken cancellationToken)
     {
         var response = new FriendsListResponse
         {
@@ -35,6 +35,6 @@ public class FriendsListHandler : IRequestHandler<FriendsListRequest, FriendsLis
                 }},
             }
         };
-        return response;
+        return Task.FromResult(response);
     }
 }

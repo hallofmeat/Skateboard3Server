@@ -10,6 +10,6 @@ public abstract class ClientContext
     public abstract uint? PersonaId { get; set; }
     public abstract uint? UserSessionId { get; set; }
 
-    public abstract IDictionary<object, object> Items { get; }
+    public abstract IDictionary<object, object?> Items { get; }
 
 }
