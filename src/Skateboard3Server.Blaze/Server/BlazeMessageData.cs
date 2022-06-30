@@ -1,5 +1,7 @@
 ﻿using System.Buffers;
 
+#pragma warning disable CS8618
+
 namespace Skateboard3Server.Blaze.Server;
 
 public class BlazeMessageData

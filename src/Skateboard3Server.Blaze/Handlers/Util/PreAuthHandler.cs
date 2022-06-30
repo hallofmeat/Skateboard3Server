@@ -19,10 +19,16 @@ public class PreAuthHandler : IRequestHandler<PreAuthRequest, PreAuthResponse>
     }
     public Task<PreAuthResponse> Handle(PreAuthRequest request, CancellationToken cancellationToken)
     {
-        var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
-        if (firstQosHost == null)
+        if (_blazeConfig.QosHosts == null)
         {
             throw new Exception("BlazeConfig.QosHosts was not configured");
+        }
+
+        var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
+
+        if (firstQosHost == null)
+        {
+            throw new Exception("BlazeConfig.QosHosts contains no servers");
         }
 
         var pingQosHosts = _blazeConfig.QosHosts.Select(x => new

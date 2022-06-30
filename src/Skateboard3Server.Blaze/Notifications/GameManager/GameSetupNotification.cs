@@ -65,7 +65,7 @@ public record GameData
     public bool Ignore { get; set; }
 
     [TdfField("MATR")]
-    public Dictionary<string, string> Matr { get; set; } //TODO
+    public Dictionary<string, string>? Matr { get; set; } //TODO
 
     [TdfField("MCAP")]
     public ushort Mcap { get; set; } //TODO max capacity?
@@ -80,7 +80,7 @@ public record GameData
     public string Pgid { get; set; } //TODO platform gameid?
 
     [TdfField("PGSR")]
-    public byte[] Pgsr { get; set; } //TODO platform gameserver?
+    public byte[]? Pgsr { get; set; } //TODO platform gameserver?
 
     [TdfField("PHST")]
     public HostData PlatformHost { get; set; }
@@ -107,10 +107,10 @@ public record GameData
     public string VersionString { get; set; }
 
     [TdfField("XNNC")]
-    public byte[] Xnnc { get; set; } //TODO
+    public byte[]? Xnnc { get; set; } //TODO
 
     [TdfField("XSES")]
-    public byte[] Xses { get; set; } //TODO
+    public byte[]? Xses { get; set; } //TODO
 }
 
 public record HostData //TODO: better name
@@ -125,7 +125,7 @@ public record HostData //TODO: better name
 public record PlayerData
 {
     [TdfField("BLOB")]
-    public byte[] Blob { get; set; }
+    public byte[]? Blob { get; set; }
 
     [TdfField("EXID")]
     public ulong ExternalId { get; set; }

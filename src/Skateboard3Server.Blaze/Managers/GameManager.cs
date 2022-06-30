@@ -14,7 +14,7 @@ public interface IGameManager
     void UpdateAttributes(uint gameId, Dictionary<string, string> gameAttributes);
     void UpdateSettings(uint gameId, uint gameSettings);
     void UpdateState(uint gameId, GameState gameState);
-    Game FindGame(Func<ICollection<Game>, Game> func);
+    Game? FindGame(Func<ICollection<Game>, Game?> func);
     void AddPlayer(uint gameId, Player player);
 }
 
@@ -26,10 +26,9 @@ public class GameManager : IGameManager
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    private readonly ConcurrentDictionary<uint, Game> _games =
-        new ConcurrentDictionary<uint, Game>();
+    private readonly ConcurrentDictionary<uint, Game> _games = new();
 
-    private int _currentGameCount = 0;
+    private int _currentGameCount;
 
     public Game CreateGame(ushort capacity)
     {
@@ -40,7 +39,7 @@ public class GameManager : IGameManager
             Uuid = Guid.NewGuid().ToString(),
             State = GameState.Init,
             Capacity = capacity,
-            Players = new List<Player>(new Player[capacity]) //create slots
+            Players = new List<Player?>(new Player[capacity]) //create slots
         };
 
         if (!_games.TryAdd(id, game))
@@ -88,7 +87,7 @@ public class GameManager : IGameManager
         game.State = gameState;
     }
 
-    public Game FindGame(Func<ICollection<Game>, Game> func)
+    public Game? FindGame(Func<ICollection<Game>, Game?> func)
     {
         //I think this is thread safe?
         return func.Invoke(_games.Values);

@@ -1,6 +1,5 @@
 using Autofac;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Skateboard3Server.Blaze;
 using Skateboard3Server.Blaze.Handlers.Authentication;
 using Skateboard3Server.Blaze.Handlers.GameManager;

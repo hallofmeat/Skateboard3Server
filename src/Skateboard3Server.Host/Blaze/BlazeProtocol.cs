@@ -21,7 +21,7 @@ public class BlazeProtocol : IMessageReader<BlazeMessageData>, IMessageWriter<Bl
         //Parse header
         if (!reader.TryReadBigEndian(out short messageLength))
         {
-            messageData = default;
+            messageData = null!;
             return false;
         }
 
@@ -29,7 +29,7 @@ public class BlazeProtocol : IMessageReader<BlazeMessageData>, IMessageWriter<Bl
 
         if (!reader.TryReadBigEndian(out short component))
         {
-            messageData = default;
+            messageData = null!;
             return false;
         }
 
@@ -37,7 +37,7 @@ public class BlazeProtocol : IMessageReader<BlazeMessageData>, IMessageWriter<Bl
 
         if (!reader.TryReadBigEndian(out short command))
         {
-            messageData = default;
+            messageData = null!;
             return false;
         }
 
@@ -45,7 +45,7 @@ public class BlazeProtocol : IMessageReader<BlazeMessageData>, IMessageWriter<Bl
 
         if (!reader.TryReadBigEndian(out short errorCode))
         {
-            messageData = default;
+            messageData = null!;
             return false;
         }
 
@@ -53,7 +53,7 @@ public class BlazeProtocol : IMessageReader<BlazeMessageData>, IMessageWriter<Bl
 
         if (!reader.TryReadBigEndian(out int messageInfo))
         {
-            messageData = default;
+            messageData = null!;
             return false;
         }
 
@@ -66,7 +66,7 @@ public class BlazeProtocol : IMessageReader<BlazeMessageData>, IMessageWriter<Bl
         //Not enough data in the buffer
         if (reader.Remaining < header.Length)
         {
-            messageData = default;
+            messageData = null!;
             return false;
         }
 

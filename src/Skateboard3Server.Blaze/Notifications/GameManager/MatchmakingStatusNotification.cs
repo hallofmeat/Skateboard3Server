@@ -146,6 +146,4 @@ public record RrdaData //TODO: name
     public byte Rval { get; set; }
 }
 
-public record TsrsData //TODO: name
-{
-}
+public record TsrsData; //TODO: name

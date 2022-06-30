@@ -20,7 +20,7 @@ public record UserExtendedDataNotification : BlazeNotificationMessage
 public record ExtendedData
 {
     [TdfField("ADDR")]
-    public KeyValuePair<NetworkAddressType, NetworkAddress> Address { get; set; }
+    public KeyValuePair<NetworkAddressType, NetworkAddress?> Address { get; set; }
 
     [TdfField("BPS")]
     public string PingServerName { get; set; } //maps to qos ping server name

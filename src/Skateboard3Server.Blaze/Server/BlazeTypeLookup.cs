@@ -7,7 +7,7 @@ namespace Skateboard3Server.Blaze.Server;
 
 public interface IBlazeTypeLookup
 {
-    bool TryGetRequestType(BlazeComponent component, ushort command, out Type requestType);
+    bool TryGetRequestType(BlazeComponent component, ushort command, out Type? requestType);
 
     bool TryGetResponseComponentCommand(Type responseType, out BlazeComponent component, out ushort command);
 }
@@ -39,7 +39,7 @@ public class BlazeTypeLookup : IBlazeTypeLookup
             val => (val.Attribute.Component, val.Attribute.Command));
     }
 
-    public bool TryGetRequestType(BlazeComponent component, ushort command, out Type requestType)
+    public bool TryGetRequestType(BlazeComponent component, ushort command, out Type? requestType)
     {
         return _requestLookup.TryGetValue((component, command), out requestType);
     }

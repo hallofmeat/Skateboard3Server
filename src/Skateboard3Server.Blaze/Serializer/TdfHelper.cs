@@ -145,7 +145,7 @@ public static class TdfHelper
         output.WriteByte((byte)(((uint)type << 4) | 0xF));
     }
 
-    public static (TdfType Type, uint Length)? GetTdfTypeAndLength(Type type, object value)
+    public static (TdfType Type, uint Length)? GetTdfTypeAndLength(Type type, object? value)
     {
         //Convert enum to base type (ushort/int etc)
         if (type.IsEnum)
@@ -155,8 +155,8 @@ public static class TdfHelper
 
         if (type == typeof(string)) //string
         {
-            var strValue = (string)value;
-            return (TdfType.String, Convert.ToUInt32(strValue.Length + 1));
+            var strValue = (string?)value;
+            return (TdfType.String, Convert.ToUInt32(strValue?.Length + 1));
         }
         if (type == typeof(bool)) //Int8
         {
@@ -201,7 +201,7 @@ public static class TdfHelper
         }
         if (type == typeof(byte[])) //Blob
         {
-            var blobValue = (byte[])value;
+            var blobValue = (byte[]?)value;
             uint length = 0;
             if (blobValue != null)
             {

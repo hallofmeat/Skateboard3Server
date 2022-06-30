@@ -39,10 +39,16 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
         }
         var currentSession = _userSessionManager.GetSession(_clientContext.UserSessionId.Value);
 
-        var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
-        if (firstQosHost == null)
+        if (_blazeConfig.QosHosts == null)
         {
             throw new Exception("BlazeConfig.QosHosts was not configured");
+        }
+
+        var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
+
+        if (firstQosHost == null)
+        {
+            throw new Exception("BlazeConfig.QosHosts contains no servers");
         }
 
         //uint matchmakingId = _matchmakingManager.CreateMatchmakingSession();
@@ -170,7 +176,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
                 UserId = player.UserId,
                 Data = new ExtendedData
                 {
-                    Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair, player.NetworkAddress),
+                    Address = new KeyValuePair<NetworkAddressType, NetworkAddress?>(NetworkAddressType.Pair, player.NetworkAddress),
                     PingServerName = firstQosHost.Name,
                     Cty = "",
                     DataMap = new Dictionary<uint, int>(), //TODO: this is missing from the real response
@@ -218,7 +224,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
             UserId = currentSession.UserId,
             Data = new ExtendedData
             {
-                Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Pair,
+                Address = new KeyValuePair<NetworkAddressType, NetworkAddress?>(NetworkAddressType.Pair,
                     currentSession.NetworkAddress),
                 PingServerName = firstQosHost.Name,
                 Cty = "",

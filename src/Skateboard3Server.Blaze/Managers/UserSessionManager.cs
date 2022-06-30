@@ -12,7 +12,7 @@ public interface IUserSessionManager
     (uint SessionId, string SessionKey) StoreSession(UserSessionData sessionData);
     UserSessionData GetSession(uint id);
     void RemoveSession(uint id);
-    UserSessionData GetUserSessionDataForKey(string key);
+    UserSessionData? GetUserSessionDataForKey(string key);
 }
 
 /// <summary>
@@ -24,10 +24,9 @@ public class UserSessionManager : IUserSessionManager
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    private readonly ConcurrentDictionary<uint, UserSessionData> _sessions =
-        new ConcurrentDictionary<uint, UserSessionData>();
+    private readonly ConcurrentDictionary<uint, UserSessionData> _sessions = new();
 
-    private int _currentSessionCount = 0;
+    private int _currentSessionCount;
 
     public (uint SessionId, string SessionKey) StoreSession(UserSessionData sessionData)
     {
@@ -61,7 +60,7 @@ public class UserSessionManager : IUserSessionManager
         _sessions.TryRemove(id, out _);
     }
 
-    public UserSessionData GetUserSessionDataForKey(string key)
+    public UserSessionData? GetUserSessionDataForKey(string key)
     {
         //split lookup id, validate byte
         var parts = key.Split('_', StringSplitOptions.RemoveEmptyEntries);

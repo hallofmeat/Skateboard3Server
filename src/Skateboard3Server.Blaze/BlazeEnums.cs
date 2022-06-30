@@ -1,4 +1,5 @@
-﻿namespace Skateboard3Server.Blaze;
+﻿// ReSharper disable EnumUnderlyingTypeIsInt
+namespace Skateboard3Server.Blaze;
 
 public enum BlazeComponent : ushort
 {
@@ -127,7 +128,7 @@ public enum TdfType
 
 public enum FirstPartyIdType : byte
 {
-    PS3 = 0x0,
+    Ps3 = 0x0,
     Xbox = 0x1
 }
 
@@ -145,7 +146,7 @@ public enum ExternalIdType : int
 {
     Unknown = 0x0,
     Xbox = 0x1,
-    PS3 = 0x2
+    Ps3 = 0x2
 };
 
 public enum NatType : int

@@ -1,5 +1,7 @@
 ﻿using System.Xml.Serialization;
 
+#pragma warning disable CS8618
+
 namespace Skateboard3Server.Web.Services.Models.SkateProfile;
 
 [XmlRoot(ElementName = "LoginInfoContainer")]

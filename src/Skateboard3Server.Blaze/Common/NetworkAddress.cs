@@ -4,9 +4,7 @@
 
 namespace Skateboard3Server.Blaze.Common;
 
-public record NetworkAddress
-{
-}
+public record NetworkAddress;
 
 public record ServerNetworkAddress : NetworkAddress
 {

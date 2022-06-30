@@ -38,7 +38,7 @@ public class Ps3TicketDecoderFacts
                     0x5F, 0x30, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00
                 },
                 Status = 0,
-                DateOfBirth = null,
+                DateOfBirth = null!,
                 Age = 0
             },
             Footer = new TicketFooter

@@ -11,14 +11,14 @@ namespace Skateboard3Server.Common.Decoders;
 //https://www.psdevwiki.com/ps3/PSN
 public interface IPs3TicketDecoder
 {
-    Ps3Ticket DecodeTicket(byte[] ticketData);
+    Ps3Ticket? DecodeTicket(byte[] ticketData);
 }
 
 public class Ps3TicketDecoder : IPs3TicketDecoder
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public Ps3Ticket DecodeTicket(byte[] ticketData)
+    public Ps3Ticket? DecodeTicket(byte[] ticketData)
     {
         try
         {
@@ -38,6 +38,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
                 };
 
                 //TODO: add length check
+                //TODO: check sections
                 //TODO: support 2.0 and 4.0
                 if (majorVersion == 2 && minorVersion == 1) //2.1
                 {
@@ -188,7 +189,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
         return body;
     }
 
-    private TicketFooter ReadFooter(BinaryReader reader)
+    private TicketFooter? ReadFooter(BinaryReader reader)
     {
         var footer = new TicketFooter();
         var section = reader.ReadByte(); //30

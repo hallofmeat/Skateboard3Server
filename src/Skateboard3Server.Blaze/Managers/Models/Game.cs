@@ -18,7 +18,7 @@ public class Game
 
 
     //TODO: threadsafety?
-    public List<Player> Players { get; set; }
+    public List<Player?> Players { get; set; }
     public uint AdminId { get; set; }
     public uint HostId { get; set; }
 

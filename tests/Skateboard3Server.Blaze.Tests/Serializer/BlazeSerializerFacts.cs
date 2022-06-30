@@ -5,6 +5,7 @@ using FluentAssertions;
 using Skateboard3Server.Blaze.Serializer;
 using Skateboard3Server.Blaze.Serializer.Attributes;
 using Xunit;
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace Skateboard3Server.Blaze.Tests.Serializer;
 

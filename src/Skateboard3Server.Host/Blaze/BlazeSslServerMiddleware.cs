@@ -31,6 +31,11 @@ public class BlazeSslServerMiddleware
 
         var memoryPool = context.Features.Get<IMemoryPoolFeature>()?.MemoryPool;
 
+        if (memoryPool == null)
+        {
+            throw new Exception($"Unable to resolve {nameof(IMemoryPoolFeature)}");
+        }
+
         var inputPipeOptions = new StreamPipeReaderOptions
         (
             pool: memoryPool,
@@ -113,7 +118,7 @@ internal static class MemoryPoolExtensions
     /// </summary>
     /// <param name="pool"></param>
     /// <returns></returns>
-    public static int GetMinimumSegmentSize(this MemoryPool<byte> pool)
+    public static int GetMinimumSegmentSize(this MemoryPool<byte>? pool)
     {
         if (pool == null)
         {

@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 using Skateboard3Server.Web.Services.Models.Common;
 using Skateboard3Server.Web.Services.Models.SkateProfile;
 using Skateboard3Server.Web.Storage;
@@ -13,6 +15,7 @@ namespace Skateboard3Server.Web.Services;
 public class SkateProfileServiceController : ControllerBase
 {
     private readonly IBlobStorage _blobStorage;
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public SkateProfileServiceController(IBlobStorage blobStorage)
     {
@@ -44,12 +47,17 @@ public class SkateProfileServiceController : ControllerBase
         {
             return NotFound();
         }
-        var bytes = await _blobStorage.GetObject("user-schema", objectKey);
-        if (bytes == null)
+
+        try
         {
+            var bytes = await _blobStorage.GetObject("user-schema", objectKey);
+            return File(bytes, "application/octet-stream");
+        }
+        catch (Exception e)
+        {
+            Logger.Warn(e);
             return NotFound();
         }
-        return File(bytes, "application/octet-stream");
     }
 
     [HttpPost("UploadSchema")]

@@ -68,7 +68,7 @@ public class Program
             }
 
             var tcs = new TaskCompletionSource<object>();
-            Console.CancelKeyPress += (sender, e) => tcs.TrySetResult(null);
+            Console.CancelKeyPress += (_, _) => tcs.TrySetResult(null);
             await tcs.Task;
 
             await server.StopAsync();

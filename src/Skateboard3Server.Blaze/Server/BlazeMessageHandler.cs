@@ -2,7 +2,6 @@
 using System.Buffers;
 using System.IO;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using MediatR;
 using NLog;
 using Skateboard3Server.Blaze.Serializer;
@@ -11,7 +10,7 @@ namespace Skateboard3Server.Blaze.Server;
 
 public interface IBlazeMessageHandler
 {
-    Task<BlazeMessageData> ProcessMessage(BlazeMessageData requestMessageData);
+    Task<BlazeMessageData?> ProcessMessage(BlazeMessageData requestMessageData);
 }
 
 public class BlazeMessageHandler : IBlazeMessageHandler
@@ -32,18 +31,22 @@ public class BlazeMessageHandler : IBlazeMessageHandler
         _debugParser = debugParser;
     }
 
-    [CanBeNull]
-    public async Task<BlazeMessageData> ProcessMessage(BlazeMessageData requestMessageData)
+    public async Task<BlazeMessageData?> ProcessMessage(BlazeMessageData requestMessageData)
     {
         var requestHeader = requestMessageData.Header;
         var requestPayload = requestMessageData.Payload;
         if (_blazeTypeLookup.TryGetRequestType(requestHeader.Component, requestHeader.Command, out var requestType))
         {
+            if (requestType == null)
+            {
+                throw new Exception(
+                    $"Unknown RequestType for Component: {requestHeader.Component} Command: {requestHeader.Command}");
+            }
             try
             {
                 var parsedRequest = _blazeDeserializer.Deserialize(requestPayload, requestType);
 
-                var response = (BlazeResponseMessage) await _mediator.Send(parsedRequest);
+                var response = (BlazeResponseMessage?) await _mediator.Send(parsedRequest);
                 if (response == null)
                 {
                     Logger.Warn($"Response was null for request {requestType}");

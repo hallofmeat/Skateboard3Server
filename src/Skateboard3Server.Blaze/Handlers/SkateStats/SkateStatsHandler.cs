@@ -9,12 +9,10 @@ namespace Skateboard3Server.Blaze.Handlers.SkateStats;
 
 public class SkateStatsHandler : IRequestHandler<SkateStatsRequest, SkateStatsResponse>
 {
-    private readonly ClientContext _clientContext;
     private readonly IBlazeNotificationHandler _notificationHandler;
 
-    public SkateStatsHandler(ClientContext clientContext, IBlazeNotificationHandler notificationHandler)
+    public SkateStatsHandler(IBlazeNotificationHandler notificationHandler)
     {
-        _clientContext = clientContext;
         _notificationHandler = notificationHandler;
     }
 

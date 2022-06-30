@@ -25,7 +25,7 @@ public class BlazeClientContext : ClientContext
     }
 
     private ConnectionContext ConnectionContext { get; set; }
-    internal ProtocolWriter Writer { get; set; }
+    internal ProtocolWriter? Writer { get; set; }
     internal ProtocolReader Reader { get; set; }
     internal ConcurrentQueue<BlazeMessageData> PendingNotifications { get; }
 

@@ -77,7 +77,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
             {
                 ExternalId = ticket.Body.UserId,
                 ExternalBlob = externalBlob.ToArray(),
-                ExternalIdType = ticket.Body.IssuerId == 100 ? PersonaExternalIdType.PS3 : PersonaExternalIdType.Rpcs3, //100 is retail issuerId
+                ExternalIdType = ticket.Body.IssuerId == 100 ? PersonaExternalIdType.Ps3 : PersonaExternalIdType.Rpcs3, //100 is retail issuerId
                 Username = ticket.Body.Username,
                 User = user
             };
@@ -132,7 +132,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
                     LastUsed = currentTimestamp,
                     PersonaId = newSession.UserId,
                     ExternalId = newSession.ExternalId,
-                    ExternalIdType = ExternalIdType.PS3,
+                    ExternalIdType = ExternalIdType.Ps3,
                 },
                 AccountId = newSession.AccountId,
             },
@@ -157,7 +157,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
         {
             Data = new ExtendedData
             {
-                Address = new KeyValuePair<NetworkAddressType, NetworkAddress>(NetworkAddressType.Unset, null),
+                Address = new KeyValuePair<NetworkAddressType, NetworkAddress?>(NetworkAddressType.Unset, null),
                 PingServerName = "",
                 Cty = "",
                 DataMap = new Dictionary<uint, int>

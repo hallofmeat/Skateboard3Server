@@ -24,8 +24,8 @@ public class BlazeConnectionHandler : ConnectionHandler
 
     public override async Task OnConnectedAsync(ConnectionContext connection)
     {
-        IServiceScope scope = null;
-        BlazeClientContext clientContext = null;
+        IServiceScope? scope = null;
+        BlazeClientContext? clientContext = null;
         try
         {
             //Create connection scope

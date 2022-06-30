@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using NLog;
 
@@ -47,7 +45,13 @@ public class FilesystemBlobStorage : IBlobStorage
         var fullPath = Path.Combine(_basePath, bucket, objectName);
         Logger.Debug($"Saving {objectName} in bucket: {bucket} fullPath: {fullPath}");
         //create dir if not exist
-        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+        var directoryName = Path.GetDirectoryName(fullPath);
+        if (directoryName == null)
+        {
+            Logger.Warn($"Could not get directory name for {fullPath}");
+            return;
+        }
+        Directory.CreateDirectory(directoryName);
         await File.WriteAllBytesAsync(fullPath, data);
     }
 

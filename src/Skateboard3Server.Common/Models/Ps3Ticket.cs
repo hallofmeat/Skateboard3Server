@@ -8,7 +8,7 @@ public class Ps3Ticket
 
     public TicketBody Body { get; set; }
         
-    public TicketFooter Footer { get; set; }
+    public TicketFooter? Footer { get; set; }
 }
 
 public class TicketHeader

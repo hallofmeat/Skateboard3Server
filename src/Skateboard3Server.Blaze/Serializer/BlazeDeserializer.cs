@@ -20,6 +20,11 @@ public class BlazeDeserializer : IBlazeDeserializer
     {
         var request = Activator.CreateInstance(requestType);
 
+        if (request == null)
+        {
+            throw new Exception($"Failed to create {requestType}");
+        }
+
         var requestSb = new StringBuilder();
 
         var payloadReader = new SequenceReader<byte>(payload);
@@ -71,6 +76,10 @@ public class BlazeDeserializer : IBlazeDeserializer
                 requestSb.AppendLine($"<start struct {state.StructDepth}>");
                 state.StructDepth++;
                 var subTarget = Activator.CreateInstance(currentType);
+                if (subTarget == null)
+                {
+                    throw new Exception($"Failed to create type {currentType}");
+                }
                 while (!EndOfStruct(ref payloadReader, state, requestSb))
                 {
                     ParseObject(ref payloadReader, subTarget, state, requestSb);
@@ -119,6 +128,10 @@ public class BlazeDeserializer : IBlazeDeserializer
                 //Length is the number of dimensions //TODO: handle multidimensional
                 var listElementType = currentType.GetGenericArguments()[0];
                 var listTarget = Activator.CreateInstance(currentType);
+                if (listTarget == null)
+                {
+                    throw new Exception($"Failed to create type {currentType}");
+                }
                 payloadReader.TryRead(out byte elementCount);
                 var typeData = TdfHelper.ParseTypeAndLength(ref payloadReader);
                 requestSb.AppendLine($"{typeData.Type} {typeData.Length} {elementCount}");
@@ -147,6 +160,10 @@ public class BlazeDeserializer : IBlazeDeserializer
             case TdfType.Map:
                 //Length is the number of elements
                 var dictTarget = Activator.CreateInstance(currentType);
+                if (dictTarget == null)
+                {
+                    throw new Exception($"Failed to create type {currentType}");
+                }
                 var dictKeyType = currentType.GetGenericArguments()[0];
                 var dictValueType = currentType.GetGenericArguments()[1];
 
@@ -189,6 +206,10 @@ public class BlazeDeserializer : IBlazeDeserializer
                 return dictTarget;
             case TdfType.Union:
                 var unionTarget = Activator.CreateInstance(currentType);
+                if (unionTarget == null)
+                {
+                    throw new Exception($"Failed to create type {currentType}");
+                }
                 payloadReader.Advance(length);
                 payloadReader.TryRead(out byte unionKey);
                 requestSb.AppendLine($"{unionKey}");

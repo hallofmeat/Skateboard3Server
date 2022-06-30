@@ -8,7 +8,7 @@ public interface IMatchmakingManager
 {
     uint CreateMatchmakingSession();
     void RemoveMatchmakingSession(uint matchmakingId);
-    Game MatchGame();
+    Game? MatchGame();
 }
 
 /// <summary>
@@ -18,7 +18,7 @@ public class MatchmakingManager : IMatchmakingManager
 {
     private readonly IGameManager _gameManager;
 
-    private int _currentMatchmakingCount = 0;
+    private int _currentMatchmakingCount;
 
     public MatchmakingManager(IGameManager gameManager)
     {
@@ -35,7 +35,7 @@ public class MatchmakingManager : IMatchmakingManager
         //TODO do stuff
     }
 
-    public Game MatchGame()
+    public Game? MatchGame()
     {
         //TODO make smarter (like include player count to eliminate full games, game state etc)
         return _gameManager.FindGame(games => games.FirstOrDefault());

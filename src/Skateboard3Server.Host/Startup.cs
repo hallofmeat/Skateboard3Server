@@ -111,7 +111,7 @@ public class Startup
 
     private void InitializeDatabase(IApplicationBuilder app)
     {
-        using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
-        scope.ServiceProvider.GetRequiredService<Skateboard3Context>().Database.Migrate();
+        using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
+        scope?.ServiceProvider.GetRequiredService<Skateboard3Context>().Database.Migrate();
     }
 }

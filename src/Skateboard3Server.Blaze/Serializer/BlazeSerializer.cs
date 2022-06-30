@@ -2,11 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
-using JetBrains.Annotations;
 using NLog;
-using Skateboard3Server.Blaze.Serializer.Attributes;
 using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Serializer;
@@ -52,7 +49,7 @@ public class BlazeSerializer : IBlazeSerializer
         }
     }
 
-    public void SerializeType(Stream output, [CanBeNull] Type propertyType, object propertyValue, StringBuilder responseSb)
+    public void SerializeType(Stream output, Type propertyType, object? propertyValue, StringBuilder responseSb)
     {
         //handle enum types
         if (propertyType.IsEnum)
@@ -63,26 +60,29 @@ public class BlazeSerializer : IBlazeSerializer
         //type handling
         if (propertyType == typeof(string)) //string
         {
-            var value = (string)propertyValue;
+            var value = (string?)propertyValue;
             responseSb.AppendLine($"{value}");
             //TODO: double check utf8
-            output.Write(Encoding.ASCII.GetBytes(value));
+            if (value != null)
+            {
+                output.Write(Encoding.ASCII.GetBytes(value));
+            }
             output.WriteByte(0x0); //terminate string
         }
-        else if (propertyType == typeof(bool)) //Int8 (bool)
+        else if (propertyType == typeof(bool) && propertyValue != null) //Int8 (bool)
         {
             var value = (bool)propertyValue;
             responseSb.AppendLine($"{Convert.ToByte(value)}");
             output.WriteByte(Convert.ToByte(value));
         }
-        else if (propertyType == typeof(byte)) //Uint8
+        else if (propertyType == typeof(byte) && propertyValue != null) //Uint8
         {
             var value = (byte)propertyValue;
             responseSb.AppendLine($"{value}");
             output.WriteByte(value);
         }
         //TODO: condense int conversion
-        else if (propertyType == typeof(short)) //Int16
+        else if (propertyType == typeof(short) && propertyValue != null) //Int16
         {
             var value = (short)propertyValue;
             responseSb.AppendLine($"{value}");
@@ -90,7 +90,7 @@ public class BlazeSerializer : IBlazeSerializer
             Array.Reverse(valueBytes); //big endian
             output.Write(valueBytes);
         }
-        else if (propertyType == typeof(ushort)) //Uint16
+        else if (propertyType == typeof(ushort) && propertyValue != null) //Uint16
         {
             var value = (ushort)propertyValue;
             responseSb.AppendLine($"{value}");
@@ -98,7 +98,7 @@ public class BlazeSerializer : IBlazeSerializer
             Array.Reverse(valueBytes); //big endian
             output.Write(valueBytes);
         }
-        else if (propertyType == typeof(int)) //Int32
+        else if (propertyType == typeof(int) && propertyValue != null) //Int32
         {
             var value = (int)propertyValue;
             responseSb.AppendLine($"{value}");
@@ -106,7 +106,7 @@ public class BlazeSerializer : IBlazeSerializer
             Array.Reverse(valueBytes); //big endian
             output.Write(valueBytes);
         }
-        else if (propertyType == typeof(uint)) //Uint32
+        else if (propertyType == typeof(uint) && propertyValue != null) //Uint32
         {
             var value = (uint)propertyValue;
             responseSb.AppendLine($"{value}");
@@ -114,7 +114,7 @@ public class BlazeSerializer : IBlazeSerializer
             Array.Reverse(valueBytes); //big endian
             output.Write(valueBytes);
         }
-        else if (propertyType == typeof(long)) //Int64
+        else if (propertyType == typeof(long) && propertyValue != null) //Int64
         {
             var value = (long)propertyValue;
             responseSb.AppendLine($"{value}");
@@ -122,7 +122,7 @@ public class BlazeSerializer : IBlazeSerializer
             Array.Reverse(valueBytes); //big endian
             output.Write(valueBytes);
         }
-        else if (propertyType == typeof(ulong)) //Uint64
+        else if (propertyType == typeof(ulong) && propertyValue != null) //Uint64
         {
             var value = (ulong)propertyValue;
             responseSb.AppendLine($"{value}");
@@ -132,7 +132,7 @@ public class BlazeSerializer : IBlazeSerializer
         }
         else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(List<>)) //Array
         {
-            var listValues = (ICollection)propertyValue;
+            var listValues = (ICollection?)propertyValue;
             //TODO: tag shouldnt be written at all if null
             if (listValues == null)
             {
@@ -175,7 +175,7 @@ public class BlazeSerializer : IBlazeSerializer
         }
         else if (propertyType == typeof(byte[])) //Blob
         {
-            var value = (byte[])propertyValue;
+            var value = (byte[]?)propertyValue;
             responseSb.AppendLine("<blob>");
             output.Write(value);
         }
@@ -185,7 +185,13 @@ public class BlazeSerializer : IBlazeSerializer
             var mapKeyType = propertyType.GetGenericArguments()[0];
             var mapValueType = propertyType.GetGenericArguments()[1];
 
-            var mapValues = (ICollection) propertyValue;
+            var mapValues = (ICollection?) propertyValue;
+
+            if (mapValues == null)
+            {
+                Logger.Warn($"Map was null");
+                return; //TODO: I think this is correct?
+            }
 
             var index = 0;
             foreach (var item in mapValues)
@@ -250,11 +256,16 @@ public class BlazeSerializer : IBlazeSerializer
         }
         else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)) //Union
         {
-            var keyValue = (byte) propertyType.GetProperty("Key")?.GetValue(propertyValue);
+            var keyValue = propertyType.GetProperty("Key")?.GetValue(propertyValue);
             var valueValue = propertyType.GetProperty("Value")?.GetValue(propertyValue);
 
-            output.WriteByte(keyValue);
-            responseSb.AppendLine($"{keyValue}");
+            if (keyValue == null)
+            {
+                throw new Exception("Key value is null");
+            }
+
+            output.WriteByte((byte)keyValue);
+            responseSb.AppendLine($"{(byte)keyValue}");
             if (valueValue != null) //VALU is not set if value is null
             {
                 var unionValueType = propertyType.GetGenericArguments()[1];
@@ -272,17 +283,14 @@ public class BlazeSerializer : IBlazeSerializer
         }
         else if (propertyType.IsClass) //Struct?
         {
-            responseSb.AppendLine($"<start struct>");
-            SerializeObjectProperties(output, propertyValue, responseSb);
-            output.WriteByte(0x0); //terminate struct
-            responseSb.AppendLine($"<end struct>");
+            if (propertyValue != null)
+            {
+                responseSb.AppendLine($"<start struct>");
+                SerializeObjectProperties(output, propertyValue, responseSb);
+                output.WriteByte(0x0); //terminate struct
+                responseSb.AppendLine($"<end struct>");
+            }
         }
     }
 
-}
-
-public class SerializerTdfMetadata
-{
-    public PropertyInfo Property { get; set; }
-    public TdfFieldAttribute Attribute { get; set; }
 }

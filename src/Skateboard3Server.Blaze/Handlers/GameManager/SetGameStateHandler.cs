@@ -3,18 +3,15 @@ using System.Threading.Tasks;
 using MediatR;
 using Skateboard3Server.Blaze.Handlers.GameManager.Messages;
 using Skateboard3Server.Blaze.Managers;
-using Skateboard3Server.Blaze.Server;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager;
 
 public class SetGameStateHandler : IRequestHandler<SetGameStateRequest, SetGameStateResponse>
 {
-    private readonly IBlazeNotificationHandler _notificationHandler;
     private readonly IGameManager _gameManager;
 
-    public SetGameStateHandler(IBlazeNotificationHandler notificationHandler, IGameManager gameManager)
+    public SetGameStateHandler(IGameManager gameManager)
     {
-        _notificationHandler = notificationHandler;
         _gameManager = gameManager;
     }
 
