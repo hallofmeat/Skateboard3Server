@@ -25,7 +25,7 @@ public class ServerInfoHandler : IRequestHandler<ServerInfoRequest, ServerInfoRe
             Address = new KeyValuePair<NetworkAddressType, ServerNetworkAddress>(NetworkAddressType.Server, new ServerNetworkAddress
             {
                 Host = _blazeConfig.PublicHost,
-                Ip = Convert.ToUInt32(IPAddress.Parse(_blazeConfig.PublicIp).Address),
+                Ip = BitConverter.ToUInt32(IPAddress.Parse(_blazeConfig.PublicIp).GetAddressBytes()),
                 Port = 10744
             }),
             Secure = false,

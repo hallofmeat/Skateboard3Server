@@ -26,6 +26,7 @@ public class PoxOutputFormatter : OutputFormatter
         CloseOutput = false,
         CheckCharacters = false,
         Indent = false,
+        Async = true
     };
 
     public PoxOutputFormatter()

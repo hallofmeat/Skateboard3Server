@@ -63,7 +63,7 @@ public class BlazeProxyRedirectHandler : ConnectionHandler
                             0xA7, 0x00, 0x00, //IP
                             0x74, //uint32
                         });
-                        var ipBytes = BitConverter.GetBytes(Convert.ToUInt32(IPAddress.Parse(_proxySettings.RedirectIp).Address));
+                        var ipBytes = IPAddress.Parse(_proxySettings.RedirectIp).GetAddressBytes();
                         Array.Reverse(ipBytes); //big endian
                         payload.AddRange(ipBytes);
                         payload.AddRange(new byte[] {
