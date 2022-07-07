@@ -334,7 +334,7 @@ public class BlazeSerializerFacts
         result.Should().BeEquivalentTo(validBody);
     }
 
-    //TODO: test union (pending refactor)
+    //TODO: test union (pending refactor, look at other union in c# implementations, our works for now but isnt perfect)
     //TODO: test empty struct
 
    

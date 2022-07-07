@@ -72,5 +72,6 @@ public class BlazeRegistry : Module
         builder.RegisterType<RemovePlayerHandler>().AsImplementedInterfaces().InstancePerDependency();
         builder.RegisterType<UpdatePlayerConnectionHandler>().AsImplementedInterfaces().InstancePerDependency();
         builder.RegisterType<LookupUsersHandler>().AsImplementedInterfaces().InstancePerDependency();
+        builder.RegisterType<TeamMembersHandler>().AsImplementedInterfaces().InstancePerDependency();
     }
 }

@@ -63,7 +63,7 @@ public class BlazeSerializer : IBlazeSerializer
         {
             var value = (string?)propertyValue;
             responseSb.AppendLine($"{value}");
-            //TODO: double check utf8
+            //TODO: double check if utf8
             if (value != null)
             {
                 output.Write(Encoding.ASCII.GetBytes(value));
@@ -134,44 +134,41 @@ public class BlazeSerializer : IBlazeSerializer
         else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(List<>)) //Array
         {
             var listValues = (ICollection?)propertyValue;
-            //TODO: tag shouldnt be written at all if null
-            if (listValues == null)
+            if (listValues == null) //Should not be null because we dont write the tag and continue if its null
             {
-                TdfHelper.WriteLength(output, Convert.ToUInt32(0));
+                throw new Exception($"Got null value type for {propertyType}");
             }
-            else
+
+            TdfHelper.WriteLength(output, Convert.ToUInt32(listValues.Count));
+
+            //TODO: double check this works with strings
+            var listValueType = propertyType.GetGenericArguments()[0];
+            var index = 0;
+            foreach (var item in listValues)
             {
-                TdfHelper.WriteLength(output, Convert.ToUInt32(listValues.Count));
-
-                //TODO: double check this works with strings
-                var listValueType = propertyType.GetGenericArguments()[0];
-                var index = 0;
-                foreach (var item in listValues)
+                var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, item);
+                if (!tdfData.HasValue)
                 {
-                    var tdfData = TdfHelper.GetTdfTypeAndLength(listValueType, item);
-                    if (!tdfData.HasValue)
-                    {
-                        continue;
-                    }
-                    //first value
-                    if (index == 0)
-                    {
-                        TdfHelper.WriteTypeAndLength(output, tdfData.Value.Type, tdfData.Value.Length);
-                        responseSb.AppendLine($"{tdfData.Value.Type} {tdfData.Value.Length} {listValues.Count}");
-                        SerializeType(output, listValueType, item, responseSb);
-                    }
-                    else
-                    {
-                        if (tdfData.Value.Type == TdfType.String || tdfData.Value.Type == TdfType.Blob)
-                        {
-                            TdfHelper.WriteLength(output, tdfData.Value.Length);
-                        }
-
-                        SerializeType(output, listValueType, item, responseSb);
-                    }
-
-                    index++;
+                    continue;
                 }
+                //first value
+                if (index == 0)
+                {
+                    TdfHelper.WriteTypeAndLength(output, tdfData.Value.Type, tdfData.Value.Length);
+                    responseSb.AppendLine($"{tdfData.Value.Type} {tdfData.Value.Length} {listValues.Count}");
+                    SerializeType(output, listValueType, item, responseSb);
+                }
+                else
+                {
+                    if (tdfData.Value.Type == TdfType.String || tdfData.Value.Type == TdfType.Blob)
+                    {
+                        TdfHelper.WriteLength(output, tdfData.Value.Length);
+                    }
+
+                    SerializeType(output, listValueType, item, responseSb);
+                }
+
+                index++;
             }
         }
         else if (propertyType == typeof(byte[])) //Blob
@@ -182,16 +179,14 @@ public class BlazeSerializer : IBlazeSerializer
         }
         else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Dictionary<,>)) //Map
         {
-            //TODO: tag shouldnt be written at all if null
             var mapKeyType = propertyType.GetGenericArguments()[0];
             var mapValueType = propertyType.GetGenericArguments()[1];
 
             var mapValues = (ICollection?) propertyValue;
 
-            if (mapValues == null)
+            if (mapValues == null) //Should not be null because we dont write the tag and continue if its null
             {
-                Logger.Warn($"Map was null");
-                return; //TODO: I think this is correct?
+                throw new Exception($"Got null value type for {mapValues}");
             }
 
             var index = 0;

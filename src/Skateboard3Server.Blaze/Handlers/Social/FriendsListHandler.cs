@@ -17,6 +17,7 @@ public class FriendsListHandler : IRequestHandler<FriendsListRequest, FriendsLis
                 //TODO: temp, fix later
                 {"friendList", new ResponseList
                 {
+                    ListData = null,
                     Boid = 1234, //TODO
                     Lid = 1,
                     Lms = 100,
@@ -26,6 +27,7 @@ public class FriendsListHandler : IRequestHandler<FriendsListRequest, FriendsLis
                 }},
                 {"recentPlayerList", new ResponseList
                 {
+                    ListData = null,
                     Boid = 1234, //TODO
                     Lid = 1,
                     Lms = 100,

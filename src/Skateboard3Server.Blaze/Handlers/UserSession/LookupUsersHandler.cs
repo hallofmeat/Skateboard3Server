@@ -24,7 +24,7 @@ public class LookupUsersHandler : IRequestHandler<LookupUsersRequest, LookupUser
     public Task<LookupUsersResponse> Handle(LookupUsersRequest request, CancellationToken cancellationToken)
     {
         var foundUsers = new List<UserInformation>();
-
+        //TODO lookup connected first, then check db?
         if (request.LookupType == UserLookupType.PersonaName)
         {
             foreach (var requestUser in request.Users)

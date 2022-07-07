@@ -174,7 +174,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
             await _notificationHandler.SendNotification(new UserExtendedDataNotification
             {
                 UserId = player.UserId,
-                Data = new ExtendedData
+                Data = new UserExtendedData
                 {
                     Address = new KeyValuePair<NetworkAddressType, NetworkAddress?>(NetworkAddressType.Pair, player.NetworkAddress),
                     PingServerName = firstQosHost.Name,
@@ -222,7 +222,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
         var currentUserExtended = new UserExtendedDataNotification
         {
             UserId = currentSession.UserId,
-            Data = new ExtendedData
+            Data = new UserExtendedData
             {
                 Address = new KeyValuePair<NetworkAddressType, NetworkAddress?>(NetworkAddressType.Pair,
                     currentSession.NetworkAddress),

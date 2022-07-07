@@ -191,7 +191,6 @@ public static class TdfHelper
         }
         if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) //Array
         {
-            //TODO figure out if this should be empty or not written when value is null
             if (value == null)
             {
                 return null; //Dont generate a tag/array for this

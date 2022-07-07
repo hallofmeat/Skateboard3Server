@@ -155,7 +155,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
 
         await _notificationHandler.EnqueueNotification(new UserExtendedDataNotification
         {
-            Data = new ExtendedData
+            Data = new UserExtendedData
             {
                 Address = new KeyValuePair<NetworkAddressType, NetworkAddress?>(NetworkAddressType.Unset, null),
                 PingServerName = "",

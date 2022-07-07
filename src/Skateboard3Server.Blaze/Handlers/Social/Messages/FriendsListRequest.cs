@@ -19,8 +19,8 @@ public record FriendsListRequest : BlazeRequestMessage, IRequest<FriendsListResp
 public record RequestList
 {
     [TdfField("ALNM")]
-    public string Name { get; init; } //TODO
+    public string Name { get; init; }
 
     [TdfField("SUBF")]
-    public bool SubF { get; init; } //TODO
+    public bool SubF { get; init; } //TODO always 0?
 }
