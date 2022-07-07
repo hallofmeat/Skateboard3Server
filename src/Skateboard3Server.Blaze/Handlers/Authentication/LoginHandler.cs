@@ -12,7 +12,7 @@ using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Managers.Models;
 using Skateboard3Server.Blaze.Notifications.UserSession;
 using Skateboard3Server.Blaze.Server;
-using Skateboard3Server.Blaze.Util;
+using Skateboard3Server.Common;
 using Skateboard3Server.Common.Decoders;
 using Skateboard3Server.Data;
 using Skateboard3Server.Data.Models;

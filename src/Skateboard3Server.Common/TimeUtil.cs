@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Skateboard3Server.Blaze.Util;
+namespace Skateboard3Server.Common;
 
 public static class TimeUtil
 {

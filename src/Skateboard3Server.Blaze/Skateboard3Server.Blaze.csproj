@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Skateboard3Server.Data\Skateboard3Server.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Util\" />
+  </ItemGroup>
+
 </Project>

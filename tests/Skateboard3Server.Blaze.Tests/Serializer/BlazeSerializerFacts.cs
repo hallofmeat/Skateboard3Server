@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using FluentAssertions;
 using Skateboard3Server.Blaze.Serializer;
-using Skateboard3Server.Blaze.Serializer.Attributes;
+using Skateboard3Server.Blaze.Tests.Serializer.Testing;
 using Xunit;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
@@ -68,6 +68,32 @@ public class BlazeSerializerFacts
             0x52, //ushort16, 2
             0x00, 0x02, //2
 
+        };
+        var result = resultStream.ToArray();
+        result.Should().BeEquivalentTo(validBody);
+    }
+
+    [Fact]
+    public void Generates_byte_array()
+    {
+        var input = new TestByteArray()
+        {
+            ByteArrayTest = new byte[]{ 0xDE, 0xAD, 0xBE, 0xEF }
+        };
+
+        var serial = new BlazeSerializer();
+        var resultStream = new MemoryStream();
+
+        //Act
+        serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+
+        //Assert
+        var validBody = new byte[]
+        {
+            0xd3, 0x3d, 0x21, //TSTA
+            0xB4,  //byte array, 4 length
+            0xDE, 0xAD, 0xBE, 0xEF, //0xDEADBEEF
         };
         var result = resultStream.ToArray();
         result.Should().BeEquivalentTo(validBody);
@@ -311,86 +337,5 @@ public class BlazeSerializerFacts
     //TODO: test union (pending refactor)
     //TODO: test empty struct
 
-    private class TestArrayStrings
-    {
-        [TdfField("TSTA")]
-        public List<string> ListTest { get; set; }
-    }
-
-    private class TestArrayInts
-    {
-        [TdfField("TSTA")]
-        public List<int> ListTest { get; set; }
-    }
-
-    private class TestMapStrings
-    {
-        [TdfField("TSTA")]
-        public Dictionary<int, string> MapTest { get; set; }
-    }
-
-    private class TestMapStructs
-    {
-        [TdfField("TSTA")]
-        public Dictionary<string, TestStruct> MapTest { get; set; }
-    }
-
-    private class TestNestedStructs
-    {
-        [TdfField("TSTA")]
-        public NestedStruct1 NestedStruct { get; set; }
-
-    }
-
-    private class NestedStruct1
-    {
-        [TdfField("TSTA")]
-        public TestStruct NestedStruct { get; set; }
-    }
-
-    private class TestStruct
-    {
-        [TdfField("TSTA")]
-        public string StringTest { get; set; }
-    }
-
-
-    private class TestBasicTypesBlaze
-    {
-        [TdfField("TSTA")]
-        public string StringTest { get; set; }
-
-        [TdfField("TSTB")]
-        public bool BoolTest { get; set; }
-
-        [TdfField("TSTC")]
-        public byte ByteTest { get; set; }
-
-        [TdfField("TSTD")]
-        public short ShortTest { get; set; }
-
-        [TdfField("TSTE")]
-        public ushort UShortTest { get; set; }
-
-        [TdfField("TSTF")]
-        public int IntTest { get; set; }
-
-        [TdfField("TSTG")]
-        public uint UIntTest { get; set; }
-
-        [TdfField("TSTH")]
-        public long LongTest { get; set; }
-
-        [TdfField("TSTI")]
-        public ulong ULongTest { get; set; }
-
-        [TdfField("TSTJ")]
-        public TestBlazeEnum EnumTest { get; set; }
-    }
-
-    private enum TestBlazeEnum : ushort
-    {
-        Hello = 0x1,
-        World = 0x2
-    }
+   
 }

@@ -27,6 +27,16 @@ public class BlazeDeserializer : IBlazeDeserializer
 
         var requestSb = new StringBuilder();
 
+        DeserializeObject(payload, request, requestSb);
+
+        Logger.Trace($"Request parsed:{Environment.NewLine}{requestSb}");
+
+        return (BlazeRequestMessage) request;
+    }
+
+    //Public for testing
+    public void DeserializeObject(in ReadOnlySequence<byte> payload, object request, StringBuilder requestSb)
+    {
         var payloadReader = new SequenceReader<byte>(payload);
         var state = new ParserState();
 
@@ -34,10 +44,6 @@ public class BlazeDeserializer : IBlazeDeserializer
         {
             ParseObject(ref payloadReader, request, state, requestSb);
         }
-
-        Logger.Trace($"Request parsed:{Environment.NewLine}{requestSb}");
-
-        return (BlazeRequestMessage) request;
     }
 
     private void ParseObject(ref SequenceReader<byte> payloadReader, object target, ParserState state,

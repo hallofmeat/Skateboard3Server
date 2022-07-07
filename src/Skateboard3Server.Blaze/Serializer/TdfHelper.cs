@@ -11,7 +11,6 @@ namespace Skateboard3Server.Blaze.Serializer;
 
 public static class TdfHelper
 {
-    //TODO: test
     public static string ParseTag(ref SequenceReader<byte> reader)
     {
         //Storing a 4 character string in 3 bytes
@@ -78,18 +77,18 @@ public static class TdfHelper
         return ((TdfType)type, length);
     }
 
-    public static void WriteLabel(Stream output, string label)
+    public static void WriteTag(Stream output, string tag)
     {
         //Storing a 4 character string in 3 bytes
 
-        var tag = 0;
+        var tagValue = 0;
 
-        for (var i = 0; i < label.Length; i++)
+        for (var i = 0; i < tag.Length; i++)
         {
-            tag |= (0x20 | (label[i] & 0x1F)) << (3 - i) * 6;
+            tagValue |= (0x20 | (tag[i] & 0x1F)) << (3 - i) * 6;
         }
 
-        var tagBytes = BitConverter.GetBytes(Convert.ToUInt32(tag));
+        var tagBytes = BitConverter.GetBytes(Convert.ToUInt32(tagValue));
         //shrink and convert endianness
         Array.Resize(ref tagBytes, 3);
         Array.Reverse(tagBytes);
@@ -126,23 +125,23 @@ public static class TdfHelper
             output.WriteByte(new byte());
     }
 
+    public static void WriteType(Stream output, TdfType type)
+    {
+        output.WriteByte((byte)(((uint)type << 4) | 0xF));
+    }
+
     public static void WriteTypeAndLength(Stream output, TdfType type, uint length)
     {
         //length is 15 or more
         if (length >= 0xF)
         {
-            output.WriteByte((byte)(((uint)type << 4) | 0xF));
+            WriteType(output, type);
             WriteLength(output, length);
         }
         else
         {
             output.WriteByte((byte)(((uint)type << 4) | length));
         }
-    }
-
-    public static void WriteType(Stream output, TdfType type)
-    { 
-        output.WriteByte((byte)(((uint)type << 4) | 0xF));
     }
 
     public static (TdfType Type, uint Length)? GetTdfTypeAndLength(Type type, object? value)

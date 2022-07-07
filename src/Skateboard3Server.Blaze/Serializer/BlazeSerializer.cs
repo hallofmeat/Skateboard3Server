@@ -25,7 +25,8 @@ public class BlazeSerializer : IBlazeSerializer
 
         Logger.Trace($"Response generated:{Environment.NewLine}{responseSb}");
     }
-
+    
+    //Public for testing
     public void SerializeObjectProperties(Stream output, object target, StringBuilder responseSb)
     {
         var metadata = TdfHelper.GetTdfMetadata(target.GetType());
@@ -40,7 +41,7 @@ public class BlazeSerializer : IBlazeSerializer
                 continue;
             }
 
-            TdfHelper.WriteLabel(output, meta.Attribute.Tag);
+            TdfHelper.WriteTag(output, meta.Attribute.Tag);
             TdfHelper.WriteTypeAndLength(output, tdfData.Value.Type, tdfData.Value.Length);
 
             responseSb.AppendLine($"{meta.Attribute.Tag} {tdfData.Value.Type} {tdfData.Value.Length}");
@@ -274,14 +275,14 @@ public class BlazeSerializer : IBlazeSerializer
                 {
                     return;
                 }
-                TdfHelper.WriteLabel(output, "VALU");
+                TdfHelper.WriteTag(output, "VALU");
                 TdfHelper.WriteTypeAndLength(output, tdfData.Value.Type, tdfData.Value.Length);
                 responseSb.AppendLine($"{tdfData.Value.Type} {tdfData.Value.Length}");
 
                 SerializeType(output, unionValueType, valueValue, responseSb);
             }
         }
-        else if (propertyType.IsClass) //Struct?
+        else if (propertyType.IsClass) //Struct
         {
             if (propertyValue != null)
             {
