@@ -39,7 +39,7 @@ EXPOSE 10744
 # telemetry
 EXPOSE 9946
 # web
-EXPOSE 8080
+EXPOSE 80
 
 COPY --from=build /app/publish ./
 ENTRYPOINT ["dotnet", "Skateboard3Server.Host.dll"]

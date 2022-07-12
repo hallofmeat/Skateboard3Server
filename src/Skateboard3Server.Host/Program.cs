@@ -74,7 +74,7 @@ public class Program
                         //            .UseConnectionHandler<DummyConnectionHandler>();
                         //    });
                         //downloads.skate.online (HTTP)
-                        serverOptions.ListenAnyIP(8080);
+                        serverOptions.ListenAnyIP(80);
                     })
                     .UseStartup<Startup>();
             });
