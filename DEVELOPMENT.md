@@ -18,7 +18,7 @@ This page contains steps to setup Skateboard3Server for local development.
   * Set Network Status to `Connected`
   * Set PSN Status to `RPCN`
   * Keep DNS as `8.8.8.8`
-  * Set IP/Host Switches to `gosredirector.ea.com=127.0.0.1&&downloads.skate.online.ea.com=127.0.0.1&&gosredirector.stest.ea.com=127.0.0.1&&downloads.skate.test.online.ea.com=127.0.0.1&&osmium=127.0.0.1`
+  * Set IP/Host Switches to `gosredirector.ea.com=127.0.0.1&&downloads.skate.online.ea.com=127.0.0.1&&gosredirector.stest.ea.com=127.0.0.1&&downloads.skate.test.online.ea.com=127.0.0.1`
 
 ### Windows
 
