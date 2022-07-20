@@ -51,7 +51,8 @@ public class Program
                                 options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
                                     .UseConnectionHandler<BlazeConnectionHandler>();
                             });
-                        //eadpgs-blapp001 (Blaze) [TCP] //TODO: should be ssl
+                        //eadpgs-blapp001 (Blaze) [TCP]
+                        //This normally is ssl but we would need to patch the game to accept our certificate since they use their own internal cert storage
                         serverOptions.ListenAnyIP(10744,
                             options =>
                             {
