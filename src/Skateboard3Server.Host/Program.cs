@@ -44,14 +44,14 @@ public class Program
             {
                 webBuilder.ConfigureKestrel(serverOptions =>
                     {
-                        //gosredirector (Blaze)
+                        //gosredirector (Blaze) [TCP]
                         serverOptions.ListenAnyIP(42100,
                             options =>
                             {
                                 options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
                                     .UseConnectionHandler<BlazeConnectionHandler>();
                             });
-                        //eadpgs-blapp001 (Blaze) //TODO: should be ssl
+                        //eadpgs-blapp001 (Blaze) [TCP] //TODO: should be ssl
                         serverOptions.ListenAnyIP(10744,
                             options =>
                             {
@@ -59,7 +59,7 @@ public class Program
                                     .UseConnectionHandler<BlazeConnectionHandler>();
 
                             });
-                        //gostelemetry //TODO: no idea what format this is in
+                        //gostelemetry [TCP]
                         serverOptions.ListenAnyIP(9946,
                             options =>
                             {
@@ -73,7 +73,7 @@ public class Program
                         //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
                         //            .UseConnectionHandler<DummyConnectionHandler>();
                         //    });
-                        //downloads.skate.online (HTTP)
+                        //downloads.skate.online (HTTP) [TCP]
                         serverOptions.ListenAnyIP(80);
                     })
                     .UseStartup<Startup>();
