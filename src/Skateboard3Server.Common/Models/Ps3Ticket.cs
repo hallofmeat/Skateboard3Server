@@ -31,9 +31,9 @@ public class TicketBody
 
     public string Username { get; set; } //online_id
 
-    public string Region { get; set; } 
+    public string Region { get; set; } //region
 
-    public byte Language { get; set; }
+    public byte Language { get; set; } //language
 
     public string Domain { get; set; } //domain
 
@@ -41,10 +41,13 @@ public class TicketBody
 
     public DateOfBirth DateOfBirth { get; set; } //date_of_birth
 
-    public byte Age { get; set; }
+    public byte Age { get; set; } //age
 
     public byte Status { get; set; } //status
 
+    public string UnknownStringOne { get; set; } //unknown_string_one
+
+    public string UnknownStringTwo { get; set; } //unknown_string_two
 }
 
 public class TicketFooter
