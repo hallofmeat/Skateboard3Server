@@ -1,16 +1,47 @@
 ﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Skateboard3Server</title>
-    <link rel="stylesheet" href="~/skateboard.css"/>
-</head>
-<body>
-<div class="container">
-    @RenderBody()
-</div>
-<script src="~/skateboard.js" asp-append-version="true"></script>
-@RenderSection("Scripts", false)
-</body>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>@ViewData["Title"] - Skateboard 3</title>
+		<link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+		<link rel="stylesheet" href="~/css/skateboard.css"/>
+    </head>
+	<body onLoad="onPageLoad();">
+		<div class="header">
+			<div class="headerSkateboard">skateboard.</div><div class="headerTitle">@ViewData["Title"]</div>
+		</div>
+
+		<div class="hr"></div>
+		
+		@RenderBody()
+		
+		<div class="hr footerHR"></div>
+		
+		<div class="footer">
+			<!-- TODO - Remove (debug code) -->
+			<a id="select_button" href="/skate3/webkit/PS3/English/i/Test">
+				<img src="/images/buttons/PS3/PS3_Select.png" width="30" height="30" />
+			</a>
+			Input Test
+			<a id="start_button" href="quitwebkit://">
+				<img src="/images/buttons/PS3/PS3_Start.png" width="30" height="30" />
+			</a>
+			Close
+			<!-- TODO - (end of debug code) -->
+			
+			<div class="footerNavButtons">
+				<div class="footerSelect">
+					<img src="/images/buttons/PS3/PS3_Cross.png" width="30" height="30" />
+					Select
+				</div>
+				<div class="footerBack">
+					<img src="/images/buttons/PS3/PS3_Circle.png" width="30" height="30" />
+					Back
+				</div>
+			</div>
+		</div>
+		
+		@RenderSection("Scripts", false)
+	</body>
 </html>

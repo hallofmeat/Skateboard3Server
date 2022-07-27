@@ -1,0 +1,163 @@
+﻿@{
+    ViewData["Title"] = "Solo Overall Leaderboards";
+}
+
+<script>
+    // TODO - Web Browser Debug
+    document.onkeydown = checkKey;
+
+    function checkKey(e) {
+
+        e = e || window.event;
+
+        if (e.keyCode == '13') {
+            // enter
+            selectElement();
+        }
+        if (e.keyCode == '27') {
+            // esc
+            history.back();
+        }
+        if (e.keyCode == '38') {
+            // up arrow
+        }
+        else if (e.keyCode == '40') {
+            // down arrow
+        }
+        else if (e.keyCode == '37') {
+           // left arrow
+           selectPrevious();
+        }
+        else if (e.keyCode == '39') {
+           // right arrow
+           selectNext();
+        }
+    }
+    // TODO - End Web Browser Debug
+    
+    function onPageLoad() {
+        document.getElementById('paginationNext').style.visibility = "visible";
+        document.getElementsByClassName('hr')[0].remove();
+    }
+
+    function selectElement() {
+        var selectedId = document.getElementsByClassName('isSelected')[0].id;
+        var loc = document.getElementById(selectedId).getAttribute("href");
+        window.location = loc;
+    }
+
+    function selectPrevious() {
+        var index = parseInt(document.getElementById('index').value, 10);
+        if (index === 0) {
+            var pagPrev = document.getElementById("paginationPrevious");
+            pagPrev.className += " isSelected";
+            var pagNext = document.getElementById("paginationNext");
+            pagNext.className = "card card-pagination card-pagination-next";
+            document.getElementById('paginationSelected').value = 0;
+        }
+    }
+
+    function selectNext() {
+        var index = parseInt(document.getElementById('index').value, 10);
+        if (index === 0) {
+            var pagPrev = document.getElementById("paginationPrevious");
+            pagPrev.className = "card card-pagination card-pagination-previous";
+            var pagNext = document.getElementById("paginationNext");
+            pagNext.className += " isSelected";
+            document.getElementById('paginationSelected').value = 1;
+        }
+    }
+</script>
+
+<div class="tabBar">
+    <img class="floatLeft" src="/images/buttons/PS3/PS3_L2.png" width="40" height="40" /><a id="l2_button" onClick="javascript:alert('L2');"></a>
+    <div id="tabTop" class="tab tabSelected"><p>Top</p></div>
+    <div id="tabMyRank" class="tab"><p>My Rank</p></div>
+    <div id="tabFriends" class="tab"><p>Friends</p></div>
+    <img class="floatRight" src="/images/buttons/PS3/PS3_R2.png" width="40" height="40" /><a id="r2_button" onClick="javascript:alert('R2');"></a>
+</div>
+
+<div class="hr"></div>
+
+<div class="content">
+    <div id="Pagination" class="pagination">
+        <div id="paginationPrevious" class="card card-pagination card-pagination-previous"><p>&lt; Previous</p></div>
+        <div id="paginationNext" class="card card-pagination card-pagination-next isSelected"><p>Next &gt;</p></div>
+    </div>
+
+    <table>
+        <colgroup>
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 60%;">
+            <col span="1" style="width: 30%;">
+        </colgroup>
+
+        <tr>
+            <th>Rank</th>
+            <th class="floatLeft">Gamertag</th>
+            <th>Board Sales</th>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">1</td>
+            <td>Skater 1</td>
+            <td class="textAlignCenter">5,000,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">2</td>
+            <td>Skater 2</td>
+            <td class="textAlignCenter">3,500,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">3</td>
+            <td>Skater 3</td>
+            <td class="textAlignCenter">2,750,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">4</td>
+            <td>Skater 4</td>
+            <td class="textAlignCenter">1,500,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">5</td>
+            <td>Skater 5</td>
+            <td class="textAlignCenter">1,000,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">6</td>
+            <td>Skater 6</td>
+            <td class="textAlignCenter">750,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">7</td>
+            <td>Skater 7</td>
+            <td class="textAlignCenter">500,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">8</td>
+            <td>Skater 8</td>
+            <td class="textAlignCenter">250,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">9</td>
+            <td>Skater 9</td>
+            <td class="textAlignCenter">100,000</td>
+        </tr>
+        <tr>
+            <td class="textAlignCenter">10</td>
+            <td>Skater 10</td>
+            <td class="textAlignCenter">50,000</td>
+        </tr>
+    </table>
+
+    <div class="myRankFooter card">
+        <div class="textAlignCenter" style="width: 10%;"><p>3</p></div>
+        <div style="width: 60%;"><p>Skater 3</p></div>
+        <div class="textAlignCenter" style="width: 30%;"><p>2,750,000</p></div>
+    </div>
+    
+    <input type="hidden" id="paginationSelected" value="1"/>
+    <a id="dpad_up_button" onClick="javascript:decrement();"></a>
+    <a id="dpad_down_button" onClick="javascript:increment();"></a>
+    <a id="fake_cross_button" onClick="javascript:selectElement();"></a>
+    <a id="fake_circle_button" onClick="javascript:history.back();"></a>
+</div>

@@ -120,7 +120,6 @@ public class BlazeDeserializerFacts
 
             
         //Assert
-
         var valid = new TestArrayStrings
         {
             ListTest = new List<string>
@@ -191,7 +190,6 @@ public class BlazeDeserializerFacts
 
 
         //Assert
-
         var valid = new TestMapStrings
         {
             MapTest = new Dictionary<int, string>
@@ -234,7 +232,6 @@ public class BlazeDeserializerFacts
 
 
         //Assert
-
         var valid = new TestMapStructs
         {
             MapTest = new Dictionary<string, TestStruct>
@@ -290,8 +287,25 @@ public class BlazeDeserializerFacts
         result.Should().BeEquivalentTo(valid);
     }
 
-    //TODO: test union (pending refactor)
-    //TODO: test empty struct
+    [Fact]
+    public void Parses_empty_struct()
+    {
+        var input = new ReadOnlySequence<byte>(new byte[] { });
 
-   
+        var result = new TestEmptyStruct();
+        var serial = new BlazeDeserializer();
+
+        var testStruct = new TestStruct();
+
+        //Act
+        serial.DeserializeObject(input, result, new StringBuilder());
+
+        //Assert
+        var valid = new TestEmptyStruct{ };
+        Assert.True(result.Equals(valid));
+        Assert.False(testStruct.Equals(valid));
+    }
+
+    //TODO: test union (pending refactor)
+
 }
