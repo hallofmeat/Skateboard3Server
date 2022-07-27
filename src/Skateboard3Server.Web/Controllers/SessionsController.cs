@@ -76,8 +76,7 @@ public class SessionsController : ControllerBase
             return Redirect("/skate3/webkit/PS3/ErrorPages/404");
         }
 
-        return Redirect(
-            $"/skate3/webkit/PS3/English/i/Users/Show/{parsedProfileId}");
+        return Redirect($"/skate3/webkit/PS3/English/i/Users/Show/{parsedProfileId}");
     }
 
     [HttpGet("GameLogin/{sessionKey}/leaderboards")]

@@ -52,6 +52,7 @@ internal record TestStruct
     public string StringTest { get; set; }
 }
 
+internal record TestEmptyStruct { }
 
 internal record TestBasicTypesBlaze
 {

@@ -334,8 +334,23 @@ public class BlazeSerializerFacts
         result.Should().BeEquivalentTo(validBody);
     }
 
-    //TODO: test union (pending refactor, look at other union in c# implementations, our works for now but isnt perfect)
-    //TODO: test empty struct
+    [Fact]
+    public void Generates_empty_struct()
+    {
+        var input = new TestEmptyStruct{ };
 
-   
+        var serial = new BlazeSerializer();
+        var resultStream = new MemoryStream();
+
+        //Act
+        serial.SerializeObjectProperties(resultStream, input, new StringBuilder());
+
+        //Assert
+        var validBody = new byte[] { };
+        var result = resultStream.ToArray();
+        result.Should().BeEquivalentTo(validBody);
+    }
+
+    //TODO: test union (pending refactor, look at other union in c# implementations, our works for now but isnt perfect)
+
 }

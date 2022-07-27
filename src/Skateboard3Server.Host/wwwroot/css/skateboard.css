@@ -1,0 +1,239 @@
+﻿body {
+    background-color: darkgrey;
+    padding: 0 215px 0 215px;
+    margin: 0px;
+    font-family: "Arial", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    letter-spacing: 1pt;
+    width: 850px;
+    height: 720px;
+}
+
+.header,
+.footer
+{
+    background-color: black;
+    color: white;
+    width: 830px;
+    height: 30px;
+    padding: 10px 10px;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 1pt;
+}
+
+.headerSkateboard {
+    float: left;
+}
+
+.headerTitle {
+    font-size: 25px;
+    float: left;
+}
+
+.footer {
+    position: absolute;
+    top: 670px;
+}
+
+/* TODO - Better solution */
+.footerNavButtons {
+    float: right;
+    display: inline;
+}
+
+/* TODO - Better solution */
+.footerSelect,
+.footerSelect > img,
+.footerBack,
+.footerBack > img
+{
+    display: inline;
+}
+
+.hr {
+    background-color: #456992;
+    color: #456992;
+    height: 3px;
+    width: 850px;
+    margin: 0px;
+}
+
+.footerHR {
+    position: absolute;
+    top: 667px;
+}
+
+.content {
+    background-image: url('../images/background.png');
+    padding: 10px 20px;
+    width: 810px;
+    height: 594px;
+}
+
+a {
+    text-decoration: none;
+}
+
+p {
+    margin: 0px;
+}
+
+.card {
+    background-color: #2C3C56;
+    color: #BCD9F5;
+    border: 2px solid #45566C;
+}
+
+.isSelected {
+    background-color: #17273F;
+    color: white;
+    border: 2px solid #89DDFF;
+}
+
+.pagination {
+    height: 45px;
+}
+
+.card-pagination {
+    width: 395px;
+    height: 40px;
+    font-size: 21px;
+}
+
+.card-pagination > p {
+    height: 100%;
+    margin-top: 9px;
+}
+
+#paginationPrevious {
+    visibility: hidden;
+}
+
+.card-pagination-previous {
+    float: left;
+}
+
+.card-pagination-previous > p {
+    margin-left: 14px;
+}
+
+.card-pagination-next {
+    float: right;
+}
+
+#paginationNext {
+    visibility: hidden;
+}
+
+.card-pagination-next > p {
+    float: right;
+    margin-right: 14px;
+}
+
+.card-leaderboard-category {
+    width: 450px;
+    height: 75px;
+    margin: 10px auto;
+    font-size: 32px;
+    display: block;
+}
+
+.card-leaderboard-category > img {
+    margin: 14px;
+    float: left;
+}
+
+.card-leaderboard-category > p {
+    margin-top: 18px;
+}
+
+.tabBar {
+    background-color: black;
+    height: 40px;
+    font-size: 21px;
+}
+
+.tabBar> img {
+    margin: 0px 5px;
+}
+
+.tab {
+    background-color: #1F2D3C;
+    color: #525F6A;
+    float: left;
+    margin: 0px 10px;
+    height: 40px;
+}
+
+.tab > p {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.tab.tabSelected {
+    background-color: #1C2B44;
+    color: #9BDEEC;
+    /* top right bottom left */
+    border-width: 3px 3px 0px 3px;
+    border-style: solid solid none solid;
+    border-color: #456992 #456992 #000 #456992;
+}
+
+#tabTop {
+    width: 135px;
+}
+
+#tabMyRank {
+    width: 299px;
+}
+
+#tabFriends {
+    width: 250px;
+}
+
+table {
+    width: 810px;
+    margin: 10px 0px;
+}
+
+th {
+    color: #42556C;
+    font-size: 16px;
+}
+
+tr {
+    color: #617587;
+    height: 40px;
+    font-size: 21px;
+}
+
+.myRankFooter {
+    width: 806px;
+    height: 40px;
+    color: #A9B8C7;
+    font-size: 21px;
+}
+
+.myRankFooter > div {
+    float: left;
+    height: 100%;
+}
+
+.myRankFooter > div > p {
+    height: 100%;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.textAlignCenter {
+    text-align: center;
+}

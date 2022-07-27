@@ -2,6 +2,151 @@
     ViewData["Title"] = "Leaderboards";
 }
 
+<script>
+    // TODO - Web Browser Debug
+    document.onkeydown = checkKey;
+
+    function checkKey(e) {
+
+        e = e || window.event;
+
+        if (e.keyCode == '13') {
+            // enter
+            selectElement();
+        }
+        if (e.keyCode == '27') {
+            // esc
+            history.back();
+        }
+        if (e.keyCode == '38') {
+            // up arrow
+            decrement();
+        }
+        else if (e.keyCode == '40') {
+            // down arrow
+            increment();
+        }
+        else if (e.keyCode == '37') {
+           // left arrow
+        }
+        else if (e.keyCode == '39') {
+           // right arrow
+        }
+    }
+    // TODO - End Web Browser Debug
+
+    function selectElement() {
+        var selectedId = document.getElementsByClassName('isSelected')[0].id;
+        var loc = document.getElementById(selectedId).getAttribute("href");
+        window.location = loc;
+    }
+
+    function increment() {
+        // Get index value
+        var index = parseInt(document.getElementById('index').value, 10);
+
+        // Increment
+        index++;
+
+        // If over the max, reset
+        if (index > 3) {
+            index = 0;
+        }
+        
+        // Select card based on index, de-select previous card
+        var solo = document.getElementById("Solo");
+        var team = document.getElementById("Team");
+        var ots = document.getElementById("OtS");
+        var dr = document.getElementById("Deathrace");
+        switch(index) {
+            case 0:
+                dr.className = "card card-leaderboard-category";
+                solo.className += " isSelected";
+                break;
+            case 1:
+                solo.className = "card card-leaderboard-category";
+                team.className += " isSelected";
+                break;
+            case 2:
+                team.className = "card card-leaderboard-category";
+                ots.className += " isSelected";
+                break;
+            case 3:
+                ots.className = "card card-leaderboard-category";
+                dr.className += " isSelected";
+                break;
+            default:
+                break;
+        }
+
+        // Set value to hidden input
+        document.getElementById('index').value = index;
+    }
+
+    function decrement() {
+        // Get index value
+        var index = parseInt(document.getElementById('index').value, 10);
+
+        // If zero set back to max
+        if (index === 0) {
+            index = 3;
+        } else {
+            index--;
+        }
+
+        // Select card based on index, de-select previous card
+        var solo = document.getElementById("Solo");        //0
+        var team = document.getElementById("Team");        //1
+        var ots = document.getElementById("OtS");          //2
+        var dr = document.getElementById("Deathrace");     //3
+        switch(index) {
+            case 0:
+                team.className = "card card-leaderboard-category";
+                solo.className += " isSelected";
+                break;
+            case 1:
+                ots.className = "card card-leaderboard-category";
+                team.className += " isSelected";
+                break;
+            case 2:
+                dr.className = "card card-leaderboard-category";
+                ots.className += " isSelected";
+                break;
+            case 3:
+                solo.className = "card card-leaderboard-category";
+                dr.className += " isSelected";
+                break;
+            default:
+                break;
+        }
+
+        // Set value to hidden input
+        document.getElementById('index').value = index;
+    }
+</script>
+
 <div class="content">
-    <p>Leaderboards Page</p>
+    <div id="Pagination" class="pagination">
+        <div id="paginationPrevious" class="card card-pagination card-pagination-previous"><p>&lt; Previous</p></div>
+        <div id="paginationNext" class="card card-pagination card-pagination-next"><p>Next &gt;</p></div>
+    </div>
+
+    <a id="Solo" class="card card-leaderboard-category isSelected" href="/skate3/webkit/PS3/English/i/Leaderboards/Solo">
+        <img src="/images/decks.png" /><p>Solo</p>
+    </a>
+    <a id="Team" class="card card-leaderboard-category" href="/skate3/webkit/PS3/English/i/Leaderboards/Team">
+        <img src="/images/decks.png" /><p>Team</p>
+    </a>
+    <a id="OtS" class="card card-leaderboard-category" href="/skate3/webkit/PS3/English/i/Leaderboards/OtS">
+        <img src="/images/decks.png" /><p>Own the Spot</p>
+    </a>
+    <a id="Deathrace" class="card card-leaderboard-category" href="/skate3/webkit/PS3/English/i/Leaderboards/Deathrace">
+        <img src="/images/decks.png" /><p>Deathrace</p>
+    </a>
+
+    <input type="hidden" id="index" value="0"/>
+    <a id="dpad_up_button" onClick="javascript:decrement();"></a>
+    <a id="dpad_down_button" onClick="javascript:increment();"></a>
+    <a id="fake_cross_button" onClick="javascript:selectElement();"></a>
+    <a id="fake_circle_button" onClick="javascript:history.back();"></a>
 </div>
