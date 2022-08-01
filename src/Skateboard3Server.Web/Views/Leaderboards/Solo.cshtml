@@ -34,10 +34,6 @@
         }
     }
     // TODO - End Web Browser Debug
-    
-    function onPageLoad() {
-        document.getElementById('paginationNext').style.visibility = "visible";
-    }
 
     function selectElement() {
         var selectedId = document.getElementsByClassName('isSelected')[0].id;
@@ -45,87 +41,51 @@
         window.location = loc;
     }
 
-    function selectPrevious() {
-        var index = parseInt(document.getElementById('index').value, 10);
-        if (index === 0) {
-            var pagPrev = document.getElementById("paginationPrevious");
-            pagPrev.className += " isSelected";
-            var pagNext = document.getElementById("paginationNext");
-            pagNext.className = "card card-pagination card-pagination-next";
-            document.getElementById('paginationSelected').value = 0;
-        }
-    }
-
-    function selectNext() {
-        var index = parseInt(document.getElementById('index').value, 10);
-        if (index === 0) {
-            var pagPrev = document.getElementById("paginationPrevious");
-            pagPrev.className = "card card-pagination card-pagination-previous";
-            var pagNext = document.getElementById("paginationNext");
-            pagNext.className += " isSelected";
-            document.getElementById('paginationSelected').value = 1;
-        }
-    }
-
     function increment() {
         // Get index value
         var index = parseInt(document.getElementById('index').value, 10);
 
         // Increment
-        index++;
-
-        // If over the max, reset
-        if (index > 5) {
-            index = 0;
-        }
+        if (index === 5) {
+            // Do nothing
+        } else {
+            index++;
         
-        // Select card based on index, de-select previous card
-        var pag = document.getElementById("Pagination");        //0
-        var obs = document.getElementById("OverallBoardSales"); //1
-        var sre = document.getElementById("SoloRankedEvents");  //2
-        var rbs = document.getElementById("RoyaltyBoardSales"); //3
-        var cviews = document.getElementById("ContentViews");   //4
-        var cvotes = document.getElementById("ContentVotes");   //5
-        var pagPrev = document.getElementById("paginationPrevious");
-        var pagNext = document.getElementById("paginationNext");
-        switch(index) {
-            case 0:
-                cvotes.className = "card card-leaderboard-category";
+            // Select card based on index, de-select previous card
+            var obs = document.getElementById("OverallBoardSales"); //0
+            var sre = document.getElementById("SoloRankedEvents");  //1
+            var rbs = document.getElementById("RoyaltyBoardSales"); //2
+            var cviews = document.getElementById("ContentViews");   //3
+            var cvotes = document.getElementById("ContentVotes");   //4
+            var pr = document.getElementById("PlayerRecords");      //5
+            switch(index) {
+                case 1:
+                    obs.className = "card card-leaderboard-category";
+                    sre.className += " isSelected";
+                    break;
+                case 2:
+                    sre.className = "card card-leaderboard-category";
+                    rbs.className += " isSelected";
+                    break;
+                case 3:
+                    rbs.className = "card card-leaderboard-category";
+                    cviews.className += " isSelected";
+                    break;
+                case 4:
+                    cviews.className = "card card-leaderboard-category";
+                    cvotes.className += " isSelected";
+                    break;
+                case 5:
+                    cvotes.className = "card card-leaderboard-category";
+                    pr.className += " isSelected";
+                    break;
+                default:
+                    break;
+            }
 
-                var pagSelected = document.getElementById('paginationSelected').value;
-                if (pagSelected == 0) {
-                    pagPrev.className += " isSelected";
-                } else if (pagSelected == 1) {
-                    pagNext.className += " isSelected";
-                }
-                break;
-            case 1:
-                pagPrev.className = "card card-pagination card-pagination-previous";
-                pagNext.className = "card card-pagination card-pagination-next";
-                obs.className += " isSelected";
-                break;
-            case 2:
-                obs.className = "card card-leaderboard-category";
-                sre.className += " isSelected";
-                break;
-            case 3:
-                sre.className = "card card-leaderboard-category";
-                rbs.className += " isSelected";
-                break;
-            case 4:
-                rbs.className = "card card-leaderboard-category";
-                cviews.className += " isSelected";
-                break;
-            case 5:
-                cviews.className = "card card-leaderboard-category";
-                cvotes.className += " isSelected";
-                break;
-            default:
-                break;
+            // Set value to hidden input
+            document.getElementById('index').value = index;
         }
-
-        // Set value to hidden input
-        document.getElementById('index').value = index;
     }
 
     function decrement() {
@@ -134,87 +94,74 @@
 
         // If zero set back to max
         if (index === 0) {
-            index = 5;
+            // Do nothing
         } else {
             index--;
-        }
 
-        // Select card based on index, de-select previous card
-        var pag = document.getElementById("Pagination");        //0
-        var obs = document.getElementById("OverallBoardSales"); //1
-        var sre = document.getElementById("SoloRankedEvents");  //2
-        var rbs = document.getElementById("RoyaltyBoardSales"); //3
-        var cviews = document.getElementById("ContentViews");   //4
-        var cvotes = document.getElementById("ContentVotes");   //5
-        var pagPrev = document.getElementById("paginationPrevious");
-        var pagNext = document.getElementById("paginationNext");
-        switch(index) {
-            case 0:
-                obs.className = "card card-leaderboard-category";
-                var pagSelected = document.getElementById('paginationSelected').value;
-                if (pagSelected == 0) {
-                    pagPrev.className += " isSelected";
-                } else if (pagSelected == 1) {
-                    pagNext.className += " isSelected";
-                }
-                break;
-            case 1:
-                sre.className = "card card-leaderboard-category";
-                obs.className += " isSelected";
-                break;
-            case 2:
-                rbs.className = "card card-leaderboard-category";
-                sre.className += " isSelected";
-                break;
-            case 3:
-                cviews.className = "card card-leaderboard-category";
-                rbs.className += " isSelected";
-                break;
-            case 4:
-                cvotes.className = "card card-leaderboard-category";
-                cviews.className += " isSelected";
-                break;
-            case 5:
-                pagPrev.className = "card card-pagination card-pagination-previous";
-                pagNext.className = "card card-pagination card-pagination-next";
-                cvotes.className += " isSelected";
-                break;
-            default:
-                break;
-        }
+            // Select card based on index, de-select previous card
+            var obs = document.getElementById("OverallBoardSales"); //0
+            var sre = document.getElementById("SoloRankedEvents");  //1
+            var rbs = document.getElementById("RoyaltyBoardSales"); //2
+            var cviews = document.getElementById("ContentViews");   //3
+            var cvotes = document.getElementById("ContentVotes");   //4
+            var pr = document.getElementById("PlayerRecords");      //5
+            switch(index) {
+                case 0:
+                    sre.className = "card card-leaderboard-category";
+                    obs.className += " isSelected";
+                    break;
+                case 1:
+                    rbs.className = "card card-leaderboard-category";
+                    sre.className += " isSelected";
+                    break;
+                case 2:
+                    cviews.className = "card card-leaderboard-category";
+                    rbs.className += " isSelected";
+                    break;
+                case 3:
+                    cvotes.className = "card card-leaderboard-category";
+                    cviews.className += " isSelected";
+                    break;
+                case 4:
+                    pr.className = "card card-leaderboard-category";
+                    cvotes.className += " isSelected";
+                    break;
+                default:
+                    break;
+            }
 
-        // Set value to hidden input
-        document.getElementById('index').value = index;
+            // Set value to hidden input
+            document.getElementById('index').value = index;
+        }
     }
 </script>
 
 <div class="content">
     <div id="Pagination" class="pagination">
         <div id="paginationPrevious" class="card card-pagination card-pagination-previous"><p>&lt; Previous</p></div>
-        <div id="paginationNext" class="card card-pagination card-pagination-next isSelected"><p>Next &gt;</p></div>
+        <div id="paginationNext" class="card card-pagination card-pagination-next"><p>Next &gt;</p></div>
     </div>
 
-    <a id="OverallBoardSales" class="card card-leaderboard-category" href="/skate3/webkit/PS3/English/i/Leaderboards/Solo/Overall">
-        <img src="/images/decks.png" /><p>Overall Board Sales</p>
+    <a id="OverallBoardSales" class="card card-leaderboard-category isSelected" href="/skate3/webkit/PS3/English/i/Leaderboards/Solo/Overall">
+        <img src="/images/decks.png" />Overall Board Sales
     </a>
     <a id="SoloRankedEvents" class="card card-leaderboard-category">
-        <img src="/images/decks.png" /><p>Solo Ranked Events</p>
+        <img src="/images/decks.png" />Solo Ranked Events
     </a>
     <a id="RoyaltyBoardSales" class="card card-leaderboard-category">
-        <img src="/images/decks.png" /><p>Royalty Board Sales</p>
+        <img src="/images/decks.png" />Royalty Board Sales
     </a>
     <a id="ContentViews" class="card card-leaderboard-category">
-        <img src="/images/decks.png" /><p>Content Views</p>
+        <img src="/images/decks.png" />Content Views
     </a>
     <a id="ContentVotes" class="card card-leaderboard-category">
-        <img src="/images/decks.png" /><p>Content Votes</p>
+        <img src="/images/decks.png" />Content Votes
     </a>
     <a id="PlayerRecords" class="card card-leaderboard-category">
-        <img src="/images/decks.png" /><p>Player Records</p>
+        <img src="/images/decks.png" />Player Records
     </a>
     
     <input type="hidden" id="index" value="0"/>
-    <input type="hidden" id="paginationSelected" value="1"/>
     <a id="dpad_up_button" onClick="javascript:decrement();"></a>
     <a id="dpad_down_button" onClick="javascript:increment();"></a>
     <a id="fake_cross_button" onClick="javascript:selectElement();"></a>

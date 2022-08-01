@@ -45,42 +45,40 @@
         // Get index value
         var index = parseInt(document.getElementById('index').value, 10);
 
-        // Increment
-        index++;
-
-        // If over the max, reset
-        if (index > 3) {
-            index = 0;
-        }
+        if (index === 3) {
+            // Do nothing
+        } else {
+            index++;
         
-        // Select card based on index, de-select previous card
-        var solo = document.getElementById("Solo");
-        var team = document.getElementById("Team");
-        var ots = document.getElementById("OtS");
-        var dr = document.getElementById("Deathrace");
-        switch(index) {
-            case 0:
-                dr.className = "card card-leaderboard-category";
-                solo.className += " isSelected";
-                break;
-            case 1:
-                solo.className = "card card-leaderboard-category";
-                team.className += " isSelected";
-                break;
-            case 2:
-                team.className = "card card-leaderboard-category";
-                ots.className += " isSelected";
-                break;
-            case 3:
-                ots.className = "card card-leaderboard-category";
-                dr.className += " isSelected";
-                break;
-            default:
-                break;
-        }
+            // Select card based on index, de-select previous card
+            var solo = document.getElementById("Solo");
+            var team = document.getElementById("Team");
+            var ots = document.getElementById("OtS");
+            var dr = document.getElementById("Deathrace");
+            switch(index) {
+                case 0:
+                    dr.className = "card card-leaderboard-category";
+                    solo.className += " isSelected";
+                    break;
+                case 1:
+                    solo.className = "card card-leaderboard-category";
+                    team.className += " isSelected";
+                    break;
+                case 2:
+                    team.className = "card card-leaderboard-category";
+                    ots.className += " isSelected";
+                    break;
+                case 3:
+                    ots.className = "card card-leaderboard-category";
+                    dr.className += " isSelected";
+                    break;
+                default:
+                    break;
+            }
 
-        // Set value to hidden input
-        document.getElementById('index').value = index;
+            // Set value to hidden input
+            document.getElementById('index').value = index;
+        }
     }
 
     function decrement() {
@@ -89,39 +87,39 @@
 
         // If zero set back to max
         if (index === 0) {
-            index = 3;
+            // Do nothing
         } else {
             index--;
-        }
 
-        // Select card based on index, de-select previous card
-        var solo = document.getElementById("Solo");        //0
-        var team = document.getElementById("Team");        //1
-        var ots = document.getElementById("OtS");          //2
-        var dr = document.getElementById("Deathrace");     //3
-        switch(index) {
-            case 0:
-                team.className = "card card-leaderboard-category";
-                solo.className += " isSelected";
-                break;
-            case 1:
-                ots.className = "card card-leaderboard-category";
-                team.className += " isSelected";
-                break;
-            case 2:
-                dr.className = "card card-leaderboard-category";
-                ots.className += " isSelected";
-                break;
-            case 3:
-                solo.className = "card card-leaderboard-category";
-                dr.className += " isSelected";
-                break;
-            default:
-                break;
-        }
+            // Select card based on index, de-select previous card
+            var solo = document.getElementById("Solo");        //0
+            var team = document.getElementById("Team");        //1
+            var ots = document.getElementById("OtS");          //2
+            var dr = document.getElementById("Deathrace");     //3
+            switch(index) {
+                case 0:
+                    team.className = "card card-leaderboard-category";
+                    solo.className += " isSelected";
+                    break;
+                case 1:
+                    ots.className = "card card-leaderboard-category";
+                    team.className += " isSelected";
+                    break;
+                case 2:
+                    dr.className = "card card-leaderboard-category";
+                    ots.className += " isSelected";
+                    break;
+                case 3:
+                    solo.className = "card card-leaderboard-category";
+                    dr.className += " isSelected";
+                    break;
+                default:
+                    break;
+            }
 
-        // Set value to hidden input
-        document.getElementById('index').value = index;
+            // Set value to hidden input
+            document.getElementById('index').value = index;
+        }
     }
 </script>
 
@@ -132,16 +130,16 @@
     </div>
 
     <a id="Solo" class="card card-leaderboard-category isSelected" href="/skate3/webkit/PS3/English/i/Leaderboards/Solo">
-        <img src="/images/decks.png" /><p>Solo</p>
+        <img src="/images/decks.png" />Solo
     </a>
     <a id="Team" class="card card-leaderboard-category" href="/skate3/webkit/PS3/English/i/Leaderboards/Team">
-        <img src="/images/decks.png" /><p>Team</p>
+        <img src="/images/decks.png" />Team
     </a>
     <a id="OtS" class="card card-leaderboard-category" href="/skate3/webkit/PS3/English/i/Leaderboards/OtS">
-        <img src="/images/decks.png" /><p>Own the Spot</p>
+        <img src="/images/decks.png" />Own the Spot
     </a>
     <a id="Deathrace" class="card card-leaderboard-category" href="/skate3/webkit/PS3/English/i/Leaderboards/Deathrace">
-        <img src="/images/decks.png" /><p>Deathrace</p>
+        <img src="/images/decks.png" />Deathrace
     </a>
 
     <input type="hidden" id="index" value="0"/>
