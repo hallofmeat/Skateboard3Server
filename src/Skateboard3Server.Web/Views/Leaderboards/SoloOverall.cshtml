@@ -32,8 +32,25 @@
            // right arrow
            selectNext();
         }
+        else if (e.keyCode == '69') {
+           // e
+           incrementTab();
+        }
+        else if (e.keyCode == '81') {
+           // q
+           decrementTab();
+        }
     }
     // TODO - End Web Browser Debug
+
+    // Create Element.remove() function if not exist
+    if (!('remove' in Element.prototype)) {
+        Element.prototype.remove = function() {
+            if (this.parentNode) {
+                this.parentNode.removeChild(this);
+            }
+        };
+    }
     
     function onPageLoad() {
         document.getElementById('paginationNext').style.visibility = "visible";
@@ -46,6 +63,7 @@
         window.location = loc;
     }
 
+    //TODO - Fix
     function selectPrevious() {
         var index = parseInt(document.getElementById('index').value, 10);
         if (index === 0) {
@@ -57,6 +75,7 @@
         }
     }
 
+    //TODO - Fix
     function selectNext() {
         var index = parseInt(document.getElementById('index').value, 10);
         if (index === 0) {
@@ -65,6 +84,74 @@
             var pagNext = document.getElementById("paginationNext");
             pagNext.className += " isSelected";
             document.getElementById('paginationSelected').value = 1;
+        }
+    }
+
+    function decrementTab() {
+        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        if (index === 0) {
+            // Do nothing
+        } else {
+            index--;
+
+            var tabTop = document.getElementById("tabTop");         //0
+            var tabMyRank = document.getElementById("tabMyRank");   //1
+            var tabFriends = document.getElementById("tabFriends"); //2
+            var tabTopContent = document.getElementById("tabTopContent");
+            var tabMyRankContent = document.getElementById("tabMyRankContent");
+            var tabFriendsContent = document.getElementById("tabFriendsContent");
+            switch(index) {
+                case 0:
+                    tabTop.className += " tabSelected";
+                    tabTopContent.style.display = "block"
+                    tabMyRank.className = "tab";
+                    tabMyRankContent.style.display = "none"
+                    break;
+                case 1:
+                    tabMyRank.className += " tabSelected";
+                    tabMyRankContent.style.display = "block"
+                    tabFriends.className = "tab";
+                    tabFriendsContent.style.display = "none"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById('tabSelected').value = index;
+        }
+    }
+
+    function incrementTab() {
+        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        if (index === 2) {
+            // Do nothing
+        } else {
+            index++;
+
+            var tabTop = document.getElementById("tabTop");         //0
+            var tabMyRank = document.getElementById("tabMyRank");   //1
+            var tabFriends = document.getElementById("tabFriends"); //2
+            var tabTopContent = document.getElementById("tabTopContent");
+            var tabMyRankContent = document.getElementById("tabMyRankContent");
+            var tabFriendsContent = document.getElementById("tabFriendsContent");
+            switch(index) {
+                case 1:
+                    tabMyRank.className += " tabSelected";
+                    tabMyRankContent.style.display = "block"
+                    tabTop.className = "tab";
+                    tabTopContent.style.display = "none"
+                    break;
+                case 2:
+                    tabFriends.className += " tabSelected";
+                    tabFriendsContent.style.display = "block"
+                    tabMyRank.className = "tab";
+                    tabMyRankContent.style.display = "none"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById('tabSelected').value = index;
         }
     }
 </script>
@@ -80,84 +167,97 @@
 <div class="hr"></div>
 
 <div class="content">
-    <div id="Pagination" class="pagination">
-        <div id="paginationPrevious" class="card card-pagination card-pagination-previous"><p>&lt; Previous</p></div>
-        <div id="paginationNext" class="card card-pagination card-pagination-next isSelected"><p>Next &gt;</p></div>
+    <div id="tabTopContent">
+        <div id="Pagination" class="pagination">
+            <div id="paginationPrevious" class="card card-pagination card-pagination-previous"><p>&lt; Previous</p></div>
+            <div id="paginationNext" class="card card-pagination card-pagination-next isSelected"><p>Next &gt;</p></div>
+        </div>
+
+        <table>
+            <colgroup>
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 60%;">
+                <col span="1" style="width: 30%;">
+            </colgroup>
+
+            <tr>
+                <th>Rank</th>
+                <th class="floatLeft" style="padding-top: 11px;">Gamertag</th>
+                <th>Board Sales</th>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">1</td>
+                <td>Skater 1</td>
+                <td class="textAlignCenter">5,000,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">2</td>
+                <td>Skater 2</td>
+                <td class="textAlignCenter">3,500,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">3</td>
+                <td>Skater 3</td>
+                <td class="textAlignCenter">2,750,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">4</td>
+                <td>Skater 4</td>
+                <td class="textAlignCenter">1,500,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">5</td>
+                <td>Skater 5</td>
+                <td class="textAlignCenter">1,000,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">6</td>
+                <td>Skater 6</td>
+                <td class="textAlignCenter">750,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">7</td>
+                <td>Skater 7</td>
+                <td class="textAlignCenter">500,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">8</td>
+                <td>Skater 8</td>
+                <td class="textAlignCenter">250,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">9</td>
+                <td>Skater 9</td>
+                <td class="textAlignCenter">100,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">10</td>
+                <td>Skater 10</td>
+                <td class="textAlignCenter">50,000</td>
+            </tr>
+        </table>
+
+        <div class="myRankFooter card">
+            <div class="textAlignCenter" style="width: 10%;">3</div>
+            <div style="width: 60%;">Skater 3</div>
+            <div class="textAlignCenter" style="width: 30%;">2,750,000</div>
+        </div>
     </div>
 
-    <table>
-        <colgroup>
-            <col span="1" style="width: 10%;">
-            <col span="1" style="width: 60%;">
-            <col span="1" style="width: 30%;">
-        </colgroup>
+    <div id="tabMyRankContent" style="display:none;">
+        <div>My Rank Tab Content</div>
+    </div>
 
-        <tr>
-            <th>Rank</th>
-            <th class="floatLeft">Gamertag</th>
-            <th>Board Sales</th>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">1</td>
-            <td>Skater 1</td>
-            <td class="textAlignCenter">5,000,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">2</td>
-            <td>Skater 2</td>
-            <td class="textAlignCenter">3,500,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">3</td>
-            <td>Skater 3</td>
-            <td class="textAlignCenter">2,750,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">4</td>
-            <td>Skater 4</td>
-            <td class="textAlignCenter">1,500,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">5</td>
-            <td>Skater 5</td>
-            <td class="textAlignCenter">1,000,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">6</td>
-            <td>Skater 6</td>
-            <td class="textAlignCenter">750,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">7</td>
-            <td>Skater 7</td>
-            <td class="textAlignCenter">500,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">8</td>
-            <td>Skater 8</td>
-            <td class="textAlignCenter">250,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">9</td>
-            <td>Skater 9</td>
-            <td class="textAlignCenter">100,000</td>
-        </tr>
-        <tr>
-            <td class="textAlignCenter">10</td>
-            <td>Skater 10</td>
-            <td class="textAlignCenter">50,000</td>
-        </tr>
-    </table>
-
-    <div class="myRankFooter card">
-        <div class="textAlignCenter" style="width: 10%;"><p>3</p></div>
-        <div style="width: 60%;"><p>Skater 3</p></div>
-        <div class="textAlignCenter" style="width: 30%;"><p>2,750,000</p></div>
+    <div id="tabFriendsContent" style="display:none;">
+        <div>Friends Tab Content</div>
     </div>
     
     <input type="hidden" id="paginationSelected" value="1"/>
+    <input type="hidden" id="tabSelected" value="0"/>
     <a id="dpad_up_button" onClick="javascript:decrement();"></a>
     <a id="dpad_down_button" onClick="javascript:increment();"></a>
     <a id="fake_cross_button" onClick="javascript:selectElement();"></a>
     <a id="fake_circle_button" onClick="javascript:history.back();"></a>
+    <a id="l2_button" onClick="javascript:decrementTab();"></a>
+    <a id="r2_button" onClick="javascript:incrementTab();"></a>
 </div>

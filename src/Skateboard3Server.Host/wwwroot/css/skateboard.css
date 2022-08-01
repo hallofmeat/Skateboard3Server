@@ -19,18 +19,19 @@
     width: 830px;
     height: 30px;
     padding: 10px 10px;
-    font-weight: 700;
-    font-size: 20px;
+    font-size: 21px;
     letter-spacing: 1pt;
 }
 
 .headerSkateboard {
     float: left;
+    padding-top: 4px;
 }
 
 .headerTitle {
-    font-size: 25px;
     float: left;
+    font-size: 25px;
+    padding-left: 1px;
 }
 
 .footer {
@@ -38,19 +39,35 @@
     top: 670px;
 }
 
-/* TODO - Better solution */
 .footerNavButtons {
-    float: right;
-    display: inline;
+    position: absolute;
+    top: 0px;
 }
 
-/* TODO - Better solution */
-.footerSelect,
-.footerSelect > img,
-.footerBack,
-.footerBack > img
-{
-    display: inline;
+.footerSelect {
+    position: absolute;
+    top: 10px;
+    left: 640px;
+    height: 30px;
+    width: 101px;
+}
+
+.footerSelect > p {
+    float: right;
+    line-height: 30px;
+}
+
+.footerBack {
+    position: absolute;
+    top: 10px;
+    left: 745px;
+    height: 30px;
+    width: 87px;
+}
+
+.footerBack > p {
+    float: right;
+    line-height: 30px;
 }
 
 .hr {
@@ -137,17 +154,14 @@ p {
     width: 450px;
     height: 75px;
     margin: 10px auto;
-    font-size: 32px;
+    font-size: 28px;
+    line-height: 75px;
     display: block;
 }
 
 .card-leaderboard-category > img {
     margin: 14px;
     float: left;
-}
-
-.card-leaderboard-category > p {
-    margin-top: 18px;
 }
 
 .tabBar {
@@ -196,7 +210,7 @@ p {
 
 table {
     width: 810px;
-    margin: 10px 0px;
+    margin: 10px 0px 0px 0px;
 }
 
 th {
@@ -212,17 +226,14 @@ tr {
 
 .myRankFooter {
     width: 806px;
-    height: 40px;
+    height: 45px;
+    line-height: 45px;
     color: #A9B8C7;
     font-size: 21px;
 }
 
 .myRankFooter > div {
     float: left;
-    height: 100%;
-}
-
-.myRankFooter > div > p {
     height: 100%;
 }
 

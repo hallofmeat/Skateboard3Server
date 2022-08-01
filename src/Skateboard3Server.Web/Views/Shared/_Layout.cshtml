@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=8"/>
         <title>@ViewData["Title"] - Skateboard 3</title>
 		<link rel="icon" type="image/x-icon" href="~/favicon.ico" />
 		<link rel="stylesheet" href="~/css/skateboard.css"/>
@@ -33,15 +34,16 @@
 			<div class="footerNavButtons">
 				<div class="footerSelect">
 					<img src="/images/buttons/PS3/PS3_Cross.png" width="30" height="30" />
-					Select
+					<p>Select</p>
 				</div>
 				<div class="footerBack">
 					<img src="/images/buttons/PS3/PS3_Circle.png" width="30" height="30" />
-					Back
+					<p>Back</p>
 				</div>
 			</div>
 		</div>
 		
+		<script src="~/js/skateboard.js" asp-append-version="true"></script>
 		@RenderSection("Scripts", false)
 	</body>
 </html>
