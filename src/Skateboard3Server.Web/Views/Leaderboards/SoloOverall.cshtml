@@ -20,41 +20,24 @@
         }
         if (e.keyCode == '38') {
             // up arrow
+            decrement();
         }
         else if (e.keyCode == '40') {
             // down arrow
+            increment();
         }
         else if (e.keyCode == '37') {
            // left arrow
-           selectPrevious();
         }
         else if (e.keyCode == '39') {
            // right arrow
-           selectNext();
-        }
-        else if (e.keyCode == '69') {
-           // e
-           incrementTab();
-        }
-        else if (e.keyCode == '81') {
-           // q
-           decrementTab();
         }
     }
     // TODO - End Web Browser Debug
 
-    // Create Element.remove() function if not exist
-    if (!('remove' in Element.prototype)) {
-        Element.prototype.remove = function() {
-            if (this.parentNode) {
-                this.parentNode.removeChild(this);
-            }
-        };
-    }
-    
     function onPageLoad() {
         document.getElementById('paginationNext').style.visibility = "visible";
-        document.getElementsByClassName('hr')[0].remove();
+        document.getElementById('paginationNext').className += " isSelected";
     }
 
     function selectElement() {
@@ -63,201 +46,144 @@
         window.location = loc;
     }
 
-    //TODO - Fix
-    function selectPrevious() {
+    function increment() {
+        // Get index value
         var index = parseInt(document.getElementById('index').value, 10);
-        if (index === 0) {
-            var pagPrev = document.getElementById("paginationPrevious");
-            pagPrev.className += " isSelected";
-            var pagNext = document.getElementById("paginationNext");
-            pagNext.className = "card card-pagination card-pagination-next";
-            document.getElementById('paginationSelected').value = 0;
+
+        // Increment
+        if (index === 5) {
+            // Do nothing
+        } else {
+            index++;
+        
+            // Select card based on index, de-select previous card
+            var pagePrev = document.getElementById("paginationPrevious"); //0
+            var pageNext = document.getElementById("paginationNext");
+            var osr = document.getElementById("OverallSoloRanked");       //1
+            var srd = document.getElementById("SoloRankedDeathrace");     //2
+            var srs = document.getElementById("SoloRankedStreet");        //3
+            var srt = document.getElementById("SoloRankedTranny");        //4
+            var srk = document.getElementById("SoloRankedSKATE");         //5
+            switch(index) {
+                case 1:
+                    pagePrev.className = "card card-pagination card-pagination-previous";
+                    pageNext.className = "card card-pagination card-pagination-next";
+                    osr.className += " isSelected";
+                    break;
+                case 2:
+                    osr.className = "card card-leaderboard-category";
+                    srd.className += " isSelected";
+                    break;
+                case 3:
+                    srd.className = "card card-leaderboard-category";
+                    srs.className += " isSelected";
+                    break;
+                case 4:
+                    srs.className = "card card-leaderboard-category";
+                    srt.className += " isSelected";
+                    break;
+                case 5:
+                    srt.className = "card card-leaderboard-category";
+                    srk.className += " isSelected";
+                    break;
+                default:
+                    break;
+            }
+
+            // Set value to hidden input
+            document.getElementById('index').value = index;
         }
     }
 
-    //TODO - Fix
-    function selectNext() {
+    function decrement() {
+        // Get index value
         var index = parseInt(document.getElementById('index').value, 10);
-        if (index === 0) {
-            var pagPrev = document.getElementById("paginationPrevious");
-            pagPrev.className = "card card-pagination card-pagination-previous";
-            var pagNext = document.getElementById("paginationNext");
-            pagNext.className += " isSelected";
-            document.getElementById('paginationSelected').value = 1;
-        }
-    }
 
-    function decrementTab() {
-        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        // If zero set back to max
         if (index === 0) {
             // Do nothing
         } else {
             index--;
 
-            var tabTop = document.getElementById("tabTop");         //0
-            var tabMyRank = document.getElementById("tabMyRank");   //1
-            var tabFriends = document.getElementById("tabFriends"); //2
-            var tabTopContent = document.getElementById("tabTopContent");
-            var tabMyRankContent = document.getElementById("tabMyRankContent");
-            var tabFriendsContent = document.getElementById("tabFriendsContent");
+            // Select card based on index, de-select previous card
+            var pagePrev = document.getElementById("paginationPrevious"); //0
+            var pageNext = document.getElementById("paginationNext");
+            var osr = document.getElementById("OverallSoloRanked");       //1
+            var srd = document.getElementById("SoloRankedDeathrace");     //2
+            var srs = document.getElementById("SoloRankedStreet");        //3
+            var srt = document.getElementById("SoloRankedTranny");        //4
+            var srk = document.getElementById("SoloRankedSKATE");         //5
             switch(index) {
                 case 0:
-                    tabTop.className += " tabSelected";
-                    tabTopContent.style.display = "block"
-                    tabMyRank.className = "tab";
-                    tabMyRankContent.style.display = "none"
+                    osr.className = "card card-leaderboard-category";
+                    selectedPage = document.getElementById('paginationSelected').value;
+                    if (selectedPage == 0) {
+                        pagePrev.className += " isSelected";
+                    } else if (selectedPage == 1) {
+                        pageNext.className += " isSelected";
+                    }
                     break;
                 case 1:
-                    tabMyRank.className += " tabSelected";
-                    tabMyRankContent.style.display = "block"
-                    tabFriends.className = "tab";
-                    tabFriendsContent.style.display = "none"
-                    break;
-                default:
-                    break;
-            }
-
-            document.getElementById('tabSelected').value = index;
-        }
-    }
-
-    function incrementTab() {
-        var index = parseInt(document.getElementById('tabSelected').value, 10);
-        if (index === 2) {
-            // Do nothing
-        } else {
-            index++;
-
-            var tabTop = document.getElementById("tabTop");         //0
-            var tabMyRank = document.getElementById("tabMyRank");   //1
-            var tabFriends = document.getElementById("tabFriends"); //2
-            var tabTopContent = document.getElementById("tabTopContent");
-            var tabMyRankContent = document.getElementById("tabMyRankContent");
-            var tabFriendsContent = document.getElementById("tabFriendsContent");
-            switch(index) {
-                case 1:
-                    tabMyRank.className += " tabSelected";
-                    tabMyRankContent.style.display = "block"
-                    tabTop.className = "tab";
-                    tabTopContent.style.display = "none"
+                    srd.className = "card card-leaderboard-category";
+                    osr.className += " isSelected";
                     break;
                 case 2:
-                    tabFriends.className += " tabSelected";
-                    tabFriendsContent.style.display = "block"
-                    tabMyRank.className = "tab";
-                    tabMyRankContent.style.display = "none"
+                    srs.className = "card card-leaderboard-category";
+                    srd.className += " isSelected";
+                    break;
+                case 3:
+                    srt.className = "card card-leaderboard-category";
+                    srs.className += " isSelected";
+                    break;
+                case 4:
+                    srk.className = "card card-leaderboard-category";
+                    srt.className += " isSelected";
                     break;
                 default:
                     break;
             }
 
-            document.getElementById('tabSelected').value = index;
+            // Set value to hidden input
+            document.getElementById('index').value = index;
         }
     }
 </script>
 
-<div class="tabBar">
-    <img class="floatLeft" src="/images/buttons/PS3/PS3_L2.png" width="40" height="40" /><a id="l2_button" onClick="javascript:alert('L2');"></a>
-    <div id="tabTop" class="tab tabSelected"><p>Top</p></div>
-    <div id="tabMyRank" class="tab"><p>My Rank</p></div>
-    <div id="tabFriends" class="tab"><p>Friends</p></div>
-    <img class="floatRight" src="/images/buttons/PS3/PS3_R2.png" width="40" height="40" /><a id="r2_button" onClick="javascript:alert('R2');"></a>
-</div>
-
-<div class="hr"></div>
-
 <div class="content">
-    <div id="tabTopContent">
-        <div id="Pagination" class="pagination">
-            <div id="paginationPrevious" class="card card-pagination card-pagination-previous"><p>&lt; Previous</p></div>
-            <div id="paginationNext" class="card card-pagination card-pagination-next isSelected"><p>Next &gt;</p></div>
-        </div>
+    @Html.Partial("_Pagination")
 
-        <table>
-            <colgroup>
-                <col span="1" style="width: 10%;">
-                <col span="1" style="width: 60%;">
-                <col span="1" style="width: 30%;">
-            </colgroup>
-
-            <tr>
-                <th>Rank</th>
-                <th class="floatLeft" style="padding-top: 11px;">Gamertag</th>
-                <th>Board Sales</th>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">1</td>
-                <td>Skater 1</td>
-                <td class="textAlignCenter">5,000,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">2</td>
-                <td>Skater 2</td>
-                <td class="textAlignCenter">3,500,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">3</td>
-                <td>Skater 3</td>
-                <td class="textAlignCenter">2,750,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">4</td>
-                <td>Skater 4</td>
-                <td class="textAlignCenter">1,500,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">5</td>
-                <td>Skater 5</td>
-                <td class="textAlignCenter">1,000,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">6</td>
-                <td>Skater 6</td>
-                <td class="textAlignCenter">750,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">7</td>
-                <td>Skater 7</td>
-                <td class="textAlignCenter">500,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">8</td>
-                <td>Skater 8</td>
-                <td class="textAlignCenter">250,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">9</td>
-                <td>Skater 9</td>
-                <td class="textAlignCenter">100,000</td>
-            </tr>
-            <tr>
-                <td class="textAlignCenter">10</td>
-                <td>Skater 10</td>
-                <td class="textAlignCenter">50,000</td>
-            </tr>
-        </table>
-
-        <div class="myRankFooter card">
-            <div class="textAlignCenter" style="width: 10%;">3</div>
-            <div style="width: 60%;">Skater 3</div>
-            <div class="textAlignCenter" style="width: 30%;">2,750,000</div>
-        </div>
-    </div>
-
-    <div id="tabMyRankContent" style="display:none;">
-        <div>My Rank Tab Content</div>
-    </div>
-
-    <div id="tabFriendsContent" style="display:none;">
-        <div>Friends Tab Content</div>
-    </div>
+    <a id="OverallSoloRanked" class="card card-leaderboard-category" href="/skate3/webkit/PS3/English/i/Leaderboards/Solo/Overall/Ranked">
+        <img src="/images/decks.png" />Overall Solo Ranked
+    </a>
+    <a id="SoloRankedDeathrace" class="card card-leaderboard-category">
+        <img src="/images/decks.png" />Solo Ranked Deathrace
+    </a>
+    <a id="SoloRankedStreet" class="card card-leaderboard-category">
+        <img src="/images/decks.png" />Solo Ranked Street
+    </a>
+    <a id="SoloRankedTranny" class="card card-leaderboard-category">
+        <img src="/images/decks.png" />Solo Ranked Tranny
+    </a>
+    <a id="SoloRankedSKATE" class="card card-leaderboard-category">
+        <img src="/images/decks.png" />Solo Ranked SKATE
+    </a>
+    <!--
+    <a id="SoloRanked1Up" class="card card-leaderboard-category">
+        <img src="/images/decks.png" />Solo Ranked 1-Up
+    </a>
+    <a id="SoloRankedDomination" class="card card-leaderboard-category">
+        <img src="/images/decks.png" />Solo Ranked Domination
+    </a>
+    <a id="SoloRankedHall of Meat Battle" class="card card-leaderboard-category">
+        <img src="/images/decks.png" />Solo Ranked Hall of Meat Battle
+    </a>
+    <a id="SoloRankedSpotBattle" class="card card-leaderboard-category">
+        <img src="/images/decks.png" />Solo Ranked Spot Battle
+    </a>
+    -->
     
     <input type="hidden" id="paginationSelected" value="1"/>
-    <input type="hidden" id="tabSelected" value="0"/>
+    <input type="hidden" id="index" value="0"/>
     <a id="dpad_up_button" onClick="javascript:decrement();"></a>
     <a id="dpad_down_button" onClick="javascript:increment();"></a>
-    <a id="fake_cross_button" onClick="javascript:selectElement();"></a>
-    <a id="fake_circle_button" onClick="javascript:history.back();"></a>
-    <a id="l2_button" onClick="javascript:decrementTab();"></a>
-    <a id="r2_button" onClick="javascript:incrementTab();"></a>
 </div>

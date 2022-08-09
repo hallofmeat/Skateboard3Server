@@ -21,4 +21,10 @@ public class LeaderboardsController : Controller
     {
         return View();
     }
+
+    [Route("/skate3/webkit/PS3/English/i/Leaderboards/Solo/Overall/Ranked")]
+    public IActionResult SoloOverallRanked()
+    {
+        return View();
+    }
 }
