@@ -1,7 +1,233 @@
 ﻿@{
-    ViewData["Title"] = "SkateFeed";
+    ViewData["Title"] = "Feed";
 }
 
+<script>
+    // TODO - Web Browser Debug
+    document.onkeydown = checkKey;
+
+    function checkKey(e) {
+
+        e = e || window.event;
+
+        if (e.keyCode == '13') {
+            // enter
+            selectElement();
+        }
+        if (e.keyCode == '27') {
+            // esc
+            history.back();
+        }
+        if (e.keyCode == '38') {
+            // up arrow
+        }
+        else if (e.keyCode == '40') {
+            // down arrow
+        }
+        else if (e.keyCode == '37') {
+           // left arrow
+           selectPrevious();
+        }
+        else if (e.keyCode == '39') {
+           // right arrow
+           selectNext();
+        }
+        else if (e.keyCode == '69') {
+           // e
+           incrementTab();
+        }
+        else if (e.keyCode == '81') {
+           // q
+           decrementTab();
+        }
+    }
+    // TODO - End Web Browser Debug
+
+    function onPageLoad() {
+        document.getElementById('paginationNext').style.visibility = "visible";
+        document.getElementById('paginationNext').className += " isSelected";
+    }
+
+    function selectElement() {
+        var selectedId = document.getElementsByClassName('isSelected')[0].id;
+        var loc = document.getElementById(selectedId).getAttribute("href");
+        window.location = loc;
+    }
+
+    function decrementTab() {
+        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        if (index === 0) {
+            // Do nothing
+        } else {
+            index--;
+
+            var tabNews = document.getElementById("tabNews");         //0
+            var tabContent = document.getElementById("tabContent");   //1
+            var tabContacts = document.getElementById("tabContacts"); //2
+            var tabNewsContent = document.getElementById("tabNewsContent");
+            var tabContentContent = document.getElementById("tabContentContent");
+            var tabContactsContent = document.getElementById("tabContactsContent");
+            switch(index) {
+                case 0:
+                    tabNews.className += " tabSelected";
+                    tabNewsContent.style.display = "block"
+                    tabContent.className = "tab";
+                    tabContentContent.style.display = "none"
+                    break;
+                case 1:
+                    tabContent.className += " tabSelected";
+                    tabContentContent.style.display = "block"
+                    tabContacts.className = "tab";
+                    tabContactsContent.style.display = "none"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById('tabSelected').value = index;
+        }
+    }
+
+    function incrementTab() {
+        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        if (index === 2) {
+            // Do nothing
+        } else {
+            index++;
+
+            var tabNews = document.getElementById("tabNews");         //0
+            var tabContent = document.getElementById("tabContent");   //1
+            var tabContacts = document.getElementById("tabContacts"); //2
+            var tabNewsContent = document.getElementById("tabNewsContent");
+            var tabContentContent = document.getElementById("tabContentContent");
+            var tabContactsContent = document.getElementById("tabContactsContent");
+            switch(index) {
+                case 1:
+                    tabContent.className += " tabSelected";
+                    tabContentContent.style.display = "block"
+                    tabNews.className = "tab";
+                    tabNewsContent.style.display = "none"
+                    break;
+                case 2:
+                    tabContacts.className += " tabSelected";
+                    tabContactsContent.style.display = "block"
+                    tabContent.className = "tab";
+                    tabContentContent.style.display = "none"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById('tabSelected').value = index;
+        }
+    }
+</script>
+
+@Html.Partial("SkateFeedTabs")
+
 <div class="content">
-    <p>SkateFeed Page for @ViewData["Username"]</p>
+    <div id="tabNewsContent">
+        <div class="skateFeedLeftContent">
+            @Html.Partial("_Pagination")
+
+            <a class="card card-news-item" href="#">
+                <img src="/images/blog.png" />
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </a>
+            <a class="card card-news-item" href="#">
+                <img src="/images/blog.png" />
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </a>
+            <a class="card card-news-item" href="#">
+                <img src="/images/blog.png" />
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </a>
+            <a class="card card-news-item" href="#">
+                <img src="/images/blog.png" />
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </a>
+            <a class="card card-news-item" href="#">
+                <img src="/images/blog.png" />
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </a>
+            <a class="card card-news-item" href="#">
+                <img src="/images/blog.png" />
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </a>
+        </div>
+        <div class="skateFeedRightContent">
+            <div class="card card-news-stats">
+                <div class="myProgress">
+                    <div style="height: 21px;">
+                        <p class="floatLeft">My Progress</p>
+                        <p class="floatRight">7,500</p>
+                    </div>
+                    <div class="progressBar">
+                        <div class="progressBarBorder">
+                            <div class="progressBarFill" style="width:50%;"></div>
+                        </div>
+                        <img class="progressBarMyDecks" src="/images/decks.png" style="width:auto; height:30px;"/>
+                        <img class="progressBarMyDecksStar" src="/images/star.png" style="width:30px; height:30px;"/>
+                    </div>
+                    <div style="height: 21px;">
+                        <p class="floatRight">15,000</p>
+                    </div>
+                </div>
+                <span class="hr"></span>
+                <div class="community">
+                    <div style="height: 21px;">
+                        <p class="floatLeft">Community</p>
+                        <p class="floatRight">150 Billion</p>
+                    </div>
+                    <div class="progressBar">
+                        <div class="progressBarBorder">
+                            <div class="progressBarFill" style="width:100%;"></div>
+                        </div>
+                        <img class="progressBarCommunity" src="/images/decks.png" style="width:auto; height:30px;"/>
+                        <img class="progressBarCommunityStar" src="/images/star.png" style="width:30px; height:30px;"/>
+                    </div>
+                    <div class="card card-news-stats-item">
+                        <div class="floatLeft padLeft">Friends Online: </div><div class="floatRight padRight">0</div>
+                    </div>
+                    <div class="card card-news-stats-item">
+                        <div class="floatLeft padLeft">Teammates Online: </div><div class="floatRight padRight">0</div>
+                    </div>
+                </div>
+                <div class="royalties">
+                    <div class="card card-news-stats-royalties textAlignCenter">
+                        <img src="/images/decks.png" style="width:auto; height:30px;"/>0
+                        <span class="hr"></span>
+                        <div class="textAlignCenter" style="margin-bottom: 5px;">No new royalties</div>
+                    </div>
+                    <div class="card card-news-stats-item">
+                        <div class="floatLeft padLeft">Video Views: </div><div class="floatRight padRight">0</div>
+                    </div>
+                    <div class="card card-news-stats-item">
+                        <div class="floatLeft padLeft">Photo Views: </div><div class="floatRight padRight">0</div>
+                    </div>
+                    <div class="card card-news-stats-item">
+                        <div class="floatLeft padLeft">Park Downloads: </div><div class="floatRight padRight">0</div>
+                    </div>
+                    <div class="card card-news-stats-item">
+                        <div class="floatLeft padLeft">Character Downloads: </div><div class="floatRight padRight">0</div>
+                    </div>
+                    <div class="card card-news-stats-item">
+                        <div class="floatLeft padLeft">Graphic Downloads: </div><div class="floatRight padRight">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tabContentContent" style="display:none;">
+        Content Tab Content
+    </div>
+
+    <div id="tabContactsContent" style="display:none;">
+        Contacts Tab Content
+    </div>
+    
+    <input type="hidden" id="tabSelected" value="0"/>
+    <a id="dpad_up_button" onClick="javascript:decrement();"></a>
+    <a id="dpad_down_button" onClick="javascript:increment();"></a>
 </div>

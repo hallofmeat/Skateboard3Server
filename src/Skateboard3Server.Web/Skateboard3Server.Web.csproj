@@ -19,6 +19,7 @@
   <ItemGroup>
     <None Remove="Views\Leaderboards\Solo.cshtml" />
     <None Remove="Views\Leaderboards\SoloOverall.cshtml" />
+    <None Remove="Views\Leaderboards\SoloOverallRanked.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

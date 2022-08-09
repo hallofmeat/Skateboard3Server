@@ -51,10 +51,10 @@
             index++;
         
             // Select card based on index, de-select previous card
-            var solo = document.getElementById("Solo");
-            var team = document.getElementById("Team");
-            var ots = document.getElementById("OtS");
-            var dr = document.getElementById("Deathrace");
+            var solo = document.getElementById("Solo");    //0
+            var team = document.getElementById("Team");    //1
+            var ots = document.getElementById("OtS");      //2
+            var dr = document.getElementById("Deathrace"); //3
             switch(index) {
                 case 0:
                     dr.className = "card card-leaderboard-category";
@@ -92,10 +92,10 @@
             index--;
 
             // Select card based on index, de-select previous card
-            var solo = document.getElementById("Solo");        //0
-            var team = document.getElementById("Team");        //1
-            var ots = document.getElementById("OtS");          //2
-            var dr = document.getElementById("Deathrace");     //3
+            var solo = document.getElementById("Solo");    //0
+            var team = document.getElementById("Team");    //1
+            var ots = document.getElementById("OtS");      //2
+            var dr = document.getElementById("Deathrace"); //3
             switch(index) {
                 case 0:
                     team.className = "card card-leaderboard-category";
@@ -124,11 +124,6 @@
 </script>
 
 <div class="content">
-    <div id="Pagination" class="pagination">
-        <div id="paginationPrevious" class="card card-pagination card-pagination-previous"><p>&lt; Previous</p></div>
-        <div id="paginationNext" class="card card-pagination card-pagination-next"><p>Next &gt;</p></div>
-    </div>
-
     <a id="Solo" class="card card-leaderboard-category isSelected" href="/skate3/webkit/PS3/English/i/Leaderboards/Solo">
         <img src="/images/decks.png" />Solo
     </a>
@@ -145,6 +140,4 @@
     <input type="hidden" id="index" value="0"/>
     <a id="dpad_up_button" onClick="javascript:decrement();"></a>
     <a id="dpad_down_button" onClick="javascript:increment();"></a>
-    <a id="fake_cross_button" onClick="javascript:selectElement();"></a>
-    <a id="fake_circle_button" onClick="javascript:history.back();"></a>
 </div>

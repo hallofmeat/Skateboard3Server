@@ -2,13 +2,62 @@
     background-color: darkgrey;
     padding: 0 215px 0 215px;
     margin: 0px;
-    font-family: "Arial", sans-serif;
+    font-family: "Futura Std Medium";
     font-weight: 700;
     font-size: 16px;
     color: white;
     letter-spacing: 1pt;
     width: 850px;
     height: 720px;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    border: 0;
+}
+
+p {
+    margin: 0px;
+}
+
+table {
+    width: 810px;
+    margin: 10px 0px 0px 0px;
+    border-collapse: collapse;
+}
+
+th {
+    color: #42556C;
+    font-size: 16px;
+}
+
+tr {
+    color: #617587;
+    height: 40px;
+    font-size: 21px;
+}
+
+td {
+    border-color: #3D6C9C;
+    border-width: 1px 0 0 0;
+    border-style: solid;
+}
+
+.hr {
+    width: 90%;
+    height: 2px;
+    margin: 5px auto;
+    background-color: #3D6C9C;
+    border-color: #3D6C9C;
+    color: #3D6C9C;
+    display: block;
+}
+
+.tdPadLeft {
+    padding-left: 20px;
 }
 
 .header,
@@ -23,20 +72,17 @@
     letter-spacing: 1pt;
 }
 
-.headerSkateboard {
+.headerText {
     float: left;
     padding-top: 4px;
 }
 
-.headerTitle {
-    float: left;
-    font-size: 25px;
-    padding-left: 1px;
-}
-
 .footer {
     position: absolute;
-    top: 670px;
+    top: 668px;
+    border-color: #3D6C9C;
+    border-width: 2px 0 0 0;
+    border-style: solid;
 }
 
 .footerNavButtons {
@@ -47,9 +93,9 @@
 .footerSelect {
     position: absolute;
     top: 10px;
-    left: 640px;
+    left: 600px;
     height: 30px;
-    width: 101px;
+    width: 110px;
 }
 
 .footerSelect > p {
@@ -60,9 +106,9 @@
 .footerBack {
     position: absolute;
     top: 10px;
-    left: 745px;
+    left: 730px;
     height: 30px;
-    width: 87px;
+    width: 95px;
 }
 
 .footerBack > p {
@@ -70,32 +116,14 @@
     line-height: 30px;
 }
 
-.hr {
-    background-color: #456992;
-    color: #456992;
-    height: 3px;
-    width: 850px;
-    margin: 0px;
-}
-
-.footerHR {
-    position: absolute;
-    top: 667px;
-}
-
 .content {
     background-image: url('../images/background.png');
     padding: 10px 20px;
     width: 810px;
-    height: 594px;
-}
-
-a {
-    text-decoration: none;
-}
-
-p {
-    margin: 0px;
+    height: 598px;
+    border-color: #3D6C9C;
+    border-width: 2px 0 0 0;
+    border-style: solid;
 }
 
 .card {
@@ -105,7 +133,7 @@ p {
 }
 
 .isSelected {
-    background-color: #17273F;
+    background-color: #172538;
     color: white;
     border: 2px solid #89DDFF;
 }
@@ -126,6 +154,7 @@ p {
 }
 
 #paginationPrevious {
+    width: 47%;
     visibility: hidden;
 }
 
@@ -142,6 +171,7 @@ p {
 }
 
 #paginationNext {
+    width: 47%;
     visibility: hidden;
 }
 
@@ -164,18 +194,104 @@ p {
     float: left;
 }
 
+.card-news-item {
+    height: 70px;
+    margin: 10px auto;
+    font-size: 16px;
+    line-height: 18px;
+    display: block;
+}
+
+.card-news-item > img {
+    margin: 10px;
+    float: left;
+}
+
+.card-news-stats {
+    position: absolute;
+    top: 102px;
+    left: 695px;
+    width: 325px;
+    height: 420px;
+    padding: 10px;
+    font-size: 18px;
+    line-height: 18px;
+    display: block;
+}
+
+.card-news-stats-item {
+    height: 21px;
+    line-height: 21px;
+    background-color: #172538;
+    margin: 3px 0px;
+}
+
+.card-news-stats-royalties {
+    background-color: #172538;
+}
+
+.card-news-stats-royalties > img {
+    margin-top: 10px;
+}
+
+.card-news-stats .myProgress {
+    height: 75px;
+}
+
+.progressBar {
+    height: 17px;
+    width: 325px;
+    margin: 8px 0px;
+}
+
+.progressBarMyDecks {
+    position: absolute;
+    top: 32px;
+    left: 155px;
+}
+
+.progressBarMyDecksStar {
+    position: absolute;
+    top: 32px;
+    left: 310px;
+}
+
+.progressBarCommunity {
+    position: absolute;
+    top: 119px;
+    left: 10px;
+}
+
+.progressBarCommunityStar {
+    position: absolute;
+    top: 119px;
+    left: 310px;
+}
+
+.card-news-stats .community {
+    height: 115px;
+}
+
+.card-news-stats .royalties {
+    height: 200px;
+}
+
+.card-news-item > p {
+    margin-top: 10px;
+}
+
 .tabBar {
     background-color: black;
     height: 40px;
     font-size: 21px;
 }
 
-.tabBar> img {
+.tabBar > img {
     margin: 0px 5px;
 }
 
 .tab {
-    background-color: #1F2D3C;
+    background-color: #1E2B3D;
     color: #525F6A;
     float: left;
     margin: 0px 10px;
@@ -191,37 +307,24 @@ p {
     background-color: #1C2B44;
     color: #9BDEEC;
     /* top right bottom left */
-    border-width: 3px 3px 0px 3px;
+    border-width: 2px 2px 0px 2px;
     border-style: solid solid none solid;
-    border-color: #456992 #456992 #000 #456992;
+    border-color: #3D6C9C #3D6C9C #000 #3D6C9C;
 }
 
-#tabTop {
+#tabTop,
+#tabNews {
     width: 135px;
 }
 
-#tabMyRank {
+#tabMyRank,
+#tabContacts {
     width: 299px;
 }
 
-#tabFriends {
+#tabFriends,
+#tabContent {
     width: 250px;
-}
-
-table {
-    width: 810px;
-    margin: 10px 0px 0px 0px;
-}
-
-th {
-    color: #42556C;
-    font-size: 16px;
-}
-
-tr {
-    color: #617587;
-    height: 40px;
-    font-size: 21px;
 }
 
 .myRankFooter {
@@ -230,11 +333,40 @@ tr {
     line-height: 45px;
     color: #A9B8C7;
     font-size: 21px;
+    margin-top: 25px;
 }
 
 .myRankFooter > div {
     float: left;
     height: 100%;
+}
+
+.skateFeedLeftContent {
+    width: 55%;
+    display: inline-block;
+    border: 0;
+    margin: 0;
+}
+
+.skateFeedRightContent {
+    width: 44%;
+    display: inline-block;
+    border: 0;
+    margin: 0;
+}
+
+.progressBarBorder {
+    border-color: #89DDFF;
+    border-style: solid;
+    border-width: 1px 0px;
+    background-color: #172538;
+    height: 15px;
+    margin: 0px 10px;
+}
+
+.progressBarFill {
+    background-color: #89DDFF;
+    height: 15px;
 }
 
 .floatLeft {
@@ -243,6 +375,14 @@ tr {
 
 .floatRight {
     float: right;
+}
+
+.padLeft {
+    margin-left: 10px;
+}
+
+.padRight {
+    margin-right: 10px;
 }
 
 .textAlignCenter {

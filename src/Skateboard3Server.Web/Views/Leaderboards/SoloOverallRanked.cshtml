@@ -1,0 +1,241 @@
+﻿@{
+    ViewData["Title"] = "Overall Solo Ranked Leaderboards";
+}
+
+<script>
+    // TODO - Web Browser Debug
+    document.onkeydown = checkKey;
+
+    function checkKey(e) {
+
+        e = e || window.event;
+
+        if (e.keyCode == '13') {
+            // enter
+            selectElement();
+        }
+        if (e.keyCode == '27') {
+            // esc
+            history.back();
+        }
+        if (e.keyCode == '38') {
+            // up arrow
+        }
+        else if (e.keyCode == '40') {
+            // down arrow
+        }
+        else if (e.keyCode == '37') {
+           // left arrow
+           selectPrevious();
+        }
+        else if (e.keyCode == '39') {
+           // right arrow
+           selectNext();
+        }
+        else if (e.keyCode == '69') {
+           // e
+           incrementTab();
+        }
+        else if (e.keyCode == '81') {
+           // q
+           decrementTab();
+        }
+    }
+    // TODO - End Web Browser Debug
+    
+    function onPageLoad() {
+        document.getElementById('paginationNext').style.visibility = "visible";
+        document.getElementById('paginationNext').className += " isSelected";
+    }
+
+    function selectElement() {
+        var selectedId = document.getElementsByClassName('isSelected')[0].id;
+        var loc = document.getElementById(selectedId).getAttribute("href");
+        window.location = loc;
+    }
+
+    //TODO - Fix
+    function selectPrevious() {
+        var index = parseInt(document.getElementById('index').value, 10);
+        if (index === 0) {
+            var pagPrev = document.getElementById("paginationPrevious");
+            pagPrev.className += " isSelected";
+            var pagNext = document.getElementById("paginationNext");
+            pagNext.className = "card card-pagination card-pagination-next";
+            document.getElementById('paginationSelected').value = 0;
+        }
+    }
+
+    //TODO - Fix
+    function selectNext() {
+        var index = parseInt(document.getElementById('index').value, 10);
+        if (index === 0) {
+            var pagPrev = document.getElementById("paginationPrevious");
+            pagPrev.className = "card card-pagination card-pagination-previous";
+            var pagNext = document.getElementById("paginationNext");
+            pagNext.className += " isSelected";
+            document.getElementById('paginationSelected').value = 1;
+        }
+    }
+
+    function decrementTab() {
+        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        if (index === 0) {
+            // Do nothing
+        } else {
+            index--;
+
+            var tabTop = document.getElementById("tabTop");         //0
+            var tabMyRank = document.getElementById("tabMyRank");   //1
+            var tabFriends = document.getElementById("tabFriends"); //2
+            var tabTopContent = document.getElementById("tabTopContent");
+            var tabMyRankContent = document.getElementById("tabMyRankContent");
+            var tabFriendsContent = document.getElementById("tabFriendsContent");
+            switch(index) {
+                case 0:
+                    tabTop.className += " tabSelected";
+                    tabTopContent.style.display = "block"
+                    tabMyRank.className = "tab";
+                    tabMyRankContent.style.display = "none"
+                    break;
+                case 1:
+                    tabMyRank.className += " tabSelected";
+                    tabMyRankContent.style.display = "block"
+                    tabFriends.className = "tab";
+                    tabFriendsContent.style.display = "none"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById('tabSelected').value = index;
+        }
+    }
+
+    function incrementTab() {
+        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        if (index === 2) {
+            // Do nothing
+        } else {
+            index++;
+
+            var tabTop = document.getElementById("tabTop");         //0
+            var tabMyRank = document.getElementById("tabMyRank");   //1
+            var tabFriends = document.getElementById("tabFriends"); //2
+            var tabTopContent = document.getElementById("tabTopContent");
+            var tabMyRankContent = document.getElementById("tabMyRankContent");
+            var tabFriendsContent = document.getElementById("tabFriendsContent");
+            switch(index) {
+                case 1:
+                    tabMyRank.className += " tabSelected";
+                    tabMyRankContent.style.display = "block"
+                    tabTop.className = "tab";
+                    tabTopContent.style.display = "none"
+                    break;
+                case 2:
+                    tabFriends.className += " tabSelected";
+                    tabFriendsContent.style.display = "block"
+                    tabMyRank.className = "tab";
+                    tabMyRankContent.style.display = "none"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById('tabSelected').value = index;
+        }
+    }
+</script>
+
+@Html.Partial("LeaderboardsTabs")
+
+<div class="content">
+    <div id="tabTopContent">
+        @Html.Partial("_Pagination")
+
+        <table>
+            <colgroup>
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 60%;">
+                <col span="1" style="width: 30%;">
+            </colgroup>
+
+            <tr>
+                <th>Rank</th>
+                <th class="floatLeft" style="padding: 11px 0 0 20px;">Gamertag</th>
+                <th>Board Sales</th>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">1</td>
+                <td class="tdPadLeft">Skater 1</td>
+                <td class="textAlignCenter">5,000,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">2</td>
+                <td class="tdPadLeft">Skater 2</td>
+                <td class="textAlignCenter">3,500,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">3</td>
+                <td class="tdPadLeft">Skater 3</td>
+                <td class="textAlignCenter">2,750,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">4</td>
+                <td class="tdPadLeft">Skater 4</td>
+                <td class="textAlignCenter">1,500,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">5</td>
+                <td class="tdPadLeft">Skater 5</td>
+                <td class="textAlignCenter">1,000,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">6</td>
+                <td class="tdPadLeft">Skater 6</td>
+                <td class="textAlignCenter">750,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">7</td>
+                <td class="tdPadLeft">Skater 7</td>
+                <td class="textAlignCenter">500,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">8</td>
+                <td class="tdPadLeft">Skater 8</td>
+                <td class="textAlignCenter">250,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">9</td>
+                <td class="tdPadLeft">Skater 9</td>
+                <td class="textAlignCenter">100,000</td>
+            </tr>
+            <tr>
+                <td class="textAlignCenter">10</td>
+                <td class="tdPadLeft">Skater 10</td>
+                <td class="textAlignCenter">50,000</td>
+            </tr>
+        </table>
+
+        <div class="card myRankFooter">
+            <div class="textAlignCenter" style="width: 10%;">1</div>
+            <div style="width: 60%;">Skater 1</div>
+            <div class="textAlignCenter" style="width: 30%;">5,000,000</div>
+        </div>
+    </div>
+
+    <div id="tabMyRankContent" style="display:none;">
+        <div>My Rank Tab Content</div>
+    </div>
+
+    <div id="tabFriendsContent" style="display:none;">
+        <div>Friends Tab Content</div>
+    </div>
+    
+    <input type="hidden" id="paginationSelected" value="1"/>
+    <input type="hidden" id="tabSelected" value="0"/>
+    <a id="dpad_up_button" onClick="javascript:decrement();"></a>
+    <a id="dpad_down_button" onClick="javascript:increment();"></a>
+    <a id="l2_button" onClick="javascript:decrementTab();"></a>
+    <a id="r2_button" onClick="javascript:incrementTab();"></a>
+</div>
