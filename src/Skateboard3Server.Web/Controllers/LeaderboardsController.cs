@@ -1,28 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Skateboard3Server.Web.Controllers;
 
+//[Authorize]
+[Route("/skate3/webkit/PS3/English/i/Leaderboards")]
 public class LeaderboardsController : Controller
 {
-    [Route("/skate3/webkit/PS3/English/i/Leaderboards")]
     public IActionResult Index()
     {
         return View();
     }
 
-    [Route("/skate3/webkit/PS3/English/i/Leaderboards/Solo")]
+    [Route("Solo")]
     public IActionResult Solo()
     {
         return View();
     }
 
-    [Route("/skate3/webkit/PS3/English/i/Leaderboards/Solo/Overall")]
+    [Route("Solo/Overall")]
     public IActionResult SoloOverall()
     {
         return View();
     }
 
-    [Route("/skate3/webkit/PS3/English/i/Leaderboards/Solo/Overall/Ranked")]
+    [Route("Solo/Overall/Ranked")]
     public IActionResult SoloOverallRanked()
     {
         return View();

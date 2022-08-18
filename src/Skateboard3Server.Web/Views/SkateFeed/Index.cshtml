@@ -3,55 +3,9 @@
 }
 
 <script>
-    // TODO - Web Browser Debug
-    document.onkeydown = checkKey;
-
-    function checkKey(e) {
-
-        e = e || window.event;
-
-        if (e.keyCode == '13') {
-            // enter
-            selectElement();
-        }
-        if (e.keyCode == '27') {
-            // esc
-            history.back();
-        }
-        if (e.keyCode == '38') {
-            // up arrow
-        }
-        else if (e.keyCode == '40') {
-            // down arrow
-        }
-        else if (e.keyCode == '37') {
-           // left arrow
-           selectPrevious();
-        }
-        else if (e.keyCode == '39') {
-           // right arrow
-           selectNext();
-        }
-        else if (e.keyCode == '69') {
-           // e
-           incrementTab();
-        }
-        else if (e.keyCode == '81') {
-           // q
-           decrementTab();
-        }
-    }
-    // TODO - End Web Browser Debug
-
     function onPageLoad() {
         document.getElementById('paginationNext').style.visibility = "visible";
         document.getElementById('paginationNext').className += " isSelected";
-    }
-
-    function selectElement() {
-        var selectedId = document.getElementsByClassName('isSelected')[0].id;
-        var loc = document.getElementById(selectedId).getAttribute("href");
-        window.location = loc;
     }
 
     function decrementTab() {

@@ -1,7 +1,200 @@
 ﻿@{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Profile: " + @ViewData["Username"];
 }
 
+<script>
+    function increment() {
+        // Get index value
+        var index = parseInt(document.getElementById('index').value, 10);
+
+        // Increment
+        if (index === 3) {
+            // Do nothing
+        } else {
+            index++;
+        
+            // Select card based on index, de-select previous card
+            var emq = document.getElementById("EditMyQuote");     //0
+            var vmi = document.getElementById("ViewMyInvites");   //1
+            var ctp = document.getElementById("CareerTeamPhoto"); //2
+            var vp = document.getElementById("ViewProfile");      //3
+            switch(index) {
+                case 1:
+                    emq.className = "card card-user-profile";
+                    vmi.className += " isSelected";
+                    break;
+                case 2:
+                    vmi.className = "card card-user-profile";
+                    ctp.className += " isSelected";
+                    break;
+                case 3:
+                    ctp.className = "card card-user-profile";
+                    vp.className += " isSelected";
+                    break;
+                default:
+                    break;
+            }
+
+            // Set value to hidden input
+            document.getElementById('index').value = index;
+        }
+    }
+
+    function decrement() {
+        // Get index value
+        var index = parseInt(document.getElementById('index').value, 10);
+
+        // If zero set back to max
+        if (index === 0) {
+            // Do nothing
+        } else {
+            index--;
+
+            // Select card based on index, de-select previous card
+            var emq = document.getElementById("EditMyQuote");     //0
+            var vmi = document.getElementById("ViewMyInvites");   //1
+            var ctp = document.getElementById("CareerTeamPhoto"); //2
+            var vp = document.getElementById("ViewProfile");      //3
+            switch(index) {
+                case 0:
+                    vmi.className = "card card-user-profile";
+                    emq.className += " isSelected";
+                    break;
+                case 1:
+                    ctp.className = "card card-user-profile";
+                    vmi.className += " isSelected";
+                    break;
+                case 2:
+                    vp.className = "card card-user-profile";
+                    ctp.className += " isSelected";
+                    break;
+                default:
+                    break;
+            }
+
+            // Set value to hidden input
+            document.getElementById('index').value = index;
+        }
+    }
+
+    function decrementTab() {
+        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        if (index === 0) {
+            // Do nothing
+        } else {
+            index--;
+
+            var tabSkater = document.getElementById("tabSkater");                 //0
+            var tabProfileContent = document.getElementById("tabProfileContent"); //1
+            var tabStats = document.getElementById("tabStats");                   //2
+            var tabTrophies = document.getElementById("tabTrophies");             //3
+            var tabSkaterContent = document.getElementById("tabSkaterContent");
+            var tabProfileContentContent = document.getElementById("tabProfileContentContent");
+            var tabStatsContent = document.getElementById("tabStatsContent");
+            var tabTrophiesContent = document.getElementById("tabTrophiesContent");
+            switch(index) {
+                case 0:
+                    tabSkater.className += " tabSelected";
+                    tabSkaterContent.style.display = "block"
+                    tabProfileContent.className = "tab";
+                    tabProfileContentContent.style.display = "none"
+                    break;
+                case 1:
+                    tabProfileContent.className += " tabSelected";
+                    tabProfileContentContent.style.display = "block"
+                    tabStats.className = "tab";
+                    tabStatsContent.style.display = "none"
+                    break;
+                case 2:
+                    tabStats.className += " tabSelected";
+                    tabStatsContent.style.display = "block"
+                    tabTrophies.className = "tab";
+                    tabTrophiesContent.style.display = "none"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById('tabSelected').value = index;
+        }
+    }
+
+    function incrementTab() {
+        var index = parseInt(document.getElementById('tabSelected').value, 10);
+        if (index === 3) {
+            // Do nothing
+        } else {
+            index++;
+
+            var tabSkater = document.getElementById("tabSkater");                 //0
+            var tabProfileContent = document.getElementById("tabProfileContent"); //1
+            var tabStats = document.getElementById("tabStats");                   //2
+            var tabTrophies = document.getElementById("tabTrophies");             //3
+            var tabSkaterContent = document.getElementById("tabSkaterContent");
+            var tabProfileContentContent = document.getElementById("tabProfileContentContent");
+            var tabStatsContent = document.getElementById("tabStatsContent");
+            var tabTrophiesContent = document.getElementById("tabTrophiesContent");
+            switch(index) {
+                case 1:
+                    tabProfileContent.className += " tabSelected";
+                    tabProfileContentContent.style.display = "block"
+                    tabSkater.className = "tab";
+                    tabSkaterContent.style.display = "none"
+                    break;
+                case 2:
+                    tabStats.className += " tabSelected";
+                    tabStatsContent.style.display = "block"
+                    tabProfileContent.className = "tab";
+                    tabProfileContentContent.style.display = "none"
+                    break;
+                case 3:
+                    tabTrophies.className += " tabSelected";
+                    tabTrophiesContent.style.display = "block"
+                    tabStats.className = "tab";
+                    tabStatsContent.style.display = "none"
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById('tabSelected').value = index;
+        }
+    }
+</script>
+
+@Html.Partial("ProfileTabs")
+
 <div class="content">
-    <p>Users/Show Page</p>
+    <div id="tabSkaterContent">
+        <div class="userProfileQuote">
+            Skate or Die
+        </div>
+        <img src="/images/quote_block.png" class="closing-quote-block"/>
+        <a class="card card-user-profile-picture">
+            <img src="/images/coach_frank.png" />
+        </a>
+        <div class="userProfileOptions">
+            <a id="EditMyQuote" class="card card-user-profile isSelected">Edit My Quote</a>
+            <a id="ViewMyInvites" class="card card-user-profile">View My Team Invitations</a>
+            <a id="CareerTeamPhoto" class="card card-user-profile">Career Team Photo</a>
+            <a id="ViewProfile" class="card card-user-profile">View Profile</a>
+        </div>
+    </div>
+
+    <div id="tabProfileContentContent" style="display:none;">
+        <div>Content Tab Content</div>
+    </div>
+
+    <div id="tabStatsContent" style="display:none;">
+        <div>Stats Tab Content</div>
+    </div>
+
+    <div id="tabTrophiesContent" style="display:none;">
+        <div>Trophies Tab Content</div>
+    </div>
+    
+    <input type="hidden" id="tabSelected" value="0"/>
+    <input type="hidden" id="index" value="0"/>
+    <a id="dpad_up_button" onClick="javascript:decrement();"></a>
+    <a id="dpad_down_button" onClick="javascript:increment();"></a>
 </div>
