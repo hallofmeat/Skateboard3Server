@@ -2,6 +2,7 @@
 
 namespace Skateboard3Server.Web.Controllers;
 
+//[Authorize]
 [Route("/skate3/webkit/PS3/English/i/Teams")]
 public class TeamsController : Controller
 {

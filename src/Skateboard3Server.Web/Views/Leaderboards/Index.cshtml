@@ -3,44 +3,6 @@
 }
 
 <script>
-    // TODO - Web Browser Debug
-    document.onkeydown = checkKey;
-
-    function checkKey(e) {
-
-        e = e || window.event;
-
-        if (e.keyCode == '13') {
-            // enter
-            selectElement();
-        }
-        if (e.keyCode == '27') {
-            // esc
-            history.back();
-        }
-        if (e.keyCode == '38') {
-            // up arrow
-            decrement();
-        }
-        else if (e.keyCode == '40') {
-            // down arrow
-            increment();
-        }
-        else if (e.keyCode == '37') {
-           // left arrow
-        }
-        else if (e.keyCode == '39') {
-           // right arrow
-        }
-    }
-    // TODO - End Web Browser Debug
-
-    function selectElement() {
-        var selectedId = document.getElementsByClassName('isSelected')[0].id;
-        var loc = document.getElementById(selectedId).getAttribute("href");
-        window.location = loc;
-    }
-
     function increment() {
         // Get index value
         var index = parseInt(document.getElementById('index').value, 10);

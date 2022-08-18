@@ -13,6 +13,7 @@
 
 a {
     text-decoration: none;
+    color: white;
 }
 
 img {
@@ -83,37 +84,7 @@ td {
     border-color: #3D6C9C;
     border-width: 2px 0 0 0;
     border-style: solid;
-}
-
-.footerNavButtons {
-    position: absolute;
-    top: 0px;
-}
-
-.footerSelect {
-    position: absolute;
-    top: 10px;
-    left: 600px;
-    height: 30px;
-    width: 110px;
-}
-
-.footerSelect > p {
-    float: right;
-    line-height: 30px;
-}
-
-.footerBack {
-    position: absolute;
-    top: 10px;
-    left: 730px;
-    height: 30px;
-    width: 95px;
-}
-
-.footerBack > p {
-    float: right;
-    line-height: 30px;
+    line-height: 50px;
 }
 
 .content {
@@ -238,6 +209,50 @@ td {
     height: 75px;
 }
 
+.userProfileQuote {
+    width: 450px;
+    height: 50px;
+    display: block;
+    float: left;
+    margin-top: 20px;
+    color: black;
+    background-color: white;
+    font-size: 16px;
+    line-height: 50px;
+    text-align: center;
+}
+
+.userProfileOptions {
+    padding-top: 80px;
+}
+
+.card-user-profile {
+    width: 405px;
+    height: 50px;
+    display: block;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    font-size: 24px;
+    line-height: 50px;
+}
+
+.card-user-profile-picture {
+    width: 350px;
+    height: 450px;
+    display: block;
+    float: right;
+}
+
+.card-user-profile-picture > img {
+    margin: 75px 62px;
+}
+
+.closing-quote-block {
+    position: absolute;
+    top: 122px;
+    left: 685px;
+}
+
 .progressBar {
     height: 17px;
     width: 325px;
@@ -313,18 +328,28 @@ td {
 }
 
 #tabTop,
-#tabNews {
+#tabNews,
+#tabSkater,
+#tabStats {
     width: 135px;
 }
 
-#tabMyRank,
-#tabContacts {
-    width: 299px;
+#tabProfileContent {
+    width: 185px;
+}
+
+#tabTrophies {
+    width: 210px;
 }
 
 #tabFriends,
 #tabContent {
     width: 250px;
+}
+
+#tabMyRank,
+#tabContacts {
+    width: 299px;
 }
 
 .myRankFooter {

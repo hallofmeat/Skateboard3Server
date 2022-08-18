@@ -1,19 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Skateboard3Server.Web.Controllers;
 
-//TODO: not sure if personaid or userid
+//[Authorize]
 [Route("/skate3/webkit/PS3/English/i/Users")]
 public class UsersController : Controller
 {
-    [HttpGet("Show/{userId}")]
-    public IActionResult Show(string userId)
+    [HttpGet("Show")]
+    public IActionResult Show()
     {
+        ViewData["Username"] = HttpContext.User.FindFirstValue(ClaimTypes.Name);
         return View();
     }
 
-    [HttpGet("Invitations/{userId}")]
-    public IActionResult Invitations(string userId)
+    [HttpGet("Invitations")]
+    public IActionResult Invitations()
     {
         return View();
     }
