@@ -1,4 +1,5 @@
-﻿body {
+﻿/* Generic Elements (Start) */
+body {
     background-color: darkgrey;
     padding: 0 215px 0 215px;
     margin: 0px;
@@ -57,10 +58,54 @@ td {
     display: block;
 }
 
+.content {
+    background-image: url('../images/background.png');
+    padding: 10px 20px;
+    width: 810px;
+    height: 598px;
+    border-color: #3D6C9C;
+    border-width: 2px 0 0 0;
+    border-style: solid;
+}
+
+.card {
+    background-color: #2C3C56;
+    color: #BCD9F5;
+    border: 2px solid #45566C;
+}
+
+.isSelected {
+    background-color: #172538;
+    color: white;
+    border: 2px solid #89DDFF;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.padLeft {
+    margin-left: 10px;
+}
+
+.padRight {
+    margin-right: 10px;
+}
+
+.textAlignCenter {
+    text-align: center;
+}
+
 .tdPadLeft {
     padding-left: 20px;
 }
+/* Generic Elements (End) */
 
+/* Header/Footer (Start) */
 .header,
 .footer
 {
@@ -86,29 +131,9 @@ td {
     border-style: solid;
     line-height: 50px;
 }
+/* Header/Footer (End) */
 
-.content {
-    background-image: url('../images/background.png');
-    padding: 10px 20px;
-    width: 810px;
-    height: 598px;
-    border-color: #3D6C9C;
-    border-width: 2px 0 0 0;
-    border-style: solid;
-}
-
-.card {
-    background-color: #2C3C56;
-    color: #BCD9F5;
-    border: 2px solid #45566C;
-}
-
-.isSelected {
-    background-color: #172538;
-    color: white;
-    border: 2px solid #89DDFF;
-}
-
+/* Pagination (Start) */
 .pagination {
     height: 45px;
 }
@@ -150,7 +175,9 @@ td {
     float: right;
     margin-right: 14px;
 }
+/* Pagination (End) */
 
+/* Leaderboards (Start) */
 .card-leaderboard-category {
     width: 450px;
     height: 75px;
@@ -163,6 +190,36 @@ td {
 .card-leaderboard-category > img {
     margin: 14px;
     float: left;
+}
+
+.myRankFooter {
+    width: 806px;
+    height: 45px;
+    line-height: 45px;
+    color: #A9B8C7;
+    font-size: 21px;
+    margin-top: 25px;
+}
+
+.myRankFooter > div {
+    float: left;
+    height: 100%;
+}
+/* Leaderboards (End) */
+
+/* SkateFeed (Start) */
+.skateFeedLeftContent {
+    width: 55%;
+    display: inline-block;
+    border: 0;
+    margin: 0;
+}
+
+.skateFeedRightContent {
+    width: 44%;
+    display: inline-block;
+    border: 0;
+    margin: 0;
 }
 
 .card-news-item {
@@ -209,6 +266,64 @@ td {
     height: 75px;
 }
 
+.card-news-stats .community {
+    height: 115px;
+}
+
+.card-news-stats .royalties {
+    height: 200px;
+}
+
+.card-news-item > p {
+    margin-top: 10px;
+}
+
+.progressBar {
+    height: 17px;
+    width: 325px;
+    margin: 8px 0px;
+}
+
+.progressBarMyDecks {
+    position: absolute;
+    top: 32px;
+    left: 155px;
+}
+
+.progressBarMyDecksStar {
+    position: absolute;
+    top: 32px;
+    left: 310px;
+}
+
+.progressBarCommunity {
+    position: absolute;
+    top: 119px;
+    left: 10px;
+}
+
+.progressBarCommunityStar {
+    position: absolute;
+    top: 119px;
+    left: 310px;
+}
+
+.progressBarBorder {
+    border-color: #89DDFF;
+    border-style: solid;
+    border-width: 1px 0px;
+    background-color: #172538;
+    height: 15px;
+    margin: 0px 10px;
+}
+
+.progressBarFill {
+    background-color: #89DDFF;
+    height: 15px;
+}
+/* SkateFeed (End) */
+
+/* Users (Start) */
 .userProfileQuote {
     width: 450px;
     height: 50px;
@@ -252,49 +367,9 @@ td {
     top: 122px;
     left: 685px;
 }
+/* Users (End) */
 
-.progressBar {
-    height: 17px;
-    width: 325px;
-    margin: 8px 0px;
-}
-
-.progressBarMyDecks {
-    position: absolute;
-    top: 32px;
-    left: 155px;
-}
-
-.progressBarMyDecksStar {
-    position: absolute;
-    top: 32px;
-    left: 310px;
-}
-
-.progressBarCommunity {
-    position: absolute;
-    top: 119px;
-    left: 10px;
-}
-
-.progressBarCommunityStar {
-    position: absolute;
-    top: 119px;
-    left: 310px;
-}
-
-.card-news-stats .community {
-    height: 115px;
-}
-
-.card-news-stats .royalties {
-    height: 200px;
-}
-
-.card-news-item > p {
-    margin-top: 10px;
-}
-
+/* Tab Bars (Start) */
 .tabBar {
     background-color: black;
     height: 40px;
@@ -351,65 +426,4 @@ td {
 #tabContacts {
     width: 299px;
 }
-
-.myRankFooter {
-    width: 806px;
-    height: 45px;
-    line-height: 45px;
-    color: #A9B8C7;
-    font-size: 21px;
-    margin-top: 25px;
-}
-
-.myRankFooter > div {
-    float: left;
-    height: 100%;
-}
-
-.skateFeedLeftContent {
-    width: 55%;
-    display: inline-block;
-    border: 0;
-    margin: 0;
-}
-
-.skateFeedRightContent {
-    width: 44%;
-    display: inline-block;
-    border: 0;
-    margin: 0;
-}
-
-.progressBarBorder {
-    border-color: #89DDFF;
-    border-style: solid;
-    border-width: 1px 0px;
-    background-color: #172538;
-    height: 15px;
-    margin: 0px 10px;
-}
-
-.progressBarFill {
-    background-color: #89DDFF;
-    height: 15px;
-}
-
-.floatLeft {
-    float: left;
-}
-
-.floatRight {
-    float: right;
-}
-
-.padLeft {
-    margin-left: 10px;
-}
-
-.padRight {
-    margin-right: 10px;
-}
-
-.textAlignCenter {
-    text-align: center;
-}
+/* Tab Bars (End) */
