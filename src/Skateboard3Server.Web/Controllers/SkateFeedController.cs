@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Skateboard3Server.Web.Controllers;
 
-[Authorize]
+/*[Authorize]*/
 [Route("/skate3/webkit/PS3/English/i/SkateFeed")]
 public class SkateFeedController : Controller
 {
