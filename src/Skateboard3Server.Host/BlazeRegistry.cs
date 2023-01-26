@@ -12,7 +12,7 @@ using Skateboard3Server.Blaze.Handlers.Util;
 using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Serializer;
 using Skateboard3Server.Blaze.Server;
-using Skateboard3Server.Common.Decoders;
+using Skateboard3Server.Common.Tickets;
 using Skateboard3Server.Host.Blaze;
 
 namespace Skateboard3Server.Host;

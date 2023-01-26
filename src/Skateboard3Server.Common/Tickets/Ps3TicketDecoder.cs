@@ -4,7 +4,7 @@ using System.Text;
 using NLog;
 using Skateboard3Server.Common.Models;
 
-namespace Skateboard3Server.Common.Decoders;
+namespace Skateboard3Server.Common.Tickets;
 
 //https://psdevwiki.com/ps3/X-I-5-Ticket
 //https://github.com/RipleyTom/rpcn/blob/master/src/server/client/ticket.rs
@@ -28,21 +28,22 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
                 //Ticket Header
                 var majorVersion = (byte) (reader.ReadByte() >> 4);
                 var minorVersion = reader.ReadByte();
+                reader.ReadBytes(4); //00 00 00 00
+                var ticketLength = reader.ReadUInt16Be();
+
                 ticket.Header = new TicketHeader
                 {
                     MajorVersion = majorVersion,
-                    MinorVersion = minorVersion
+                    MinorVersion = minorVersion,
                 };
 
-                reader.ReadBytes(4); //00 00 00 00
-
-                var ticketLength = reader.ReadUInt16Be();
                 if (ticketLength != (ticketData.Length - 8)) //subtract 8 because the header is 8 bytes long
                 {
                     Logger.Debug($"Ticket length did not match data");
                     return null;
                 }
-                
+
+                var bodyOffset = (int)reader.BaseStream.Position;
                 //TODO: check sections
                 if (majorVersion == 2 && minorVersion == 0) //2.0
                 {
@@ -62,13 +63,23 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
                 }
                 else
                 {
-                    Logger.Debug($"Unsupported ticket version {majorVersion}.{minorVersion}");
+                    Logger.Warn($"Unsupported ticket version {majorVersion}.{minorVersion}");
                     return null;
                 }
 
-                //TODO handle incomplete body reading
-                ticket.Footer = ReadFooter(reader); //footer
+                //TODO: what if there is data in-between the body and the footer (right now we are reading it as part of body reading)
 
+                //From body header to end of body
+                ticket.RawBody = ticketData.AsSpan().Slice(bodyOffset, ticket.Body.Length+4).ToArray(); //4 bytes for body header
+
+                var footerOffset = (int)reader.BaseStream.Position;
+                ticket.Footer = ReadFooter(reader); //footer
+                if (ticket.Footer != null)
+                {
+                    //From start of ticket to start of signature data
+                    var signatureOffset = footerOffset + 0x10; //30 02 00 44 (ticket_footer) 00 08 00 04 (cipher_id_header) 38 2D E5 8D (cipher_id) 00 08 00 38 (signature_header)
+                    ticket.RawTicket = ticketData[..signatureOffset];
+                }
             }
 
             return ticket;
@@ -84,6 +95,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
     {
         var body = new TicketBody();
         var bodyHeader = ReadSectionHeader(reader);
+        body.Length = bodyHeader.Length;
 
         //serial_id
         var serialHeader = ReadValueHeader(reader);
@@ -107,7 +119,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
 
         //online_id
         var usernameHeader = ReadValueHeader(reader);
-        //TODO: confirm utf8
+        //TODO: confirm encoding
         body.Username = Encoding.ASCII.GetString(reader.ReadBytes(usernameHeader.Length)).TrimEnd('\0');
 
         //region/lang
@@ -133,7 +145,6 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
         //TODO ???
         //unknown
         reader.ReadBytes(8);
-
         return body;
     }
 
@@ -141,6 +152,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
     {
         var body = new TicketBody();
         var bodyHeader = ReadSectionHeader(reader);
+        body.Length = bodyHeader.Length;
 
         //serial_id
         var serialHeader = ReadValueHeader(reader);
@@ -198,6 +210,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
     {
         var body = new TicketBody();
         var bodyHeader = ReadSectionHeader(reader);
+        body.Length = bodyHeader.Length;
 
         //serial_id
         var serialHeader = ReadValueHeader(reader);
@@ -221,7 +234,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
 
         //online_id
         var usernameHeader = ReadValueHeader(reader);
-        //TODO: confirm utf8
+        //TODO: confirm encoding
         body.Username = Encoding.ASCII.GetString(reader.ReadBytes(usernameHeader.Length)).TrimEnd('\0');
 
         //region/lang
@@ -263,6 +276,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
     {
         var body = new TicketBody();
         var bodyHeader = ReadSectionHeader(reader);
+        body.Length = bodyHeader.Length;
 
         //serial_id
         var serialHeader = ReadValueHeader(reader);
@@ -286,7 +300,7 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
 
         //online_id
         var usernameHeader = ReadValueHeader(reader);
-        //TODO: confirm utf8
+        //TODO: confirm encoding
         body.Username = Encoding.ASCII.GetString(reader.ReadBytes(usernameHeader.Length)).TrimEnd('\0');
 
         //region/lang
@@ -326,11 +340,11 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
 
         //unknown String (8)
         var unknownStringOne = ReadValueHeader(reader);
-        body.UnknownStringOne = Encoding.ASCII.GetString(reader.ReadBytes(unknownStringOne.Length)).TrimEnd('\0');
+        reader.ReadBytes(unknownStringOne.Length);
 
         //unknown String (64)
         var unknownStringTwo = ReadValueHeader(reader);
-        body.UnknownStringTwo = Encoding.ASCII.GetString(reader.ReadBytes(unknownStringTwo.Length)).TrimEnd('\0');
+        reader.ReadBytes(unknownStringTwo.Length);
 
         return body;
     }

@@ -6,8 +6,6 @@ These are based off the information in https://psdevwiki.com/ps3/X-I-5-Ticket an
 
 Games request a ticket via the `sceNpManagerRequestTicket` or `sceNpManagerRequestTicket2` calls, then the ps3 requests a ticket from PSN.
 
-//TODO: how PSN gets tickets
-
 ## Ticket Format
 
 This is based off the version 3.0 ticket but the version only affects the body format. Some of the values have changed for anonymity. This is an example of a PSN ticket for Skate 3:
@@ -86,6 +84,7 @@ Valid header versions are (2.0, 2.1, 3.0, 4.0)
   * `0` Prod/QA (QA)
   * `1-8` SP-INT (Developer)
   * `100` NP (Retail)
+  * `3333` RPCN (RPCS3)
 * issued_date
   * unix timestamp for issued time of ticket
 * expire_date
@@ -117,27 +116,29 @@ Valid header versions are (2.0, 2.1, 3.0, 4.0)
 ### Footer
 
 * cipher_id
-  
-* This is an Id for looking up the corresponding cipher/public key on the game server side (types of ciphers are HMAC, RSA, EC)
+  * This is an id for the corresponding public key (types of ciphers are HMAC, RSA, EC)
   
 * signature
-  * This is used for input for the cipher, this ticket was using a RSA cipher. The the body section of the ticket is SHA1 hashed and fed into RSA_verify with this signature and the public key on the game server. The signature in this ticket is a RSAPublicKey in the DER format. 
+  * This is the signature for the ticket in ASN.1 format (most psn ticket are using a ECDSA cipher)
 
-  ```
-  $ openssl rsa -text -RSAPublicKey_in -in ticket_sig.der -inform der
-  RSA Public-Key: (192 bit)
-  Modulus:
-      00:cc:99:5f:2d:33:4a:4c:2b:ad:bb:07:1d:21:df:
-      a1:05:bf:12:dc:f1:58:07:e8:41
-  Exponent:
-      00:d3:a3:aa:c3:4a:20:23:d9:04:2a:7b:f2:e3:5a:
-      de:2f:e5:b5:41:ba:48:13:37:41
-  writing RSA key
-  -----BEGIN PUBLIC KEY-----
-  MEowDQYJKoZIhvcNAQEBBQADOQAwNgIZAMyZXy0zSkwrrbsHHSHfoQW/EtzxWAfo
-  QQIZANOjqsNKICPZBCp78uNa3i/ltUG6SBM3QQ==
-  -----END PUBLIC KEY-----
-  ```
+## Signature Verification
 
-  
+RPCN signature verification is the SHA224 of the data from the start of the body section (including section header) `30 00 00 <body_length>` to the end of the body section.
 
+```
+$ openssl dgst -sha224 -verify rpcn_ticket_public.pem -signature rpcn_ticket_signature.bin rpcn_ticket_body.bin
+Verified OK
+```
+
+PSN signature verification is the SHA1 of the data from the very beginning of the ticket (including ticket header) `31 00 00 00 00 00 00 <ticket_length>` to the start of the signature data, after the `00 08 00 <signature_length>` information.
+
+Note: There may be extra empty bytes after the end of the signature that may cause problems parsing the ASN.1 format signature.
+
+## Obtaining Public Keys
+
+Given an amount of signed tickets you can derive the ECDSA points using https://github.com/Slendy/PubKeyFinder
+
+## Implementations
+
+[https://github.com/LBPUnion/ProjectLighthouse/blob/4770beea393e6f23abe70ee718e8582b565f86a3/ProjectLighthouse/Tickets/NPTicket.cs](ProjectLighthouse)
+[https://github.com/hallofmeat/Skateboard3Server/blob/master/src/Skateboard3Server.Common/Decoders/Ps3TicketDecoder.cs](Skateboard3Server)

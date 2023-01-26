@@ -9,6 +9,10 @@ public class Ps3Ticket
     public TicketBody Body { get; set; }
         
     public TicketFooter? Footer { get; set; }
+
+    //Raw sections used for signature verification
+    public byte[] RawBody { get; set; } //From start of the body header to end of the body (used for RPCN signature verification)
+    public byte[]? RawTicket { get; set; } //From the start of the ticket to the start of the signature data (used for PSN signature verification)
 }
 
 public class TicketHeader
@@ -19,6 +23,8 @@ public class TicketHeader
 
 public class TicketBody
 {
+    public ushort Length { get; set; }
+
     public byte[] SerialId { get; set; } //(ticket_id for rpcn, serial_id for PSN)
 
     public uint IssuerId { get; set; } //issuer_id
@@ -44,18 +50,13 @@ public class TicketBody
     public byte Age { get; set; } //age
 
     public byte Status { get; set; } //status
-
-    public string UnknownStringOne { get; set; } //unknown_string_one
-
-    public string UnknownStringTwo { get; set; } //unknown_string_two
 }
 
 public class TicketFooter
 {
     public byte[] CipherId { get; set; } 
 
-    public byte[] Signature { get; set; } //RSA public key, HMAC key, EC public key
-
+    public byte[] Signature { get; set; } //EC public key
 }
 
 public class DateOfBirth

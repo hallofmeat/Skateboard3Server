@@ -14,6 +14,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using Skateboard3Server.Blaze;
+using Skateboard3Server.Common.Config;
 using Skateboard3Server.Data;
 using Skateboard3Server.Web;
 using Skateboard3Server.Web.Controllers;
@@ -43,6 +44,9 @@ public class Startup
                 .ValidateDataAnnotations();
             services.AddOptions<WebConfig>()
                 .Bind(skateboardConfigSection.GetSection("Web"))
+                .ValidateDataAnnotations();
+            services.AddOptions<FlagsConfig>()
+                .Bind(skateboardConfigSection.GetSection("Flags"))
                 .ValidateDataAnnotations();
         }
 

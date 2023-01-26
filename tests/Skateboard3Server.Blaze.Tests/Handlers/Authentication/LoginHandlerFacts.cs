@@ -8,8 +8,8 @@ using Skateboard3Server.Blaze.Handlers.Authentication;
 using Skateboard3Server.Blaze.Handlers.Authentication.Messages;
 using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Server;
-using Skateboard3Server.Common.Decoders;
 using Skateboard3Server.Common.Models;
+using Skateboard3Server.Common.Tickets;
 using Skateboard3Server.Data;
 using Xunit;
 
