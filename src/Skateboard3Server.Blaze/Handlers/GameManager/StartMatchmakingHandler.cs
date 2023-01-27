@@ -12,6 +12,7 @@ using Skateboard3Server.Blaze.Managers.Models;
 using Skateboard3Server.Blaze.Notifications.GameManager;
 using Skateboard3Server.Blaze.Notifications.UserSession;
 using Skateboard3Server.Blaze.Server;
+using Skateboard3Server.Common.Config;
 
 namespace Skateboard3Server.Blaze.Handlers.GameManager;
 

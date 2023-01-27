@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Skateboard3Server.Blaze.Handlers.Util.Messages;
+using Skateboard3Server.Common.Config;
 
 namespace Skateboard3Server.Blaze.Handlers.Util;
 

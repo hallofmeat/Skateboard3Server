@@ -2,7 +2,7 @@
 
 #pragma warning disable CS8618
 
-namespace Skateboard3Server.Web;
+namespace Skateboard3Server.Common.Config;
 
 public class WebConfig
 {

@@ -2,84 +2,83 @@
 using System.IO;
 using System.Text;
 using NLog;
-using Skateboard3Server.Common.Models;
+using Skateboard3Server.Common;
 
-namespace Skateboard3Server.Common.Tickets;
+namespace Skateboard3Server.Blaze.Tickets;
 
 //https://psdevwiki.com/ps3/X-I-5-Ticket
 //https://github.com/RipleyTom/rpcn/blob/master/src/server/client/ticket.rs
 //https://www.psdevwiki.com/ps3/PSN
-public interface IPs3TicketDecoder
+public interface IPs3TicketParser
 {
-    Ps3Ticket? DecodeTicket(byte[] ticketData);
+    Ps3Ticket? ParseTicket(byte[] ticketData);
 }
 
-public class Ps3TicketDecoder : IPs3TicketDecoder
+public class Ps3TicketParser : IPs3TicketParser
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public Ps3Ticket? DecodeTicket(byte[] ticketData)
+    public Ps3Ticket? ParseTicket(byte[] ticketData)
     {
         try
         {
             var ticket = new Ps3Ticket();
-            using (var reader = new BinaryReader(new MemoryStream(ticketData)))
+            using var reader = new BinaryReader(new MemoryStream(ticketData));
+
+            //Ticket Header
+            var majorVersion = (byte) (reader.ReadByte() >> 4);
+            var minorVersion = reader.ReadByte();
+            reader.ReadBytes(4); //00 00 00 00
+            var ticketLength = reader.ReadUInt16Be();
+
+            ticket.Header = new TicketHeader
             {
-                //Ticket Header
-                var majorVersion = (byte) (reader.ReadByte() >> 4);
-                var minorVersion = reader.ReadByte();
-                reader.ReadBytes(4); //00 00 00 00
-                var ticketLength = reader.ReadUInt16Be();
+                MajorVersion = majorVersion,
+                MinorVersion = minorVersion,
+            };
 
-                ticket.Header = new TicketHeader
-                {
-                    MajorVersion = majorVersion,
-                    MinorVersion = minorVersion,
-                };
+            if (ticketLength != (ticketData.Length - 8)) //subtract 8 because the header is 8 bytes long
+            {
+                Logger.Debug($"Ticket length did not match data");
+                return null;
+            }
 
-                if (ticketLength != (ticketData.Length - 8)) //subtract 8 because the header is 8 bytes long
-                {
-                    Logger.Debug($"Ticket length did not match data");
-                    return null;
-                }
+            var bodyOffset = (int)reader.BaseStream.Position;
+            //TODO: check sections
+            if (majorVersion == 2 && minorVersion == 0) //2.0
+            {
+                ticket.Body = Read20Body(reader);
+            }
+            else if (majorVersion == 2 && minorVersion == 1) //2.1
+            {
+                ticket.Body = Read21Body(reader); 
+            }
+            else if (majorVersion == 3 && minorVersion == 0) //3.0
+            {
+                ticket.Body = Read30Body(reader);
+            }
+            else if (majorVersion == 4 && minorVersion == 0) //4.0
+            {
+                ticket.Body = Read40Body(reader);
+            }
+            else
+            {
+                Logger.Warn($"Unsupported ticket version {majorVersion}.{minorVersion}");
+                return null;
+            }
 
-                var bodyOffset = (int)reader.BaseStream.Position;
-                //TODO: check sections
-                if (majorVersion == 2 && minorVersion == 0) //2.0
-                {
-                    ticket.Body = Read20Body(reader);
-                }
-                else if (majorVersion == 2 && minorVersion == 1) //2.1
-                {
-                    ticket.Body = Read21Body(reader); 
-                }
-                else if (majorVersion == 3 && minorVersion == 0) //3.0
-                {
-                    ticket.Body = Read30Body(reader);
-                }
-                else if (majorVersion == 4 && minorVersion == 0) //4.0
-                {
-                    ticket.Body = Read40Body(reader);
-                }
-                else
-                {
-                    Logger.Warn($"Unsupported ticket version {majorVersion}.{minorVersion}");
-                    return null;
-                }
+            //TODO: what if there is data in-between the body and the footer (right now we are reading it as part of body reading)
 
-                //TODO: what if there is data in-between the body and the footer (right now we are reading it as part of body reading)
+            //From body header to end of body
+            ticket.RawBody = ticketData.AsSpan().Slice(bodyOffset, ticket.Body.Length+4).ToArray(); //4 bytes for body header
 
-                //From body header to end of body
-                ticket.RawBody = ticketData.AsSpan().Slice(bodyOffset, ticket.Body.Length+4).ToArray(); //4 bytes for body header
-
-                var footerOffset = (int)reader.BaseStream.Position;
-                ticket.Footer = ReadFooter(reader); //footer
-                if (ticket.Footer != null)
-                {
-                    //From start of ticket to start of signature data
-                    var signatureOffset = footerOffset + 0x10; //30 02 00 44 (ticket_footer) 00 08 00 04 (cipher_id_header) 38 2D E5 8D (cipher_id) 00 08 00 38 (signature_header)
-                    ticket.RawTicket = ticketData[..signatureOffset];
-                }
+            var footerOffset = (int)reader.BaseStream.Position;
+            ticket.Footer = ReadFooter(reader); //footer
+            if (ticket.Footer != null)
+            {
+                //From start of ticket to start of signature data
+                var signatureOffset = footerOffset + 0x10; //30 02 00 44 (ticket_footer) 00 08 00 04 (key_id_header) 38 2D E5 8D (key_id) 00 08 00 38 (signature_header)
+                ticket.RawTicket = ticketData[..signatureOffset];
             }
 
             return ticket;
@@ -360,9 +359,9 @@ public class Ps3TicketDecoder : IPs3TicketDecoder
             return null;
         }
         var footerLength = reader.ReadUInt16Be();
-        //cipher_id
-        var cipherHeader = ReadValueHeader(reader);
-        footer.CipherId = reader.ReadBytes(cipherHeader.Length);
+        //key_id
+        var keyIdHeader = ReadValueHeader(reader);
+        footer.KeyId = reader.ReadBytes(keyIdHeader.Length);
 
         //signature
         var signatureHeader = ReadValueHeader(reader);

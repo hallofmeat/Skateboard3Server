@@ -8,8 +8,7 @@ using Skateboard3Server.Blaze.Handlers.Authentication;
 using Skateboard3Server.Blaze.Handlers.Authentication.Messages;
 using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Server;
-using Skateboard3Server.Common.Models;
-using Skateboard3Server.Common.Tickets;
+using Skateboard3Server.Blaze.Tickets;
 using Skateboard3Server.Data;
 using Xunit;
 
@@ -17,15 +16,14 @@ namespace Skateboard3Server.Blaze.Tests.Handlers.Authentication;
 
 public class LoginHandlerFacts
 {
-    private readonly DbContextOptions<Skateboard3Context> _dbContextOptions;
-
     private static readonly Fixture Fixture = new();
+    private readonly DbContextOptions<Skateboard3Context> _dbContextOptions;
 
     public LoginHandlerFacts()
     {
         // Build DbContextOptions
         _dbContextOptions = new DbContextOptionsBuilder<Skateboard3Context>()
-            .UseInMemoryDatabase(databaseName: "Skateboard3")
+            .UseInMemoryDatabase("Skateboard3")
             .Options;
     }
 
@@ -35,13 +33,15 @@ public class LoginHandlerFacts
         var dbContext = new Skateboard3Context(_dbContextOptions);
         var clientContext = Substitute.For<ClientContext>();
         var notificationHandler = Substitute.For<IBlazeNotificationHandler>();
-        var ticketDecoder = Substitute.For<IPs3TicketDecoder>();
+        var ticketParser = Substitute.For<IPs3TicketParser>();
+        var ticketValidator = Substitute.For<IPs3TicketValidator>();
         var userSessionManager = Substitute.For<IUserSessionManager>();
         var clientManager = Substitute.For<IClientManager>();
 
         var ticket = Fixture.Create<Ps3Ticket>();
 
-        ticketDecoder.DecodeTicket(Arg.Any<byte[]>()).Returns(ticket);
+        ticketParser.ParseTicket(Arg.Any<byte[]>()).Returns(ticket);
+        ticketValidator.ValidateTicket(Arg.Any<Ps3Ticket>()).Returns(true);
 
         var request = new LoginRequest
         {
@@ -50,7 +50,8 @@ public class LoginHandlerFacts
         };
 
         //Act
-        var handler = new LoginHandler(dbContext, clientContext, notificationHandler, ticketDecoder, userSessionManager,
+        var handler = new LoginHandler(dbContext, clientContext, notificationHandler, ticketParser, ticketValidator,
+            userSessionManager,
             clientManager);
 
         var _ = await handler.Handle(request, CancellationToken.None);
@@ -61,5 +62,4 @@ public class LoginHandlerFacts
 
     //TODO test blob
     //TODO test the rest
-
 }

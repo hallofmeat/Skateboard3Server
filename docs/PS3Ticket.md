@@ -86,9 +86,9 @@ Valid header versions are (2.0, 2.1, 3.0, 4.0)
   * `100` NP (Retail)
   * `3333` RPCN (RPCS3)
 * issued_date
-  * unix timestamp for issued time of ticket
+  * unix timestamp (in milliseconds) for issued time of ticket
 * expire_date
-  * unix timestamp for expire time of ticket
+  * unix timestamp (in milliseconds) for expire time of ticket
 * user_id
   * Id for PSN
 * online_id
@@ -115,8 +115,8 @@ Valid header versions are (2.0, 2.1, 3.0, 4.0)
 
 ### Footer
 
-* cipher_id
-  * This is an id for the corresponding public key (types of ciphers are HMAC, RSA, EC)
+* key_id
+  * This is an id for the corresponding public key (and cipher_type?)
   
 * signature
   * This is the signature for the ticket in ASN.1 format (most psn ticket are using a ECDSA cipher)

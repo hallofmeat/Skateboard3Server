@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 #pragma warning disable CS8618
 
-namespace Skateboard3Server.Blaze;
+namespace Skateboard3Server.Common.Config;
 
 public class BlazeConfig
 {

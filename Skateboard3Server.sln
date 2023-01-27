@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30509.190
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skateboard3Server.Host", "src\Skateboard3Server.Host\Skateboard3Server.Host.csproj", "{6DDC3092-47D5-4F95-BAD4-B72417E276DD}"
 EndProject
@@ -18,8 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{07051FC8-2BB0-4339-8AF1-1EF5DBD08B5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skateboard3Server.Common", "src\Skateboard3Server.Common\Skateboard3Server.Common.csproj", "{89F2B0DC-4534-48E1-B776-B7149510A67B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skateboard3Server.Common.Tests", "tests\Skateboard3Server.Common.Tests\Skateboard3Server.Common.Tests.csproj", "{C05137AF-F193-4309-A9D1-BE088483A776}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skateboard3Server.Web", "src\Skateboard3Server.Web\Skateboard3Server.Web.csproj", "{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}"
 EndProject
@@ -56,10 +54,6 @@ Global
 		{89F2B0DC-4534-48E1-B776-B7149510A67B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89F2B0DC-4534-48E1-B776-B7149510A67B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89F2B0DC-4534-48E1-B776-B7149510A67B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C05137AF-F193-4309-A9D1-BE088483A776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C05137AF-F193-4309-A9D1-BE088483A776}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C05137AF-F193-4309-A9D1-BE088483A776}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C05137AF-F193-4309-A9D1-BE088483A776}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,7 +72,6 @@ Global
 		{AA6D38B9-37AC-4B2E-9661-131060690A8D} = {9587B117-88DE-4ABE-A3F5-F9FF29955BAA}
 		{B0EAC19E-1465-471F-AD03-C5233CF5BE59} = {07051FC8-2BB0-4339-8AF1-1EF5DBD08B5D}
 		{89F2B0DC-4534-48E1-B776-B7149510A67B} = {256096F1-70C9-47C3-827E-EFC3A38C76C1}
-		{C05137AF-F193-4309-A9D1-BE088483A776} = {9587B117-88DE-4ABE-A3F5-F9FF29955BAA}
 		{7F6EA5C2-EDF4-4F5C-BAD9-34BD0B0CD5F9} = {256096F1-70C9-47C3-827E-EFC3A38C76C1}
 		{5DB3EF16-A746-4464-9243-09F45C76E8D0} = {256096F1-70C9-47C3-827E-EFC3A38C76C1}
 	EndGlobalSection

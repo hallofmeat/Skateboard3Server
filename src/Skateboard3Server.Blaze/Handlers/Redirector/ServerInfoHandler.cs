@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using Skateboard3Server.Blaze.Common;
 using Skateboard3Server.Blaze.Handlers.Redirector.Messages;
+using Skateboard3Server.Common.Config;
 
 namespace Skateboard3Server.Blaze.Handlers.Redirector;
 

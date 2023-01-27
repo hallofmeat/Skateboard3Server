@@ -12,8 +12,8 @@ using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Managers.Models;
 using Skateboard3Server.Blaze.Notifications.UserSession;
 using Skateboard3Server.Blaze.Server;
+using Skateboard3Server.Blaze.Tickets;
 using Skateboard3Server.Common;
-using Skateboard3Server.Common.Tickets;
 using Skateboard3Server.Data;
 using Skateboard3Server.Data.Models;
 
@@ -24,18 +24,23 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     private readonly Skateboard3Context _dbContext;
     private readonly IBlazeNotificationHandler _notificationHandler;
     private readonly ClientContext _clientContext;
-    private readonly IPs3TicketDecoder _ticketDecoder;
+    private readonly IPs3TicketParser _ticketParser;
+    private readonly IPs3TicketValidator _ticketValidator;
     private readonly IUserSessionManager _userSessionManager;
     private readonly IClientManager _clientManager;
 
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
-    public LoginHandler(Skateboard3Context dbContext, ClientContext clientContext, IBlazeNotificationHandler notificationHandler, IPs3TicketDecoder ticketDecoder, IUserSessionManager userSessionManager, IClientManager clientManager)
+
+    public LoginHandler(Skateboard3Context dbContext, ClientContext clientContext,
+        IBlazeNotificationHandler notificationHandler, IPs3TicketParser ticketParser,
+        IPs3TicketValidator ticketValidator, IUserSessionManager userSessionManager,
+        IClientManager clientManager)
     {
         _dbContext = dbContext;
         _clientContext = clientContext;
         _notificationHandler = notificationHandler;
-        _ticketDecoder = ticketDecoder;
+        _ticketParser = ticketParser;
+        _ticketValidator = ticketValidator;
         _userSessionManager = userSessionManager;
         _clientManager = clientManager;
     }
@@ -44,10 +49,15 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     {
         Logger.Debug($"LOGIN for {_clientContext.ConnectionId}");
 
-        var ticket = _ticketDecoder.DecodeTicket(request.Ticket);
+        var ticket = _ticketParser.ParseTicket(request.Ticket);
         if (ticket == null)
         {
             throw new Exception("Could not parse ticket, unable to login!");
+        }
+
+        if (!_ticketValidator.ValidateTicket(ticket))
+        {
+            throw new Exception("Invalid ticket, unable to login!");
         }
 
         var persona = await _dbContext.Personas.Include(x => x.User).SingleOrDefaultAsync(x => x.ExternalId == ticket.Body.UserId, cancellationToken: cancellationToken);
@@ -55,7 +65,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
         //First time we have seen this persona
         if (persona == null)
         {
-            //TODO: a hack, this normally comes from the auth new login flow but I dont want to prompt for a login
+            //TODO: a hack, this normally comes from the auth new login flow
             var externalBlob = new List<byte>();
             externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Username.PadRight(20, '\0')));
             externalBlob.AddRange(Encoding.ASCII.GetBytes(ticket.Body.Domain));

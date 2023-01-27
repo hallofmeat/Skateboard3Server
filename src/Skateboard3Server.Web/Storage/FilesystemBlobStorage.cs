@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NLog;
+using Skateboard3Server.Common.Config;
 
 namespace Skateboard3Server.Web.Storage;
 

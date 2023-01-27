@@ -12,7 +12,7 @@ using Skateboard3Server.Blaze.Handlers.Util;
 using Skateboard3Server.Blaze.Managers;
 using Skateboard3Server.Blaze.Serializer;
 using Skateboard3Server.Blaze.Server;
-using Skateboard3Server.Common.Tickets;
+using Skateboard3Server.Blaze.Tickets;
 using Skateboard3Server.Host.Blaze;
 
 namespace Skateboard3Server.Host;
@@ -26,7 +26,10 @@ public class BlazeRegistry : Module
         builder.RegisterType<BlazeDeserializer>().As<IBlazeDeserializer>();
         builder.RegisterType<BlazeDebugParser>().As<IBlazeDebugParser>();
         builder.RegisterType<BlazeTypeLookup>().As<IBlazeTypeLookup>();
-        builder.RegisterType<Ps3TicketDecoder>().As<IPs3TicketDecoder>();
+
+        //Tickets
+        builder.RegisterType<Ps3TicketParser>().As<IPs3TicketParser>();
+        builder.RegisterType<Ps3TicketValidator>().As<IPs3TicketValidator>();
 
         //Connection Handling
         builder.RegisterType<BlazeProtocol>().SingleInstance();

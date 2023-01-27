@@ -9,4 +9,9 @@ public static class TimeUtil
         //https://stackoverflow.com/a/17632585
         return (uint)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
     }
+
+    public static ulong GetUnixTimestampMilliseconds()
+    {
+        return (ulong)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+    }
 }

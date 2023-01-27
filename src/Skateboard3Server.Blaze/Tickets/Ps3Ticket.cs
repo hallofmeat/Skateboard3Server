@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS8618
 
-namespace Skateboard3Server.Common.Models;
+namespace Skateboard3Server.Blaze.Tickets;
 
 public class Ps3Ticket
 {
@@ -54,7 +54,7 @@ public class TicketBody
 
 public class TicketFooter
 {
-    public byte[] CipherId { get; set; } 
+    public byte[] KeyId { get; set; } 
 
     public byte[] Signature { get; set; } //EC public key
 }
