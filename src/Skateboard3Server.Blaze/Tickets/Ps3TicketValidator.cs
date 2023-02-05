@@ -65,7 +65,7 @@ public class Ps3TicketValidator : IPs3TicketValidator
         }
 
         var serviceId = Encoding.ASCII.GetString(body.ServiceId);
-        if (!serviceId.Contains("BLUS30464"))
+        if (!(serviceId.Contains("BLUS30464") || serviceId.Contains("BLES00760")))
         {
             Logger.Warn($"Ticket with incorrect Serial:{serviceId}");
             return false;
