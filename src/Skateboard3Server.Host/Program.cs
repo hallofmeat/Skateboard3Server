@@ -52,7 +52,7 @@ public class Program
                                     .UseConnectionHandler<BlazeConnectionHandler>();
                             });
                         //eadpgs-blapp001 (Blaze) [TCP]
-                        //This normally is ssl, but the gosredirector response tells the game the game server is not ssl
+                        //This normally is ssl, but the gosredirector response tells the game server is not ssl
                         serverOptions.ListenAnyIP(10744,
                             options =>
                             {
@@ -61,19 +61,19 @@ public class Program
 
                             });
                         //gostelemetry.lobby [TCP]?
-                        serverOptions.ListenAnyIP(9946,
-                            options =>
-                            {
-                                options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                                    .UseConnectionHandler<DummyConnectionHandler>();
-                            });
+                        //serverOptions.ListenAnyIP(9946,
+                        //    options =>
+                        //    {
+                        //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                        //            .UseConnectionHandler<DummyConnectionHandler>();
+                        //    });
                         //tick server [TCP]?
-                        serverOptions.ListenAnyIP(8999,
-                            options =>
-                            {
-                                options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
-                                    .UseConnectionHandler<DummyConnectionHandler>();
-                            });
+                        //serverOptions.ListenAnyIP(8999,
+                        //    options =>
+                        //    {
+                        //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
+                        //            .UseConnectionHandler<DummyConnectionHandler>();
+                        //    });
                         //downloads.skate.online (HTTP) [TCP]
                         serverOptions.ListenAnyIP(80);
                     })

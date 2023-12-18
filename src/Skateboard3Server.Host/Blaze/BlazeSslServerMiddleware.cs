@@ -5,7 +5,9 @@ using System.IO.Pipelines;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Connections.Features;
-using Org.BouncyCastle.Crypto.Tls;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Tls;
+using Org.BouncyCastle.Tls.Crypto.Impl.BC;
 
 namespace Skateboard3Server.Host.Blaze;
 
@@ -24,8 +26,8 @@ public class BlazeSslServerMiddleware
     {
         var inputStream = context.Transport.Input.AsStream();
         var outputStream = context.Transport.Output.AsStream();
-        var protocol = new TlsServerProtocol(inputStream, outputStream, new Org.BouncyCastle.Security.SecureRandom());
-        protocol.Accept(new BlazeTlsServer(_options));
+        var protocol = new TlsServerProtocol(inputStream, outputStream);
+        protocol.Accept(new BlazeTlsServer(_options, new BcTlsCrypto(new SecureRandom())));
         var sslStream = protocol.Stream;
 
 

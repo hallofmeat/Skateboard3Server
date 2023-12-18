@@ -1,5 +1,7 @@
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Skateboard3Server.Blaze;
 using Skateboard3Server.Blaze.Handlers.Authentication;
 using Skateboard3Server.Blaze.Handlers.GameManager;
@@ -44,11 +46,6 @@ public class BlazeRegistry : Module
 
         //Mediator
         builder.RegisterType<Mediator>().As<IMediator>().InstancePerLifetimeScope();
-        builder.Register<ServiceFactory>(context =>
-        {
-            var c = context.Resolve<IComponentContext>();
-            return t => c.Resolve(t);
-        });
 
         //Blaze Message Handlers
         builder.RegisterType<ServerInfoHandler>().AsImplementedInterfaces().InstancePerDependency();

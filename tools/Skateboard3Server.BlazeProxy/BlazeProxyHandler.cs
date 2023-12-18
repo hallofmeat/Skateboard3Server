@@ -5,7 +5,9 @@ using Bedrock.Framework.Protocols;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Options;
 using NLog;
-using Org.BouncyCastle.Crypto.Tls;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Tls;
+using Org.BouncyCastle.Tls.Crypto.Impl.BC;
 using Skateboard3Server.Blaze;
 
 namespace Skateboard3Server.BlazeProxy;
@@ -38,8 +40,8 @@ public class BlazeProxyHandler : ConnectionHandler
 
         if (_proxySettings.Secure)
         {
-            var protocol = new TlsClientProtocol(proxyStream, new Org.BouncyCastle.Security.SecureRandom());
-            protocol.Connect(new BlazeTlsClient());
+            var protocol = new TlsClientProtocol(proxyStream);
+            protocol.Connect(new BlazeTlsClient(new BcTlsCrypto(new SecureRandom())));
             proxyStream = protocol.Stream;
         }
 
