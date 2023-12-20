@@ -10,6 +10,7 @@ https://hallofmeat.net
 
 ## In-Progress
 
+* Invites
 * Matchmaking
 * Web/Social
 
@@ -18,3 +19,7 @@ https://hallofmeat.net
 * SkateParks
 * SkateReel
 * Teams
+
+## Disclaimer
+
+This project is not affiliated with or endorsed by Electronic Arts Inc in any way. Skate, Skate 2 and Skate 3 are trademarks of Electronic Arts Inc.
