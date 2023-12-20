@@ -29,15 +29,21 @@ RUN dotnet publish -c Release -o /app/publish
 
 #TODO: unit tests
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy AS runtime
 WORKDIR /app 
 
 # gosredirector
 EXPOSE 42100
 # blaze-app
 EXPOSE 10744
-# web
-EXPOSE 80
+# web (normally would be 80 but we cant use 80 in rootless containers)
+EXPOSE 8080
+# reset base image aspnetcore_http_ports to remove warning
+ENV ASPNETCORE_HTTP_PORTS ""
+# override appsettings to force 8080
+ENV KESTREL__ENDPOINTS__WEB__URL http://*:8080
 
 COPY --from=build /app/publish ./
+
+USER $APP_UID
 ENTRYPOINT ["dotnet", "Skateboard3Server.Host.dll"]

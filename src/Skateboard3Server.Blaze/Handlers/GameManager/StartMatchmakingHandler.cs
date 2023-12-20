@@ -40,16 +40,17 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
         }
         var currentSession = _userSessionManager.GetSession(_clientContext.UserSessionId.Value);
 
-        if (_blazeConfig.QosHosts == null)
+        var qosHostName = "";
+        var qosServerNames = new List<string>();
+        if (_blazeConfig.QosHosts != null)
         {
-            throw new Exception("BlazeConfig.QosHosts was not configured");
-        }
+            var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
+            if (firstQosHost != null)
+            {
+                qosHostName = firstQosHost.Name;
+            }
 
-        var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
-
-        if (firstQosHost == null)
-        {
-            throw new Exception("BlazeConfig.QosHosts contains no servers");
+            qosServerNames = _blazeConfig.QosHosts.Select(x => x.Name).ToList();
         }
 
         //uint matchmakingId = _matchmakingManager.CreateMatchmakingSession();
@@ -115,7 +116,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
                     },
                     PingServerNames = new PingServerNames
                     {
-                        Values = _blazeConfig.QosHosts.Select(x => x.Name).ToList() //qos servers
+                        Values = qosServerNames //qos servers
                     },
                     Rrda = new RrdaData
                     {
@@ -178,7 +179,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
                 Data = new UserExtendedData
                 {
                     Address = new KeyValuePair<NetworkAddressType, NetworkAddress?>(NetworkAddressType.Pair, player.NetworkAddress),
-                    PingServerName = firstQosHost.Name,
+                    PingServerName = qosHostName,
                     Cty = "",
                     DataMap = new Dictionary<uint, int>(), //TODO: this is missing from the real response
                     HardwareFlags = 0,
@@ -227,7 +228,7 @@ public class StartMatchmakingHandler : IRequestHandler<StartMatchmakingRequest, 
             {
                 Address = new KeyValuePair<NetworkAddressType, NetworkAddress?>(NetworkAddressType.Pair,
                     currentSession.NetworkAddress),
-                PingServerName = firstQosHost.Name,
+                PingServerName = qosHostName,
                 Cty = "",
                 DataMap = new Dictionary<uint, int>(), //TODO: this is missing from the real response
                 HardwareFlags = 0,

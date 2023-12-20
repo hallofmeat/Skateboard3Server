@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  skateboard3server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080/tcp"
+      - "42100:42100/tcp"
+      - "10744:10744/tcp"
+    environment:
+      ConnectionStrings__Skateboard3Context: "Data Source=/home/app/skateboard3server.db"

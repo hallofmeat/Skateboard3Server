@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
 using Skateboard3Server.Host.Blaze;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Skateboard3Server.Host;
 
@@ -37,7 +39,7 @@ public class Program
             .ConfigureLogging(logging =>
             {
                 logging.ClearProviders();
-                logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                logging.SetMinimumLevel(LogLevel.Trace);
             })
             .UseNLog()
             .ConfigureWebHostDefaults(webBuilder =>
@@ -58,8 +60,12 @@ public class Program
                             {
                                 options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
                                     .UseConnectionHandler<BlazeConnectionHandler>();
-
                             });
+                        //downloads.skate.online (HTTP) [TCP]
+                        //Set in appsettings.json
+                        //serverOptions.ListenAnyIP(80);
+
+                        //TODO: figure out if we need these
                         //gostelemetry.lobby [TCP]?
                         //serverOptions.ListenAnyIP(9946,
                         //    options =>
@@ -74,18 +80,15 @@ public class Program
                         //        options.UseConnectionLogging(loggingFormatter: HexLoggingFormatter)
                         //            .UseConnectionHandler<DummyConnectionHandler>();
                         //    });
-                        //downloads.skate.online (HTTP) [TCP]
-                        serverOptions.ListenAnyIP(80);
                     })
                     .UseStartup<Startup>();
             });
     }
 
 
-
-    private static void HexLoggingFormatter(Microsoft.Extensions.Logging.ILogger logger, string method, ReadOnlySpan<byte> buffer)
+    private static void HexLoggingFormatter(ILogger logger, string method, ReadOnlySpan<byte> buffer)
     {
-        if (!logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+        if (!logger.IsEnabled(LogLevel.Trace))
             return;
 
         var builder = new StringBuilder($"{method}[{buffer.Length}] ");
@@ -103,7 +106,8 @@ public class Program
 
 public static class ConnectionBuilderExtensions
 {
-    public static TBuilder UseBlazeServerSsl<TBuilder>(this TBuilder builder, BlazeTlsOptions options) where TBuilder : IConnectionBuilder
+    public static TBuilder UseBlazeServerSsl<TBuilder>(this TBuilder builder, BlazeTlsOptions options)
+        where TBuilder : IConnectionBuilder
     {
         builder.Use(next =>
         {

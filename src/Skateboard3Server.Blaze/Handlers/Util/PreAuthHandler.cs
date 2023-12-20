@@ -20,28 +20,35 @@ public class PreAuthHandler : IRequestHandler<PreAuthRequest, PreAuthResponse>
     }
     public Task<PreAuthResponse> Handle(PreAuthRequest request, CancellationToken cancellationToken)
     {
-        if (_blazeConfig.QosHosts == null)
+        var pingQosHosts = new Dictionary<string, QosAddress>();
+        var bandwidthServer = new QosAddress
         {
-            throw new Exception("BlazeConfig.QosHosts was not configured");
-        }
-
-        var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
-
-        if (firstQosHost == null)
+            Hostname = "",
+            Ip = "",
+            Port = 17502 //default 17502
+        };
+        if (_blazeConfig.QosHosts != null)
         {
-            throw new Exception("BlazeConfig.QosHosts contains no servers");
-        }
-
-        var pingQosHosts = _blazeConfig.QosHosts.Select(x => new
-        {
-            Key = x.Name,
-            Value = new QosAddress
+            pingQosHosts = _blazeConfig.QosHosts.Select(x => new
             {
-                Hostname = x.Host,
-                Ip = x.Ip,
-                Port = x.Port,
+                Key = x.Name,
+                Value = new QosAddress
+                {
+                    Hostname = x.Host,
+                    Ip = x.Ip,
+                    Port = x.Port,
+                }
+            }).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            var firstQosHost = _blazeConfig.QosHosts.FirstOrDefault();
+
+            if (firstQosHost != null)
+            {
+                bandwidthServer.Hostname = firstQosHost.Host;
+                bandwidthServer.Ip = firstQosHost.Ip;
+                bandwidthServer.Port = firstQosHost.Port;
             }
-        }).ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
 
         var response = new PreAuthResponse
         {
@@ -72,12 +79,7 @@ public class PreAuthHandler : IRequestHandler<PreAuthRequest, PreAuthResponse>
             },
             QosConfig = new QosConfig
             {
-                BandwidthServer = new QosAddress //Also used for firewall detection?
-                {
-                    Hostname = firstQosHost.Host,
-                    Ip = firstQosHost.Ip,
-                    Port = firstQosHost.Port //default 17502
-                },
+                BandwidthServer = bandwidthServer,
                 PingCount = 10,
                 PingServers = pingQosHosts,
                 ServerId = 1
